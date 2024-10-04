@@ -6,8 +6,11 @@
 <link rel="stylesheet" href="{{asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
 <!-- JQVMap -->
 <link rel="stylesheet" href="{{asset('plugins/jqvmap/jqvmap.min.css')}}">
-<!-- Theme style -->
+
 <link rel="stylesheet" href="{{asset('css/adminlte.css')}}">
+
+<link rel="stylesheet" href="{{asset('plugins/select2/css/select2.css')}}">
+<!-- Theme style -->
 <!-- overlayScrollbars -->
 <link rel="stylesheet" href="{{asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
 <!-- Daterange picker -->

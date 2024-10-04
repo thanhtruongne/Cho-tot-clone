@@ -2246,6 +2246,50 @@ pre code {
   color: transparent;
   text-shadow: 0 0 0 #495057;
 }
+.table>thead {
+  background: #212f6e !important;
+  color:  #fff8dc !important;
+}
+
+
+.table>thead>tr>th .color_table {
+  color: #fff8dc;
+}
+
+.bg-info{
+  background: #212f6e !important;
+  color: #fff8dc !important;
+}
+
+.menu_left_backend .wrapped_menu,
+.menu_left_backend .sub_menu_child {
+  background: #ffffff !important;
+}
+
+
+/*bỏ đường kẻ bảng bootstraptable*/
+.bootstrap-table .table>thead>tr>th,
+.table>thead>tr>th {
+  border: none !important;
+}
+
+/* Màu nút bản ghi */
+.bootstrap-table .btn-secondary {
+  background: #212f6e !important;
+  color: white !important;
+
+}
+
+.bootstrap-table .page-item.active .page-link {
+  background: #212f6e !important;
+}
+
+.bootstrap-table .dropdown-item.active,
+.dropdown-item:active {
+  background: #212f6e !important;
+  color: white !important;
+}
+
 
 .form-control:focus {
   color: #495057;

@@ -10,6 +10,8 @@
 
 <script src="{{asset('plugins/bootstrap/js/bootstrap.min.js')}}"></script>
 
+<script src="{{asset('plugins/select2/js/select2.min.js')}}"></script>
+
 {{-- LoadBootstrapTable --}}
 <script src="{{asset('js/bootstrap-table.min.js')}}"></script>
 <script src="{{asset('js/bootstrap-table-vi-VN.js')}}"></script>
