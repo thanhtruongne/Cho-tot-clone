@@ -99,8 +99,8 @@ class LoadBootstrapTable {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: Lang.get('general.agree'),
-                cancelButtonText: Lang.get('general.cancel'),
+                confirmButtonText:'Đồng ý',
+                cancelButtonText: 'Hủy',
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
@@ -158,5 +158,24 @@ class LoadBootstrapTable {
             $(this.table).bootstrapTable('refresh', options);
         }
     }
+    
 }
+
+$(document).ready(function(){
+    $('.select2').select2({
+        allowClear: true,
+        dropdownAutoWidth : true,
+        width: '100%',
+        placeholder: function(params) {
+            return {
+                id: null,
+                text: params.placeholder,
+            }
+        },
+    });
+})
+
+
+
+
 

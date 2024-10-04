@@ -54,8 +54,18 @@
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        var scrollTrigger = 60,
+          backToTop = function() {
+
+          };
+ 
+        $('.bootstrap-table').removeClass('table-bordered');
+        $(window).on('scroll', function() {
+            backToTop();
+        });
+
       })
      </script>
-    @stack('scripts')
+    @yield('scripts')
 </body>
 </html>
