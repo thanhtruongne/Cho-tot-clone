@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             NestedSet::columns($table);
             $table->string('name');
+            $table->string('icon')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->integer('type')->nullable()->comment('1 là thuê nhà , 2 là buôn bán , 3 là dv việc làm');
             $table->timestamps();

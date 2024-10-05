@@ -22,6 +22,11 @@
 @endsection
 
 @section('content')
+<style>
+    .bootstrap-table .fixed-table-container .table thead th.detail {
+    width: 30px;
+}
+</style>
     <div class="row bg-white backend-container pt-3" style="margin-left: -15px;margin-right:-15px">
         <div class="col-md-12 pb-3">
             <div class="">
@@ -52,7 +57,7 @@
                                 <a class="btn" href="https://vus.toplearning.vn/admin-cp/libraries/ebook/export"><i class="fa fa-download"></i> Xuất file</a>
                                 <button class="btn" id="delete-item" disabled>
                                     <i class="fa fa-trash"></i> 
-                                    Xóa<
+                                    Xóa
                                 </button>
                             </div>
                          </div>
@@ -60,15 +65,19 @@
                 </div>
                 <br>
 
-                <table class="tDefault table table-hover bootstrap-table">
+                <table
+                    class="tDefault table table-bordered bootstrap-table"
+                    data-detail-view="true"
+                    data-detail-formatter="detailFormatter"
+                >
                     <thead>
-                        <tr>
-                            <th data-field="index" data-align="center" data-width="2%" data-formatter="index_formatter">#</th>
-                            <th data-field="check" data-checkbox="true" data-width="2%"></th>
-                            <th data-field="name" data-width="25%" data-formatter="name_formatter">{{trans('lamenu.document')}}</th>
-                            <th data-field="category_parent">{{trans("backend.document_category")}}</th>
-                            <th data-field="type" data-align="center" data-width="10%">{{trans('backend.last_updated')}}</th>
-                            <th data-field="status" data-align="center" data-width="5%" data-formatter="status_formatter">{{trans('latraining.status')}}</th>
+                        <tr>    
+                          <th data-field="index" data-align="center" data-width="5%" data-formatter="index_formatter">#</th> 
+                            <th data-field="check" data-checkbox="true" data-width="4%"></th>
+                            <th data-field="name" data-width="20%" data-formatter="name_formatter">Tên danh mục</th>
+                            <th data-field="category_child" data-formatter="getModalCategory">Số lượng danh mục con</th>
+                            <th data-field="type" data-align="center" data-width="10%">Loại</th>
+                            <th data-field="status" data-align="center" data-width="12%" data-formatter="status_formatter">Trạng thái</th>    
                         </tr>
                     </thead>
                 </table>
@@ -82,7 +91,34 @@
 @endsection
 
 @section('scripts')
+   <script></script>
+
     <script>
+        function index_formatter(value, row, index) {
+            console.log(row);
+            return (index+1);
+        }
+
+        function name_formatter(value,row,index){
+            return '<a class="overide" href="'+ row.edit_url +'">'+ row.name +'</a>';
+        }
+
+        function getModalCategory(value,row,index){
+            return '<a id="row_'+row.id+'" class="overide" href="#" onClick="getModal('+ row.id +')">'+ row.category_child +'</a>';
+        }
+
+
+        function detailFormatter(index, row) {
+            var html = []
+            $.each(row, function (key, value) {
+                console.log(row)
+            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+            })
+            return html.join('')
+        }
+
+
+
          function status_formatter(value, row, index) {
             var status = row.status == 1 ? 'checked' : '';
             var html = `<div class="custom-control custom-switch">

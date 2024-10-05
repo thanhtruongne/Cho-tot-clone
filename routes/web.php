@@ -27,6 +27,7 @@ Route::prefix('system')->group(function () {
        Route::get('/categories',[CategoriesController::class,'index'])->name('categories');
        Route::get('/cagetories/get-data',[CategoriesController::class,'getData'])->name('categories.getdata'); 
        Route::post('/cagetories/remove',[CategoriesController::class,'remove'])->name('categories.remove');    
+       Route::post('/cagetories/form/{id}',[CategoriesController::class,'form'])->name('categories.form');    
     });
    
 });

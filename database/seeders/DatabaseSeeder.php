@@ -1,8 +1,8 @@
 <?php
 
 namespace Database\Seeders;
-
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\CategoriesDatabaseSeeder;
 use Illuminate\Database\Seeder;
 use Modules\Permission\Database\Seeders\PermissionDatabaseSeeder;
 use Modules\Role\Database\Seeders\RoleDatabaseSeeder;
@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             UserDatabaseSeeder::class,
             PermissionDatabaseSeeder::class,
             RoleDatabaseSeeder::class,
+            CategoriesDatabaseSeeder::class
         ]);
     }
 }
