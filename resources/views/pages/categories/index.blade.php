@@ -21,12 +21,19 @@
     
 @endsection
 
+@section('links')
+{{-- <link href="{{asset('css/iconIconic.css')}}" rel="stylesheet" type="text/css"> --}}
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="{{asset('css/cusomTreeCategory.css')}}">
+@endsection
+
 @section('content')
 <style>
     .bootstrap-table .fixed-table-container .table thead th.detail {
     width: 30px;
 }
 </style>
+
     <div class="row bg-white backend-container pt-3" style="margin-left: -15px;margin-right:-15px">
         <div class="col-md-12 pb-3">
             <div class="">
@@ -110,12 +117,30 @@
 
         function detailFormatter(index, row) {
             var html = []
-            $.each(row, function (key, value) {
-                console.log(row)
-            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
-            })
-            return html.join('')
+            var data = []
+            console.log(row);
+            var rows = $('<nav>').addClass('tree-nav');
+            var nav = $('<a>').addClass('tree-nav__item-title').html('<i class="icon ion-scissors"></i> Cài đặt');
+            // data.push(row.html)
+            // console.log(data,row.html)
+                // $.each(row?.children, function (key, value) {
+            //         console.log(value,row);
+            //         data.push(`
+            //         <details class="tree-nav__item ${value.children.length > 0  ? 'is-expandable' : '' }" open>
+            //             <summary class="tree-nav__item-title ">
+            //                 <div class="node">
+            //                     ${row.name}
+            //                 </div>
+            //             </summary>
+            //                 ${dynamicTreeNav(data,value?.children)}
+            //         </details>  
+            //         `) 
+            //     // html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+            // })
+            rows.html(row.html)
+            return rows;
         }
+
 
 
 

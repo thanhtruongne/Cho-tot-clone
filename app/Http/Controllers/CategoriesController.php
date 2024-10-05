@@ -42,16 +42,57 @@ class CategoriesController extends Controller
         // $query->withDepth()->reversed();
         $count = $query->count();
         $rows = $query->get()->toTree();
-
+        
         foreach($rows as $row){
+
             $row->category_child = count($row->children);
             $row->edit_url= route('categories.form',['id' => $row->id]);
+            $row->html = $this->renderHTML($row);
         }
-        // dd($rows);
         // dd($rows);
         return response()->json(['rows' => $rows , 'total' =>$count]);
            
     }
+
+
+    private function renderHTML($row){
+        $html = '';
+         if($row){
+            foreach($row->children as $item){
+                $hasChild =  count($item->children) > 0 ? 'is-expandable' : '';
+                $html .= 
+                  ' <details class="tree-nav__item '.$hasChild.'" open>
+                        <summary class="tree-nav__item-title ">
+                            <div class="node d-flex justify-content-between align-items-center">
+                                <a class="overide" href="'.route('categories.form',['id' => $item->id]).'">'.$item->name.'</a>
+                              <i class="fas fa-trash"></i>
+                            </div>
+                        </summary>
+                        '.$this->renderHTML($item).'
+                    </details> ';
+            }
+         }
+         return $html;
+        
+    }
+
+    // private function renderChildRecursive($children){
+    //     $html = '';
+    //     @foreach ($children as $item)
+    //     $html .= 
+    //     ' <details class="tree-nav__item '.$hasChild.'" open>
+    //           <summary class="tree-nav__item-title ">
+    //               <div class="node">
+    //                  '.$item->name.'
+    //               </div>
+    //           </summary>
+    //           ''
+    //       </details> ';
+    //     @endforeach>
+    // }
+
+
+    
 
     public function remove(Request $request){
 
