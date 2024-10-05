@@ -109,6 +109,16 @@ class LeftMenuComposer
                 //     ],
                 // ],
             ],
+
+            'product_electronics' => [
+                'id' => 5,
+                'name' => trans('market.product_electronics'),
+                'url' => route('products'),
+                'is_open' => '',
+                'url_name' => 'product',
+                'icon' => '<i class="fas fa-suitcase"></i>',
+             
+            ],
         ];
         $this->leftSideMenu = $item;
         

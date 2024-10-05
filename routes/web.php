@@ -2,6 +2,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,6 +29,10 @@ Route::prefix('system')->group(function () {
        Route::get('/cagetories/get-data',[CategoriesController::class,'getData'])->name('categories.getdata'); 
        Route::post('/cagetories/remove',[CategoriesController::class,'remove'])->name('categories.remove');    
        Route::post('/cagetories/form/{id}',[CategoriesController::class,'form'])->name('categories.form');    
+
+       //add product
+       Route::get('/products',[ProductController::class,'index'])->name('products');
+       Route::post('/products/add',[ProductController::class,'addProduct'])->name('products.add');
     });
    
 });
