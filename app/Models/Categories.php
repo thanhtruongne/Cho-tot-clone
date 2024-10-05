@@ -18,6 +18,7 @@ class Categories extends Model
         'parent_id',
         '_lft',
         '_rgt',
+        'icon',
         'name',
         'status',
         'type'

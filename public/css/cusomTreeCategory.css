@@ -1,0 +1,155 @@
+summary {
+    display: block;
+    cursor: pointer;
+    outline: 0;
+}
+.form-group--placeholder-label {
+    position: relative;
+    padding-top: 1rem;
+}
+.form-group--placeholder-label label {
+    transition: all 0.125s ease;
+    position: absolute;
+    top: calc(1.5rem - 1px);
+    left: calc(.75rem + 1px);
+    margin: 0;
+}
+.form-group--placeholder-label--active label {
+    top: -5px;
+    left: 0;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+.tree-nav__item {
+    display: block;
+    white-space: nowrap;
+    color: #ccc;
+    position: relative;
+}
+.tree-nav__item.is-expandable::before {
+    border-left: 1px solid #333;
+    content: "";
+    height: 100%;
+    left: 0.8rem;
+    position: absolute;
+    top: 2.4rem;
+    height: calc(100% - 2.4rem);
+}
+.tree-nav__item .tree-nav__item {
+    margin-left: 2.4rem;
+}
+.tree-nav__item.is-expandable[open] > .tree-nav__item-title::before {
+    font-family: "ionicons";
+    transform: rotate(90deg);
+}
+.tree-nav__item.is-expandable > .tree-nav__item-title {
+    padding-left: 2.4rem;
+    margin-top: 8px;
+}
+.tree-nav__item.is-expandable > .tree-nav__item-title::before {
+    position: absolute;
+    will-change: transform;
+    transition: transform 300ms ease;
+    font-family: "ionicons";
+    color: #666;
+    font-size: 1.1rem;
+    content: "\f125";
+    left: 0;
+    display: inline-block;
+    width: 1.6rem;
+    text-align: center;
+}
+
+.tree-nav__item-title {
+    cursor: pointer;
+    display: block;
+    outline: 0;
+    color: #666;
+    /*line-height: 25px;*/
+}
+.tree-nav__item-title .icon {
+    display: inline;
+    padding-left: 1.6rem;
+    margin-right: 0.8rem;
+    color: #666;
+    font-size: 1.4rem;
+    position: relative;
+}
+.tree-nav__item-title .icon::before {
+    top: 0;
+    position: absolute;
+    left: 0;
+    display: inline-block;
+    width: 1.6rem;
+    text-align: center;
+}
+
+.tree-nav__item-title::-webkit-details-marker {
+    display: none;
+}
+/*.node > span::before{
+    content: "\f125";
+    display: inline-block;
+    width: 1.6rem;
+    font-family: "ionicons";
+    transition: transform 300ms ease;
+}*/
+.tree-nav__item.is-expandable[open] > .tree-nav__item-title .node > span::before {
+    font-family: "ionicons";
+    transform: rotate(90deg);
+}
+.node, .end-node{
+    background:#efefefcc;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+}
+summary:hover .node, summary:hover .end-node{
+    background: #e1e1e1cc;
+}
+.end-node{
+    margin-top:8px;
+    margin-left: 2.4rem;
+}
+/*.end-node::before{*/
+/*    content: ""!important;*/
+/*}*/
+.node label, .end-node label{
+    margin-bottom: 0rem!important;
+}
+.tree-nav__item.is-expandable[open] > .end-node::before{
+    content: ""!important;
+}
+.tree-nav__item.is-expandable[open] > .end-node{
+    padding-left: 0.1rem!important;
+}
+.group-permission{
+    /*display:none;*/
+    visibility: hidden;
+}
+summary:hover .group-permission, summary .group-permission-active{
+    /*display: block;*/
+    visibility: visible;
+}
+.group-permission label:first-child{
+    padding-right: 5px;
+}
+.group-permission input[type=checkbox]{
+    width: 20px;
+    height: 20px;
+    vertical-align: bottom;
+}
+#rolepermission .nav-role {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: 0.5s ease-out;
+    color: white !important;
+    margin-right: 5px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
