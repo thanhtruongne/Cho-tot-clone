@@ -17,6 +17,7 @@ class UserDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        \DB::table('users')->truncate();
         $faker = Factory::create();
         /***** superadmin *******/
         $superadmin = User::firstOrNew(['username' => 'superadmin'],[

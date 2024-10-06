@@ -2,6 +2,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,8 +27,18 @@ Route::prefix('system')->group(function () {
 
        Route::get('/categories',[CategoriesController::class,'index'])->name('categories');
        Route::get('/cagetories/get-data',[CategoriesController::class,'getData'])->name('categories.getdata'); 
-       Route::post('/cagetories/remove',[CategoriesController::class,'remove'])->name('categories.remove');    
-       Route::post('/cagetories/form/{id}',[CategoriesController::class,'form'])->name('categories.form');    
+
+       Route::post('/cagetories/remove',[CategoriesController::class,'remove'])->name('categories.remove'); 
+       Route::post('/cagetories/save',[CategoriesController::class,'save'])->name('categories.save');       
+       Route::get('/cagetories/edit',[CategoriesController::class,'form'])->name('categories.edit');    
+       Route::get('/cagetories/create',[CategoriesController::class,'form'])->name('categories.create');    
+       Route::post('/categories/change-status',[CategoriesController::class,'changeStatus'])->name('categories.change.status');
+       Route::post('/categories/remove',[CategoriesController::class,'remove'])->name('categories.remove');
+       Route::post('/categories/removeSelectAll',[CategoriesController::class,'removeSelectAll'])->name('categories.remove.select');
+       //add product
+       Route::get('/products',[ProductController::class,'index'])->name('products');
+       Route::post('/products/add',[ProductController::class,'addProduct'])->name('products.add');
+
     });
    
 });
