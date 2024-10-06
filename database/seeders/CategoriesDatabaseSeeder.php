@@ -104,6 +104,7 @@ class CategoriesDatabaseSeeder extends Seeder
                 'type' => 2 ,
             ],
             [
+
                 'parent_id' => 4,
                 'name' => 'Tivi,asdasdasdasdasdasdasdasdasddasdasdasdÂm thanh',
                 // 'icon' => 'fas fa-briefcase',

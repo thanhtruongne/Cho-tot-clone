@@ -27,6 +27,7 @@ Route::prefix('system')->group(function () {
 
        Route::get('/categories',[CategoriesController::class,'index'])->name('categories');
        Route::get('/cagetories/get-data',[CategoriesController::class,'getData'])->name('categories.getdata'); 
+
        Route::post('/cagetories/remove',[CategoriesController::class,'remove'])->name('categories.remove'); 
        Route::post('/cagetories/save',[CategoriesController::class,'save'])->name('categories.save');       
        Route::get('/cagetories/edit',[CategoriesController::class,'form'])->name('categories.edit');    
@@ -37,6 +38,7 @@ Route::prefix('system')->group(function () {
        //add product
        Route::get('/products',[ProductController::class,'index'])->name('products');
        Route::post('/products/add',[ProductController::class,'addProduct'])->name('products.add');
+
     });
    
 });

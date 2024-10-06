@@ -5,6 +5,7 @@
 
 @section('breadcrumbs')
     @php
+
        if($model &&  $model->id ){
               $breadcum = [
                   [
@@ -32,6 +33,7 @@
                   ]
             ];
          }
+
     @endphp
 <div class="row mb-3 mt-2 bg-white">
     <div class="col-md-12 px-0">
@@ -40,6 +42,7 @@
 </div>
     
 @endsection
+
 
 
 @section('content')
@@ -125,6 +128,7 @@
                         </form>
                     </div>
                 </div>
+
             </div>
         </div>
     </div> 
@@ -135,6 +139,7 @@
 
 @section('scripts')
    <script>
+
 
     function save(){
         let _this = $('.save');
@@ -180,6 +185,7 @@
     console.log('Selected value:', e.detail)
         $('#category_parent_id').val(e.detail );
     })
+
    </script>
 
  

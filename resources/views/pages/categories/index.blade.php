@@ -33,8 +33,10 @@
 <style>
     .bootstrap-table .fixed-table-container .table thead th.detail {
     width: 30px;
+
     }
 </style>
+
 
     <div class="row bg-white backend-container pt-3" style="margin-left: -15px;margin-right:-15px">
         <div class="col-md-12 pb-3">
@@ -44,6 +46,7 @@
                    <div class="col-md-8 form-inline">
                       <form action="" class="form-inline w-100 form-search mb-3" id="form-search">
                            <input type="text" name="search" class="form-control w-30 mr-1" placeholder="-- Tên danh mục --">
+
                            @php
                                $nodes = App\Models\Categories::whereNotNull('name')->withDepth()->with('ancestors')->get()->toFlatTree();
                            @endphp
@@ -56,12 +59,14 @@
                                    </option>
                                 @endforeach
                           </select>
+
                            </div>
                           
                            <input type="hidden" name="category_id" id="category_id">
                            <button type="submit" class="btn"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</button>
                       </form>
                    </div>
+
 
                    <div class="col-md-4 text-right ">
                          <div class="">
@@ -77,6 +82,7 @@
                                     <i class="fa fa-plus"></i> 
                                     Thêm mới
                                 </a>
+
                                 <button class="btn" id="delete-item" disabled>
                                     <i class="fa fa-trash"></i> 
                                     Xóa
@@ -407,7 +413,11 @@
                 return false;
             });
 
+
             }
+
+    
+
 
     </script>
 @endsection
