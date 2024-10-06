@@ -209,12 +209,43 @@ a:not([href]):not([class]) {
   color: inherit;
   text-decoration: none;
 }
+.nav-pills .nav-link.active {
+  background: #212f6e !important;
+  color: #fff8dc !important;
+}
+.btn-group {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+}
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  color: #fff;
+  background-color: #007bff;
+}
+.nav-pills .nav-link {
+  text-transform: capitalize;
+}
+.nav-pills .nav-link {
+  border-radius: .25rem;
+}
 
 a:not([href]):not([class]):hover {
   color: inherit;
   text-decoration: none;
 }
-
+.btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.btn-group-vertical>.btn:hover, .btn-group>.btn:hover {
+  z-index: 1;
+}
+#app-modal .btn:hover, .btn:hover, a.btn:hover {
+  border-radius: 5px;
+  color: #fff8dc !important;
+  background: #1b4486;
+  border-color: transparent !important;
+}
 pre,
 code,
 kbd,
@@ -260,7 +291,29 @@ th {
   text-align: inherit;
   text-align: -webkit-match-parent;
 }
+#ajax-modal-popup {
+  max-width: 60% !important;
+}
 
+.modal.right.fade.show .modal-dialog {
+  right: 0;
+  box-shadow: 0px 0px 19px rgba(0, 0, 0, 0.5);
+}
+.modal.right.fade .modal-dialog {
+  transition: opacity 0.3s linear, right 0.6s ease-out !important;
+}
+.modal.right .modal-content {
+  height: 100%;
+  overflow-y: auto;
+}
+.modal.right .modal-dialog {
+  position: fixed;
+  margin: auto;
+  width: 45%;
+  max-width: unset !important;
+  height: 100%;
+  transform: translate3d(0%, 0, 0) !important;
+}
 label {
   display: inline-block;
   /* margin-bottom: 0.5rem; */
@@ -269,7 +322,9 @@ label {
 button {
   border-radius: 0;
 }
-
+.control-label label {
+  font-weight: bold;
+}
 button:focus:not(:focus-visible) {
   outline: 0;
 }
@@ -6386,7 +6441,9 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 .modal-open {
   overflow: hidden;
 }
-
+.modal.right .modal-dialog form {
+  height: 100%;
+}
 .modal-open .modal {
   overflow-x: hidden;
   overflow-y: auto;
@@ -6497,19 +6554,16 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 
 .modal-content {
   position: relative;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
   width: 100%;
   pointer-events: auto;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 0, 0, .2);
+  border-radius: .3rem;
   outline: 0;
 }
 
@@ -6564,7 +6618,9 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
   flex: 1 1 auto;
   padding: 1rem;
 }
-
+.modal.right .modal-body {
+  padding: 20px;
+}
 .modal-footer {
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -6598,7 +6654,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 
 @media (min-width: 576px) {
   .modal-dialog {
-    max-width: 500px;
+    max-width: 800px;
     margin: 1.75rem auto;
   }
   .modal-dialog-scrollable {

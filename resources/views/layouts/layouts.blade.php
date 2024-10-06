@@ -12,7 +12,7 @@
 <body class="hold-transition sidebar-mini layout-fixed">
     <div id="wrapper">
         {{-- Loader --}}
-        {{-- @include('layouts.components.loader') --}}
+        @include('layouts.components.loader')
 
         {{-- Navbar --}}
         @include('layouts.topmenu')

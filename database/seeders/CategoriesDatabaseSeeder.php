@@ -92,6 +92,18 @@ class CategoriesDatabaseSeeder extends Seeder
                 'type' => 2 ,
             ],
             [
+                'parent_id' => 3,
+                'name' => 'Tivi,897979789879879 thanh',
+                // 'icon' => 'fas fa-briefcase',
+                'type' => 2 ,
+            ],
+            [
+                'parent_id' => 3,
+                'name' => 'Okesadad thanh',
+                // 'icon' => 'fas fa-briefcase',
+                'type' => 2 ,
+            ],
+            [
                 'parent_id' => 4,
                 'name' => 'Tivi,asdasdasdasdasdasdasdasdasddasdasdasdÂm thanh',
                 // 'icon' => 'fas fa-briefcase',

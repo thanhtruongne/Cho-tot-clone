@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             NestedSet::columns($table);
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('icon')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->integer('type')->nullable()->comment('1 là thuê nhà , 2 là buôn bán , 3 là dv việc làm');
