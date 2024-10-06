@@ -18,7 +18,7 @@ class CategoriesController extends Controller
     protected $tree;
 
     public function __construct(){
-        $categories = Categories::where('status',1)->get()->toTree()->toArray();
+        $categories = Categories::whereNotNull('name')->get()->toTree()->toArray();
         $this->tree =  $this->rebuildTree($categories);
     }
 
