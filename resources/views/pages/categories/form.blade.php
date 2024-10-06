@@ -83,7 +83,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group row">
                                         <div class="col-sm-3 control-label">
-                                            <label for="name">Tên danh mục <span class="text-danger">*</span></label>
+                                            <label for="name">Tên danh mục tt<span class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" name="name" class="form-control" required>
