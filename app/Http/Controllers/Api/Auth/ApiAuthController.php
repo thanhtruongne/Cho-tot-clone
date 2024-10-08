@@ -109,15 +109,14 @@ class ApiAuthController extends Controller
             'lastname' => $lastname,
             'password' => password_hash($password,PASSWORD_DEFAULT)
         ]);
-        $user = User::whereEmail($email)->first('id');
-        $user->last_login = \Carbon::now();
-        
+    
         if (! $token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $password ])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $user = \Auth::guard('api')->user();
         $user->refresh_token =  $this->checkRefreshTokenAndSignatureKey($user); // lưu refreshtoken
         // dd(end(explode('.',$token)));
+        $user->last_login = \Carbon::now();
         $vertify = explode('.',$token);
         $user->signature_key = end($vertify); // lưu chữ ký của token
         $user->save();
