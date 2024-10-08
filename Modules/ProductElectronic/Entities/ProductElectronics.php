@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace Modules\ProductElectronic\Entities;
 
+use App\Models\User;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

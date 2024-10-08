@@ -7,5 +7,8 @@ return [
     'manager_products_rent' => 'QLBĐ thuê nhà',
     'info_products_rent' => 'TT thuê nhà/phòng',
     'categories' => 'Danh mục sản phẩm',
-    'summary' => 'Thống kê'
+    'summary' => 'Thống kê',
+    'product_electronics_manager' => 'QLSP điện tử',
+    'product_electronics' => 'Sản phẩm điện tử',
+     'product_electronics_category' => 'Danh mục SP điện tử'
 ];

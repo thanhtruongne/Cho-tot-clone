@@ -1,0 +1,14 @@
+{
+    "name": "ProductElectronic",
+    "alias": "productelectronic",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\ProductElectronic\\Providers\\ProductElectronicServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
