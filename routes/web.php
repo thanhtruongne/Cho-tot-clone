@@ -2,7 +2,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoriesController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductElectronicController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,10 +35,7 @@ Route::prefix('system')->group(function () {
        Route::post('/categories/change-status',[CategoriesController::class,'changeStatus'])->name('categories.change.status');
        Route::post('/categories/remove',[CategoriesController::class,'remove'])->name('categories.remove');
        Route::post('/categories/removeSelectAll',[CategoriesController::class,'removeSelectAll'])->name('categories.remove.select');
-       //add product
-       Route::get('/products',[ProductController::class,'index'])->name('products');
-       Route::post('/products/add',[ProductController::class,'addProduct'])->name('products.add');
-
+   
     });
    
 });

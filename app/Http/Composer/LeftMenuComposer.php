@@ -50,6 +50,7 @@ class LeftMenuComposer
                     [
                         'name' => trans('market.info_products_rent'),
                         'url' =>'',
+                        'url_name'=> 'product_rent',
                         'icon' => '<i class="fas fa-house-user"></i>',
                         // 'permission' => User::canPermissionCompetencyReport(),
                     ],
@@ -60,18 +61,32 @@ class LeftMenuComposer
                 'name' => trans('market.manager_post_sold'),
                 'url' => '',
                  'is_open' => '',
-                 'url_name'=> 'product_sold',
+                 'url_name'=> 'products',
                 'icon' => '<i class="fas fa-atom"></i>',
                 // 'permission' => ,
                 'url_item_child' => ['product_family_info', 'product_family_create'],
-                // 'item_childs' => [
-                //     [
-                //         'name' => trans('market.manager_products_info'),
-                //         'url' =>'',
-                //         'icon' => 'fa fa-archive',
-                //         // 'permission' => User::canPermissionCompetencyReport(),
-                //     ],
-                // ],
+                'item_childs' => [
+                    [
+                        'name' => trans('market.product_electronics_manager'),
+                        'url' =>'',
+                        'url_name'=> 'products',
+                        'icon' => '<i class="fas fa-atom"></i>',
+                        'item_childs' => [
+                            [
+                                'name' => trans('market.product_electronics'),
+                                'url' => route('products.electronic'),
+                                'url_name'=> 'electronic',
+                                'icon' => '<i class="fas fa-atom"></i>',
+                            ],
+                            [
+                                'name' => trans('market.product_electronics_category'),
+                                'url' => route('products.electronic'),
+                                'url_name'=> 'electronic/categories',
+                                'icon' => '<i class="fas fa-atom"></i>',
+                            ]
+                        ]
+                    ],
+                ],
             ],
             'manager_users' => [
                 'id' => 3,
@@ -108,16 +123,6 @@ class LeftMenuComposer
                 //         // 'permission' => User::canPermissionCompetencyReport(),
                 //     ],
                 // ],
-            ],
-
-            'product_electronics' => [
-                'id' => 5,
-                'name' => trans('market.product_electronics'),
-                'url' => route('products'),
-                'is_open' => '',
-                'url_name' => 'product',
-                'icon' => '<i class="fas fa-suitcase"></i>',
-             
             ],
         ];
         $this->leftSideMenu = $item;

@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
+            $table->string('username')->nullable()->unique();
             $table->text('avatar')->nullable();
-            $table->string('firstname',150);
-            $table->string('lastname',150); 
+            $table->string('firstname',150)->nullable();
+            $table->string('lastname',150)->nullable(); 
             $table->dateTime('last_login')->nullable();
             $table->string('email')->unique();
             $table->boolean('re_login')->default(0);
@@ -42,6 +42,8 @@ return new class extends Migration
             $table->float('star')->default(0)->comment('Số sao đánh giá');
             $table->string('category_like')->nullable()->comment('Lấy các danh mục ửa thích dựa theo child-category-1 lưu theo dạng chuỗi array');
             $table->longText('content')->nullable();
+            $table->longText('refresh_token')->nullable();
+            $table->longText('signature_key')->nullable();
             $table->timestamps();
         });
     }
