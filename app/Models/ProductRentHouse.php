@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
-
+use Illuminate\Support\Str;
 class ProductRentHouse extends Model
 {
     use Cachable;   
@@ -47,4 +47,20 @@ class ProductRentHouse extends Model
         'cost_deposit',
         'rule_compensation',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            $model->code = self::generateUniqueCode();
+        });
+    }
+
+    protected static function generateUniqueCode()
+    {
+        do {
+            $code = 'ISURANCE'.rand(1000, 9999);
+        } while (self::where('code', $code)->exists()); 
+        return $code;
+    }
 }

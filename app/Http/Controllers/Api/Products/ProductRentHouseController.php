@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Products;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductRentHouseRequest;
 use App\Models\ProductRentHouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,14 +16,12 @@ class ProductRentHouseController extends Controller
 
     public function addProductRent(Request $request)
     {
-        DB::beginTransaction();
         try {
             $validatedData = $request->validate(
                 [
                     'title' => 'required|string|max:255',
                     'content' => 'required|string',
                     'user_id' => 'required|exists:users,id',
-                    'code' => 'required|string|max:150',
                     'type_product' => 'required|in:1,2', // 1 là nhà ở, 2 là phòng trọ
                     'images' => 'required|string', // Có thể thay đổi thành 'array' nếu là mảng ảnh
                     'video' => 'nullable',
@@ -58,20 +55,15 @@ class ProductRentHouseController extends Controller
                     'rule_compensation' => 'nullable|integer|min:0',
                 ]
             );
-            $data = ProductRentHouse::create($validatedData);
-            if ($data) {
-                DB::commit();
-                return response()->json(['message' => 'Product added successfully', 'data' => $data]);
-            } else {
-                DB::rollBack();
-                return response()->json(['message' => 'Failed to add product'], 500);
-            }
+            $data = DB::transaction(function () use ($validatedData) {
+                return ProductRentHouse::create($validatedData);
+            });
+            return response()->json([
+                'message' => 'Product added successfully',
+                'data' => $data
+            ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'An error occurred'], 500);
         }
     }
 
@@ -83,7 +75,6 @@ class ProductRentHouseController extends Controller
                     'title' => 'string|max:255',
                     'content' => 'string',
                     'user_id' => 'exists:users,id',
-                    'code' => 'string|max:150',
                     'type_product' => 'in:1,2', // 1 là nhà ở, 2 là phòng trọ
                     'images' => 'string', // Có thể thay đổi thành 'array' nếu là mảng ảnh
                     'video' => 'nullable',
@@ -99,7 +90,7 @@ class ProductRentHouseController extends Controller
                     'bedroom_id' => 'nullable',
                     'bathroom_id' => 'nullable',
                     'main_door_id' => 'nullable',
-                    'legal_id' => 'nullable|',
+                    'legal_id' => 'nullable',
                     'condition_interior' => 'nullable|in:1,2,3', // 1 nội thất cao cấp, 2 đầy đủ, 3 nhà trống
                     'car_alley' => 'nullable|in:0,1', // 0 không có, 1 có
                     'back_house' => 'nullable|in:0,1', // 0 không có, 1 có
@@ -108,35 +99,27 @@ class ProductRentHouseController extends Controller
                     'land_not_changed_yet' => 'nullable|in:0,1',
                     'planning_or_road' => 'nullable|in:0,1',
                     'diff_situation' => 'nullable|in:0,1',
-                    'land_area' => 'required|numeric|min:0',
+                    'land_area' => 'numeric|min:0',
                     'usable_area' => 'nullable|numeric|min:0',
                     'horizontal' => 'nullable|numeric|min:0',
                     'length' => 'nullable|numeric|min:0',
-                    'cost' => 'required|numeric|min:0',
+                    'cost' => 'numeric|min:0',
                     'cost_deposit' => 'nullable|numeric|min:0',
                     'rule_compensation' => 'nullable|integer|min:0',
                 ]
             );
-            $data = ProductRentHouse::find($id);
-            if (!$data) {
-                DB::rollBack();
-                return response()->json(['error' => 'Product not found'], 404);
-            }
-            $data->fill($validatedData);
+            $data = DB::transaction(function () use ($validatedData,$id) {
+                $product = ProductRentHouse::findOrFail($id);
+                $product->update($validatedData);
+                return $product;
+            });
 
-            if ($data->save()) {
-                DB::commit();
-                return response()->json(['message' => 'Product updated successfully', 'data' => $data]);
-            } else {
-                DB::rollBack();
-                return response()->json(['message' => 'Failed to update product'], 500);
-            }
+            return response()->json([
+                'message' => 'Product updated successfully',
+                'data' => $data
+            ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'An error occurred'], 500);
         }
     }
 
