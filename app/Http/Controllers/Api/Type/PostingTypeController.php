@@ -16,10 +16,12 @@ class PostingTypeController extends Controller
             $validatedData = $request->validate([
                 'code' => 'required|string|max:150|unique:bathroom_type,code', // Bắt buộc, tối đa 150 ký tự, duy nhất trong bảng bathroom_type
                 'name' => 'required|string', // Bắt buộc, kiểu chuỗi
+                'content' => 'required|string',  // Bắt buộc, kiểu chuỗi
                 'status' => 'nullable|integer|in:0,1', // Trạng thái, có thể là 0 hoặc 1, không bắt buộc
                 'created_by' => 'nullable|integer', // Không bắt buộc, kiểu số nguyên
                 'updated_by' => 'nullable|integer', // Không bắt buộc, kiểu số nguyên
                 'order' => 'nullable|integer', // Không bắt buộc, kiểu số nguyên
+                'cost' => 'required|numeric|min:0|max:99999999.99'
             ]);
             $data = PostingType::create($validatedData);
             if ($data) {

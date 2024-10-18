@@ -32,7 +32,7 @@ class ProductRentHouseController extends Controller
                     'approved' => 'nullable|in:0,1,2', // 0 là từ chối, 1 đã duyệt, 2 chờ duyệt
                     'type_rental' => 'required|in:1,2,3,4', // 1 theo ngày, 2 theo tuần, 3 theo tháng, 4 theo năm
                     'province_code' => 'required|string',
-                    'district_code' => 'required|string',
+                    // 'district_code' => 'required|string',
                     'ward_code' => 'required|string',
                     'category_id' => 'required|integer',
                     'subdivision_code' => 'nullable|string',
@@ -69,10 +69,11 @@ class ProductRentHouseController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'An error occurred'], 500);
-        }
+        } 
+        // catch (\Exception $e) {
+        //     DB::rollBack();
+        //     return response()->json(['error' => 'An error occurred'], 500);
+        // }
     }
 
     public function updateProductRent(Request $request, $id)
@@ -91,7 +92,7 @@ class ProductRentHouseController extends Controller
                     'approved' => 'nullable|in:0,1,2', // 0 là từ chối, 1 đã duyệt, 2 chờ duyệt
                     'type_rental' => 'in:1,2,3,4', // 1 theo ngày, 2 theo tuần, 3 theo tháng, 4 theo năm
                     'province_code' => 'string',
-                    'district_code' => 'string',
+                    // 'district_code' => 'string',
                     'ward_code' => 'string',
                     'category_id' => 'integer',
                     'subdivision_code' => 'nullable|string',
@@ -134,10 +135,11 @@ class ProductRentHouseController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'An error occurred'], 500);
-        }
+        } 
+        // catch (\Exception $e) {
+        //     DB::rollBack();
+        //     return response()->json(['error' => 'An error occurred'], 500);
+        // }
     }
 
     public function deleteProductRent($id)
