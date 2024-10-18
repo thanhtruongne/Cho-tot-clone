@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\ApiAuthController;
 use App\Http\Controllers\Api\BrokerController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProductJobController;
 use App\Http\Controllers\Api\ProductRentHouseCommentController;
 use App\Http\Controllers\Api\ProductRentHouseLikeController;
@@ -33,6 +34,8 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+Route::post('/zalopay/payment', [PaymentController::class, 'createPaymentLink']);
+Route::get('/zalopay/handle-return-url', [PaymentController::class, 'handleReturnUrl']);
 
 Route::group([
   'middleware' => 'api',
@@ -60,7 +63,7 @@ Route::group([
 
     //product_rent_house
     Route::post('/test', [ProductRentHouseController::class, 'test']);
-    Route::post('/test1', [ProductRentHouseController::class, 'test1']);
+    Route::get('/get-data-product-rent', [ProductRentHouseController::class, 'getDataProductRent']);
     Route::post('/add-product-rent', [ProductRentHouseController::class, 'addProductRent']);
     Route::post('/delete-product-rent/{id}', [ProductRentHouseController::class, 'deleteProductRent']);
     Route::post('/update-product-rent/{id}', [ProductRentHouseController::class, 'updateProductRent']);
