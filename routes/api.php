@@ -36,10 +36,7 @@ use Illuminate\Support\Facades\Route;
 // });
 Route::post('/zalopay/payment', [PaymentController::class, 'createPaymentLink']);
 Route::get('/zalopay/handle-return-url', [PaymentController::class, 'handleReturnUrl']);
-<<<<<<< HEAD
-=======
 
->>>>>>> cf49f1c079afc2c769a5d7ffdbe750f77f36f2f6
 Route::group([
   'middleware' => 'api',
   'prefix' => 'auth'
@@ -66,10 +63,6 @@ Route::group([
 
     //product_rent_house
     Route::post('/test', [ProductRentHouseController::class, 'test']);
-<<<<<<< HEAD
-    Route::post('/test1', [ProductRentHouseController::class, 'test1']);
-=======
->>>>>>> cf49f1c079afc2c769a5d7ffdbe750f77f36f2f6
     Route::get('/get-data-product-rent', [ProductRentHouseController::class, 'getDataProductRent']);
     Route::post('/add-product-rent', [ProductRentHouseController::class, 'addProductRent']);
     Route::post('/delete-product-rent/{id}', [ProductRentHouseController::class, 'deleteProductRent']);

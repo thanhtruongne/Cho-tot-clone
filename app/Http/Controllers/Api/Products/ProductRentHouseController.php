@@ -64,16 +64,8 @@ class ProductRentHouseController extends Controller
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->validator->errors()], 422);
-<<<<<<< HEAD
-        } 
-        // catch (\Exception $e) {
-        //     DB::rollBack();
-        //     return response()->json(['error' => 'An error occurred'], 500);
-        // }
-=======
-        }
->>>>>>> cf49f1c079afc2c769a5d7ffdbe750f77f36f2f6
-    }
+        }}
+
 
     public function updateProductRent(Request $request, $id)
     {
@@ -128,17 +120,9 @@ class ProductRentHouseController extends Controller
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->validator->errors()], 422);
-<<<<<<< HEAD
-        } 
-        // catch (\Exception $e) {
-        //     DB::rollBack();
-        //     return response()->json(['error' => 'An error occurred'], 500);
-        // }
-=======
-        }
->>>>>>> cf49f1c079afc2c769a5d7ffdbe750f77f36f2f6
-    }
 
+    }
+    }
     public function deleteProductRent($id)
     {
         $data = ProductRentHouse::find($id);
@@ -148,10 +132,6 @@ class ProductRentHouseController extends Controller
         $data->delete();
         return response()->json(['message' => 'Product deleted successfully']);
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> cf49f1c079afc2c769a5d7ffdbe750f77f36f2f6
     public function getDataProductRent()
     {
         $data = DB::table('product_rent_house')->get();
