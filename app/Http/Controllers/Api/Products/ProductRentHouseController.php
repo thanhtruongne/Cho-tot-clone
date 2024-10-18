@@ -151,4 +151,9 @@ class ProductRentHouseController extends Controller
         $data->delete();
         return response()->json(['message' => 'Product deleted successfully']);
     }
+    public function getDataProductRent()
+    {
+        $data = DB::table('product_rent_house')->get();
+        return response()->json(['data' => $data]);
+    }
 }
