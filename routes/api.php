@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\ApiAuthController;
 use App\Http\Controllers\Api\BrokerController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProductJobController;
 use App\Http\Controllers\Api\ProductRentHouseCommentController;
 use App\Http\Controllers\Api\ProductRentHouseLikeController;
@@ -35,6 +36,10 @@ use Illuminate\Support\Facades\Route;
 // });
 Route::post('/zalopay/payment', [PaymentController::class, 'createPaymentLink']);
 Route::get('/zalopay/handle-return-url', [PaymentController::class, 'handleReturnUrl']);
+<<<<<<< HEAD
+=======
+
+>>>>>>> cf49f1c079afc2c769a5d7ffdbe750f77f36f2f6
 Route::group([
   'middleware' => 'api',
   'prefix' => 'auth'
@@ -55,13 +60,16 @@ Route::group([
     //product_eletronics
     Route::post('/get-data', [ProductElectronicController::class, 'getData'])->name('fe.product-electric.getData');
     Route::post('/save', [ProductElectronicController::class, 'save'])->name('fe.product-electric.save');
-    Route::post('/add-product', [ProductElectronicController::class, 'addProduct'])->name('fe.product-electric.addProduct');
+    Route::post('/add-product', [ProductElectronicController::class, 'addPr oduct'])->name('fe.product-electric.addProduct');
     Route::post('/delete-product/{id}', [ProductElectronicController::class, 'deleteProduct'])->name('fe.product-electric.deleteProduct');
     Route::post('/update-product/{id}', [ProductElectronicController::class, 'updateProduct'])->name('fe.product-electric.updateProduct');
 
     //product_rent_house
     Route::post('/test', [ProductRentHouseController::class, 'test']);
+<<<<<<< HEAD
     Route::post('/test1', [ProductRentHouseController::class, 'test1']);
+=======
+>>>>>>> cf49f1c079afc2c769a5d7ffdbe750f77f36f2f6
     Route::get('/get-data-product-rent', [ProductRentHouseController::class, 'getDataProductRent']);
     Route::post('/add-product-rent', [ProductRentHouseController::class, 'addProductRent']);
     Route::post('/delete-product-rent/{id}', [ProductRentHouseController::class, 'deleteProductRent']);

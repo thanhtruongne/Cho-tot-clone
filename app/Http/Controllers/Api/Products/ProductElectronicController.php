@@ -22,7 +22,6 @@ class ProductElectronicController extends Controller
     public function addProduct(Request $request)
     {
         DB::beginTransaction(); 
-    
         try {
             $validatedData = $request->validate([
                 'video' => 'required|string|max:255',
@@ -31,7 +30,6 @@ class ProductElectronicController extends Controller
                 'title' => 'required|string|max:255',
                 'content' => 'nullable|string',
                 'user_id' => 'required|integer|exists:users,id',
-                'code' => 'required|string|max:150',
                 'category_id' => 'required|integer|exists:categories,id',
                 'type_posting_id' => 'nullable|integer|in:1,2',
                 'approved' => 'nullable|integer|in:0,1,2',
@@ -65,9 +63,6 @@ class ProductElectronicController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack(); 
             return response()->json(['errors' => $e->validator->errors()], 422);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'An error occurred'], 500);
         }
     }
     
@@ -134,10 +129,7 @@ class ProductElectronicController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack(); 
             return response()->json(['errors' => $e->validator->errors()], 422);
-        } catch (\Exception $e) {
-            DB::rollBack(); 
-            return response()->json(['error' => 'An error occurred'], 500);
-        }
+        } 
     }
     
 }

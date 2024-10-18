@@ -23,4 +23,8 @@ class Payment extends Model
         'vnp_txn_ref',
        
     ];
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> cf49f1c079afc2c769a5d7ffdbe750f77f36f2f6
