@@ -11,6 +11,9 @@
 |
 */
 
-Route::prefix('permission')->group(function() {
-    Route::get('/', 'PermissionController@index');
+use Modules\Permission\Http\Controllers\PermissionController;
+
+Route::group(['prefix' => 'system/permissions','middleware' => ['auth']],function() {
+    Route::get('/', [PermissionController::class,'index'])->name('permission.index');
+    Route::get('/getData', [PermissionController::class,'getData'])->name('permission.getData');
 });

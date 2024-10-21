@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('video');
             //mặc định là thángphp
             $table->integer('type_posting_id')->index()->default(1)->comment('loại tin đăng');
+            $table->integer('payment')->index()->default(1)->comment('1 chưa thanh toán , 2 đã thanh toán');
+         
             $table->tinyInteger('approved')->index()->default(2)->comment('0 là từ chối , 1 đã duyệt , 2 chờ duyệt');
             $table->tinyInteger('type_rental')->index()->default(3)->comment('1 thuê theo ngày , 2 thuê theo tuàn , 3 theo tháng , 4 theo năm');
             $table->string('province_code')->index();

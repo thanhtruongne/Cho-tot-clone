@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Role\Entities;
+namespace Modules\Permission\Entities;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
