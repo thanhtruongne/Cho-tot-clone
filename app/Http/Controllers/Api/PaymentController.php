@@ -37,7 +37,7 @@ class PaymentController extends Controller
         $inputData = array(
             "vnp_Version" => "2.1.0",
             "vnp_TmnCode" => $vnp_TmnCode,
-            "vnp_Amount" => $vnp_Amount,
+            "vnp_Amount" => $vnp_Amount * 100,
             "vnp_Command" => "pay",
             "vnp_CreateDate" => date('YmdHis'),
             "vnp_CurrCode" => "VND",
@@ -112,7 +112,27 @@ class PaymentController extends Controller
                 ]);
 
                 if ($data) {
-                    return response()->json(['message' => 'Thêm sản phẩm thành công','data'=>$data]);
+                    $queryParams = [
+                        'vnp_Amount' => $request->input('vnp_Amount'),
+                        'vnp_BankCode' => $request->input('vnp_BankCode'),
+                        'vnp_BankTranNo' => $request->input('vnp_BankTranNo'),
+                        'vnp_CardType' => $request->input('vnp_CardType'),
+                        'vnp_OrderInfo' => $request->input('vnp_OrderInfo'),
+                        'vnp_PayDate' => $request->input('vnp_PayDate'),
+                        'vnp_ResponseCode' => $request->input('vnp_ResponseCode'),
+                        'vnp_TmnCode' => $request->input('vnp_TmnCode'),
+                        'vnp_TransactionNo' => $request->input('vnp_TransactionNo'),
+                        'vnp_TransactionStatus' => $request->input('vnp_TransactionStatus'),
+                        'vnp_TxnRef' => $request->input('vnp_TxnRef'),
+                        'vnp_SecureHash' => $request->input('vnp_SecureHash')
+                    ];
+        
+                    // return response()->json(['message' => 'Thêm sản phẩm thành công','data'=>$data]);
+                    $queryString = http_build_query($queryParams);
+                    $url = env('APP_URL_FRONTEND') . "/bill?" . $queryString;
+                
+                    // Chuyển hướng đến URL mới
+                    return redirect($url);
                 } else {
                     return response()->json(['data' => '401']);
                 }
