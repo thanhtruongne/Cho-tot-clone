@@ -124,6 +124,32 @@ class LeftMenuComposer
                 //     ],
                 // ],
             ],
+            'categories' => [
+                'id' => 4,
+                'name' => trans('market.permission_role_manager'),
+                'url' => route('categories'),
+                'is_open' => '',
+                'url_name' => 'permissions',
+                'icon' => '<i class="fas fa-suitcase"></i>',
+                // 'permission' => ,
+                'url_item_child' => ['role', 'permissions'],
+                'item_childs' => [
+                    [
+                        'name' => trans('market.permission_manager'),
+                        'url_name' =>'permissions',
+                         'url' => route('permission.index'),
+                      'icon' => '<i class="fas fa-suitcase"></i>',
+                        // 'permission' => User::canPermissionCompetencyReport(),
+                    ],
+                    [
+                        'name' => trans('market.role_manager'),
+                        'url_name' =>'permissions/role',
+                         'url' => route('categories'),
+                        'icon' => '<i class="fas fa-suitcase"></i>',
+                        // 'permission' => User::canPermissionCompetencyReport(),
+                    ],
+                ],
+            ],
         ];
         $this->leftSideMenu = $item;
         
