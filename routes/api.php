@@ -52,7 +52,8 @@ Route::group([
   'middleware' => ['api', 'jwt.vertify'],
   'prefix' => 'auth'
 ], function ($router) {
-
+  Route::get('/user', [ApiAuthController::class, 'me'])->name('fe.get-user');
+  
   Route::group(['prefix' => '/product'], function () {
     //product_eletronics
     Route::post('/get-data', [ProductElectronicController::class, 'getData'])->name('fe.product-electric.getData');
