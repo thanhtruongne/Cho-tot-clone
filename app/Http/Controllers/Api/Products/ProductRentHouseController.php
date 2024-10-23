@@ -97,7 +97,7 @@ class ProductRentHouseController extends Controller
                     'bathroom_id' => 'nullable',
                     'main_door_id' => 'nullable',
                     'legal_id' => 'nullable',
-                    'condition_interior' => 'nullable|in:1,2,3', // 1 nội thất cao cấp, 2 đầy đủ, 3 nhà trống
+                    'condition_interior' => 'nullable|in:1,2,3,4', // 1 nội thất cao cấp, 2 đầy đủ, 3 nhà trống,ban giao tho
                     'car_alley' => 'nullable|in:0,1', // 0 không có, 1 có
                     'back_house' => 'nullable|in:0,1', // 0 không có, 1 có
                     'blooming_house' => 'nullable|in:0,1', // 0 không có, 1 có
@@ -112,6 +112,7 @@ class ProductRentHouseController extends Controller
                     'cost' => 'numeric|min:0',
                     'cost_deposit' => 'nullable|numeric|min:0',
                     'rule_compensation' => 'nullable|integer|min:0',
+                    'type_user' => 'nullable|in:1,2', // 1 là cá nhân, 2 là môi giới
                 ]
             );
             $data = DB::transaction(function () use ($validatedData,$id) {

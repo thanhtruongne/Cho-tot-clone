@@ -27,9 +27,9 @@ return new class extends Migration
             $table->tinyInteger('approved')->index()->default(2)->comment('0 là từ chối , 1 đã duyệt , 2 chờ duyệt');
             $table->tinyInteger('type_rental')->index()->default(3)->comment('1 thuê theo ngày , 2 thuê theo tuàn , 3 theo tháng , 4 theo năm');
             $table->string('province_code')->index();
-            $table->string('district_code')->index();
+            // $table->string('district_code')->index();
             $table->string('ward_code')->index();
-            // $table->tinyInteger('type_user')->default(1)->comment('1 là cá nhân , 2 là môi giới');
+            $table->tinyInteger('type_user')->default(1)->comment('1 là cá nhân , 2 là môi giới');
             $table->unsignedBigInteger('category_id')->index();
             $table->string('subdivision_code');
             // $table->tinyInteger('show_code')->default(0)->comment('show mã rao tin code');

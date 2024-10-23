@@ -87,4 +87,9 @@ class PostingTypeController extends Controller
         $data->delete();
         return response()->json(['message' => 'Product deleted successfully']);
     }
+    public function getDataPostingType()
+    {
+        $data = PostingType::whereNotNull('name')->get();
+        return response()->json(['data' => $data]);
+    }
 }

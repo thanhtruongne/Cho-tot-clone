@@ -68,7 +68,7 @@ class ApiAuthController extends Controller
         $user->signature_key = end($vertify); // lưu chữ ký của token
         $user->save();
        
-        return $this->respondWithToken($token);
+        return $this->respondWithToken($token,$user);
     }
 
 
@@ -121,7 +121,7 @@ class ApiAuthController extends Controller
         $user->signature_key = end($vertify); // lưu chữ ký của token
         $user->save();
 
-        return $this->respondWithToken($token);
+        return $this->respondWithToken($token,null);
 
 
     }
@@ -202,14 +202,15 @@ class ApiAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token,$user)
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => \Carbon::now()->addDays(1),
             'status' => true,
-            'message' => 'Thành công'
+            'message' => 'Thành công',
+            // 'data'=> $user['id']
         ]);
     }
 }

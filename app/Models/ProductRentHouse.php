@@ -8,7 +8,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Support\Str;
 class ProductRentHouse extends Model
 {
-    use Cachable;   
+    // use Cachable;   
     protected $table = 'product_rent_house';
     protected $fillable = [
         'title',
@@ -22,7 +22,7 @@ class ProductRentHouse extends Model
         'approved',
         'type_rental',
         'province_code',
-        'district_code',
+        // 'district_code',
         'ward_code',
         'category_id',
         'subdivision_code',
@@ -46,6 +46,7 @@ class ProductRentHouse extends Model
         'cost',
         'cost_deposit',
         'rule_compensation',
+        'type_user',
     ];
 
     protected static function boot()
