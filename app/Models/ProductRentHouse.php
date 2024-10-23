@@ -63,4 +63,12 @@ class ProductRentHouse extends Model
         } while (self::where('code', $code)->exists()); 
         return $code;
     }
+
+
+    public static function getAttributeName(){
+        return [
+            'name' => 'Tên sản phẩm',
+            
+        ]
+    }
 }
