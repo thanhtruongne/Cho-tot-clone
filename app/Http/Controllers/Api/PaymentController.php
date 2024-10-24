@@ -21,12 +21,8 @@ class PaymentController extends Controller
 
         $vnp_TxnRef = $request->input('vnp_txnref');
         $vnp_Amount = $request->input('vnp_amount');
-
-        $username = $request->input('username');
         $product_id = $request->input('product_id');
-        $name_product = $request->input('name_product');
-
-        $vnp_OrderInfo = 'Thanh toán đơn hàng-' . 'Người chuyển: ' . $username . '-ID sản phẩm: ' . $product_id. '-Tên sản phẩm: '.$name_product;
+          $vnp_OrderInfo =$product_id;
         $vnp_OrderType = 'badasd';
         // $vnp_Amount = 123456789;
         $vnp_Locale = 'VN';
