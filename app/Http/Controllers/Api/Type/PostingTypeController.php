@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 class PostingTypeController extends Controller
 {
     //
+    public function getDataPostingType()
+    {
+        $data = PostingType::whereNotNull('name')->get();
+        return response()->json(['data' => $data]);
+    }
     public function addPostingType(Request $request)
     {
         try {

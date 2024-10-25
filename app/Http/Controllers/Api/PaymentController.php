@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
@@ -19,7 +20,6 @@ class PaymentController extends Controller
         $vnp_TmnCode = "IT1YF6TR";
         $vnp_HashSecret = "89M6MIY98WQOMEQS0AW9LGO785JVA83Q";
 
-        $vnp_TxnRef = $request->input('vnp_txnref');
         $vnp_Amount = $request->input('vnp_amount');
 
         $username = $request->input('username');
@@ -28,11 +28,9 @@ class PaymentController extends Controller
 
         $vnp_OrderInfo = 'Thanh toán đơn hàng-' . 'Người chuyển: ' . $username . '-ID sản phẩm: ' . $product_id. '-Tên sản phẩm: '.$name_product;
         $vnp_OrderType = 'badasd';
-        // $vnp_Amount = 123456789;
         $vnp_Locale = 'VN';
         $vnp_BankCode = 'NCB';
-        $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
-        //Add Params of 2.0.1 Version
+        $vnp_IpAddr = $request->ip();
 
         $inputData = array(
             "vnp_Version" => "2.1.0",
@@ -46,7 +44,7 @@ class PaymentController extends Controller
             "vnp_OrderInfo" => $vnp_OrderInfo,
             "vnp_OrderType" => $vnp_OrderType,
             "vnp_ReturnUrl" => $vnp_Returnurl,
-            "vnp_TxnRef" => $vnp_TxnRef,
+            "vnp_TxnRef" => time(),
 
         );
 
@@ -57,7 +55,6 @@ class PaymentController extends Controller
             $inputData['vnp_Bill_State'] = $vnp_Bill_State;
         }
 
-        //var_dump($inputData);
         ksort($inputData);
         $query = "";
         $i = 0;
@@ -112,6 +109,7 @@ class PaymentController extends Controller
                 ]);
 
                 if ($data) {
+                    
                     return response()->json(['message' => 'Thêm sản phẩm thành công','data'=>$data]);
                 } else {
                     return response()->json(['data' => '401']);
@@ -121,4 +119,46 @@ class PaymentController extends Controller
             }
       
     }
+
+    public function createPaymentWithToken(Request $request)
+    {
+        $vnp_Returnurl = "http://localhost:8000/api/zalopay/handle-return-url";
+
+        $vnp_Url = "https://sandbox.vnpayment.vn/token_ui/create-token.html";
+        $vnp_TmnCode = "IT1YF6TR";
+        $vnp_HashSecret = "89M6MIY98WQOMEQS0AW9LGO785JVA83Q"; 
+    
+        $username = $request->input('username'); 
+      
+    
+        $vnp_TxnRef = time(); 
+    
+        $inputData = array(
+            "vnp_version" => "2.1.0",
+            "vnp_command" => "token_create",
+            "vnp_tmn_code" => $vnp_TmnCode,
+            "vnp_app_user_id" => $username, 
+            "vnp_card_type" => "01", 
+            "vnp_txn_ref" => $vnp_TxnRef,
+            "vnp_txn_desc" => "thanh toan",
+            "vnp_return_url" =>$vnp_Returnurl, 
+            "vnp_ip_addr" => $request->ip(), 
+            "vnp_create_date" => date('YmdHis'), 
+        );
+    
+        ksort($inputData);
+        $hashData = http_build_query($inputData);
+        $vnp_SecureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
+        $vnp_Url .= "?" . $hashData . "&vnp_secure_hash=" . $vnp_SecureHash;
+    
+        $response = Http::post($vnp_Url);
+    
+        if ($response->successful()) {
+            return response()->json(['status' => 'success', 'data' => $vnp_Url]);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Error creating payment link']);
+        }
+    }
+ 
+
 }

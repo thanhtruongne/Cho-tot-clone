@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Route;
 // });
 Route::post('/zalopay/payment', [PaymentController::class, 'createPaymentLink']);
 Route::get('/zalopay/handle-return-url', [PaymentController::class, 'handleReturnUrl']);
+Route::post('/zalopay/create-payment-with-token', [PaymentController::class, 'createPaymentWithToken']);
 
 Route::group([
   'middleware' => 'api',
@@ -79,6 +80,7 @@ Route::group([
     Route::post('/update-bedroom-type/{id}', [BedroomTypeController::class, 'updateBedroomType']);
 
     //posting_type
+    Route::get('/get-data-posting-type', [PostingTypeController::class, 'getDataPostingType']);
     Route::post('/add-posting-type', [PostingTypeController::class, 'addPostingType']);
     Route::post('/delete-posting-type/{id}', [PostingTypeController::class, 'deletePostingType']);
     Route::post('/update-posting-type/{id}', [PostingTypeController::class, 'updatePostingType']);
