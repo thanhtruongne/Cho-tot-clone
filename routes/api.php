@@ -64,6 +64,7 @@ Route::group([
 
     //product_rent_house
     Route::post('/test', [ProductRentHouseController::class, 'test']);
+    Route::get('/get-product-rent-user-id/{id}', [ProductRentHouseController::class, 'getDataProductRentGetUserId']);
     Route::get('/get-data-product-rent', [ProductRentHouseController::class, 'getDataProductRent']);
     Route::post('/add-product-rent', [ProductRentHouseController::class, 'addProductRent']);
     Route::post('/delete-product-rent/{id}', [ProductRentHouseController::class, 'deleteProductRent']);

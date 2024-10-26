@@ -58,15 +58,16 @@ class ProductRentHouseController extends Controller
             );
             $data = ProductRentHouse::firstOrNew(['id' => $request->id]);
             $data->fill($request->all());
-            $data->save();  
+            $data->save();
             if ($data) {
-                return response()->json(['message' => "Thêm sản phẩm thành công",'data'=>$data]);
+                return response()->json(['message' => "Thêm sản phẩm thành công", 'data' => $data]);
             } else {
                 return response()->json(['data' => "Thêm asd phẩm asdsad công"]);
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->validator->errors()], 422);
-        }}
+        }
+    }
 
 
     public function updateProductRent(Request $request, $id)
@@ -74,6 +75,9 @@ class ProductRentHouseController extends Controller
         try {
             $validatedData = $request->validate(
                 [
+                    'day_package_expirition'=>'integer',
+                    'payment'=>'integer',
+                    'remaining_days'=>'integer',
                     'title' => 'string|max:255',
                     'content' => 'string',
                     'user_id' => 'exists:users,id',
@@ -111,7 +115,7 @@ class ProductRentHouseController extends Controller
                     'type_user' => 'nullable|in:1,2', // 1 là cá nhân, 2 là môi giới
                 ]
             );
-            $data = DB::transaction(function () use ($validatedData,$id) {
+            $data = DB::transaction(function () use ($validatedData, $id) {
                 $product = ProductRentHouse::findOrFail($id);
                 $product->update($validatedData);
                 return $product;
@@ -123,8 +127,7 @@ class ProductRentHouseController extends Controller
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->validator->errors()], 422);
-
-    }
+        }
     }
     public function deleteProductRent($id)
     {
@@ -140,7 +143,12 @@ class ProductRentHouseController extends Controller
         $data = DB::table('product_rent_house')->get();
         return response()->json(['data' => $data]);
     }
+<<<<<<< HEAD
     public function getDataProductRentByUserId($id)
+=======
+
+    public function getDataProductRentGetUserId($id)
+>>>>>>> 58dd1629e6f2384bcd3cfd6a287f06f2241297b0
     {
         $data = ProductRentHouse::where('user_id', $id)->get();
         return response()->json(['data' => $data]);

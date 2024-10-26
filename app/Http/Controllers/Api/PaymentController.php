@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Products\ProductRentHouseController;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Products\ProductRentHouseController;
 
 class PaymentController extends Controller
 {
@@ -105,6 +106,7 @@ class PaymentController extends Controller
 
             $userId = isset($orderInfoParts[0]) ? $orderInfoParts[0] : null;
             $productId = isset($orderInfoParts[1]) ? $orderInfoParts[1] : null;
+            $day = isset($orderInfoParts[2]) ? $orderInfoParts[2] : null;
 
             // dd($userId);
             $data = Payment::create([
