@@ -143,12 +143,7 @@ class ProductRentHouseController extends Controller
         $data = DB::table('product_rent_house')->get();
         return response()->json(['data' => $data]);
     }
-<<<<<<< HEAD
     public function getDataProductRentByUserId($id)
-=======
-
-    public function getDataProductRentGetUserId($id)
->>>>>>> 58dd1629e6f2384bcd3cfd6a287f06f2241297b0
     {
         $data = ProductRentHouse::where('user_id', $id)->get();
         return response()->json(['data' => $data]);

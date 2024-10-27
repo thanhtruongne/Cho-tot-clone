@@ -10,13 +10,8 @@ class Payment extends Model
     use HasFactory;
     protected $table = 'payments';
     protected $fillable = [
-<<<<<<< HEAD
         "user_id",
         "product_id",
-=======
-        'user_id',
-        'product_id',
->>>>>>> 58dd1629e6f2384bcd3cfd6a287f06f2241297b0
         'vnp_amount',
         'vnp_bank_code',
         'vnp_bankTran_no',
