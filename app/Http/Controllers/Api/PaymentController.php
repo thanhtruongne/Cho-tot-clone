@@ -22,7 +22,8 @@ class PaymentController extends Controller
         $vnp_TxnRef = $request->input('vnp_txnref');
         $vnp_Amount = $request->input('vnp_amount');
         $product_id = $request->input('product_id');
-          $vnp_OrderInfo =$product_id;
+        $vnp_OrderInfo =$product_id;
+        $vnp_OrderUserId = profile()->id;
         $vnp_OrderType = 'badasd';
         // $vnp_Amount = 123456789;
         $vnp_Locale = 'VN';
@@ -93,45 +94,56 @@ class PaymentController extends Controller
         $vnp_SecureHash = $request->input('vnp_SecureHash');
             if($request->input('vnp_TransactionStatus') == 00)
             {
-                $data = Payment::create([
-                    'vnp_amount'=>$request->input('vnp_Amount'),
-                    'vnp_bank_code'=>$request->input('vnp_BankCode'),
-                    'vnp_bankTran_no'=>$request->input('vnp_BankTranNo'),
-                    'vnp_card_type'=>$request->input('vnp_CardType'),
-                    'vnp_orderInfo'=>$request->input('vnp_OrderInfo'),
-                    'vnp_pay_date'=>$request->input('vnp_PayDate'),
-                    'vnp_response_code'=>$request->input('vnp_ResponseCode'),
-                    'vnp_tmn_code'=>$request->input('vnp_TmnCode'),
-                    'vnp_transaction_no'=>$request->input('vnp_TransactionNo'),
-                    'vnp_transaction_status'=>$request->input('vnp_TransactionStatus'),
-                    'vnp_txn_ref'=>$request->input('vnp_TxnRef'),
-                ]);
+                $queryParams = [
+                    'vnp_Amount' => $request->input('vnp_Amount'),
+                    'vnp_BankCode' => $request->input('vnp_BankCode'),
+                    'vnp_BankTranNo' => $request->input('vnp_BankTranNo'),
+                    'vnp_CardType' => $request->input('vnp_CardType'),
+                    'vnp_OrderInfo' => $request->input('vnp_OrderInfo'),
+                    'vnp_PayDate' => $request->input('vnp_PayDate'),
+                    'vnp_ResponseCode' => $request->input('vnp_ResponseCode'),
+                    'vnp_TmnCode' => $request->input('vnp_TmnCode'),
+                    'vnp_TransactionNo' => $request->input('vnp_TransactionNo'),
+                    'vnp_TransactionStatus' => $request->input('vnp_TransactionStatus'),
+                    'vnp_TxnRef' => $request->input('vnp_TxnRef'),
+                    'vnp_SecureHash' => $request->input('vnp_SecureHash')
+                ];
+                $model = Payment::firstOrNew(['vnp_bank_code' => $request->input('vnp_BankCode')]);
+                $model->fill($queryParams);
+                $model->save();
 
-                if ($data) {
-                    $queryParams = [
-                        'vnp_Amount' => $request->input('vnp_Amount'),
-                        'vnp_BankCode' => $request->input('vnp_BankCode'),
-                        'vnp_BankTranNo' => $request->input('vnp_BankTranNo'),
-                        'vnp_CardType' => $request->input('vnp_CardType'),
-                        'vnp_OrderInfo' => $request->input('vnp_OrderInfo'),
-                        'vnp_PayDate' => $request->input('vnp_PayDate'),
-                        'vnp_ResponseCode' => $request->input('vnp_ResponseCode'),
-                        'vnp_TmnCode' => $request->input('vnp_TmnCode'),
-                        'vnp_TransactionNo' => $request->input('vnp_TransactionNo'),
-                        'vnp_TransactionStatus' => $request->input('vnp_TransactionStatus'),
-                        'vnp_TxnRef' => $request->input('vnp_TxnRef'),
-                        'vnp_SecureHash' => $request->input('vnp_SecureHash')
-                    ];
+                // $queryString = http_build_query($queryParams);
+                $url = env('APP_URL_FRONTEND') . "/bill?";
+                // return redirect($url);
+
+                // $data = Payment::create([
+                //     'vnp_amount'=>$request->input('vnp_Amount'),
+                //     'vnp_bank_code'=>$request->input('vnp_BankCode'),
+                //     'vnp_bankTran_no'=>$request->input('vnp_BankTranNo'),
+                //     'vnp_card_type'=>$request->input('vnp_CardType'),
+                //     'vnp_orderInfo'=>$request->input('vnp_OrderInfo'),
+                //     'vnp_pay_date'=>$request->input('vnp_PayDate'),
+                //     'vnp_response_code'=>$request->input('vnp_ResponseCode'),
+                //     'vnp_tmn_code'=>$request->input('vnp_TmnCode'),
+                //     'vnp_transaction_no'=>$request->input('vnp_TransactionNo'),
+                //     'vnp_transaction_status'=>$request->input('vnp_TransactionStatus'),
+                //     'vnp_txn_ref'=>$request->input('vnp_TxnRef'),
+                // ]);
+
+                // if ($data) {
+                //   
         
-                    // return response()->json(['message' => 'Thêm sản phẩm thành công','data'=>$data]);
-                    $queryString = http_build_query($queryParams);
-                    $url = env('APP_URL_FRONTEND') . "/bill?" . $queryString;
+                //     // return response()->json(['message' => 'Thêm sản phẩm thành công','data'=>$data]);
+                //     $queryString = http_build_query($queryParams);
+                //     $url = env('APP_URL_FRONTEND') . "/bill?" . $queryString;
                 
-                    // Chuyển hướng đến URL mới
-                    return redirect($url);
-                } else {
-                    return response()->json(['data' => '401']);
-                }
+                //     // Chuyển hướng đến URL mới
+                //     return redirect($url);
+                // } else {
+                //     return response()->json(['data' => '401']);
+                // }
+
+
             }else{
                 return response()->json(['data' => '402']);
             }

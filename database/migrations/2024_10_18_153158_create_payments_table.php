@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->id();
+            $table->id();   
+            $table->unsignedBigInteger('user_id')->index();
+            $table->unsignedBigInteger('product_id')->index();
             $table->string('vnp_amount'); // Số tiền
             $table->string('vnp_bank_code'); // Mã ngân hàng
             $table->string('vnp_bankTran_no'); // Số giao dịch ngân hàng
