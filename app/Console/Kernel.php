@@ -13,12 +13,15 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('command:update-remaining-days')->everyMinute();
+        // $schedule->command('command:update-remaining-days')->everyMinute();
+
+        $schedule->command('app:product-rent-update-days')->everyMinute();
         
 
     }
     protected $commands = [
         \App\Console\Commands\UpdateRemainingDays::class,
+        \App\Console\Commands\ProductRentUpdateDays::class,
     ];
     /**
      * Register the commands for the application.

@@ -11,6 +11,9 @@ class ProductRentHouse extends Model
     // use Cachable;   
     protected $table = 'product_rent_house';
     protected $fillable = [
+        'day_package_expirition',
+        'payment',
+        'remaining_days',
         'title',
         'content',
         'user_id',
