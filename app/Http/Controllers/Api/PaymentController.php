@@ -174,8 +174,9 @@ class PaymentController extends Controller
 
                     
                 }
-                $queryString = http_build_query($queryParams);
-                $url = env('APP_URL_FRONTEND') . "/myads?" . $queryString;
+                // $queryString = http_build_query($queryParams);
+                // $url = env('APP_URL_FRONTEND') . "/myads?" . $queryString;
+                $url = env('APP_URL_FRONTEND') . "/myads" ;
 
                 return redirect($url);
             // } 
