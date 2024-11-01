@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use App\Http\Controllers\Api\Products\ProductRentHouseController;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\Products\ProductRentHouseController;
+
 
 class PaymentController extends Controller
 {
@@ -17,18 +17,22 @@ class PaymentController extends Controller
 
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         $vnp_Returnurl = "http://localhost:8000/api/zalopay/handle-return-url";
-        $vnp_TmnCode = "IT1YF6TR";
+        $vnp_TmnCode = "IT1YF6TR";  
         $vnp_HashSecret = "89M6MIY98WQOMEQS0AW9LGO785JVA83Q";
-
+        $vnp_Inv_Customer =$request->input('user_id');
         $vnp_TxnRef = $request->input('vnp_txnref');
         $vnp_Amount = $request->input('vnp_amount');
 
+        // $username = $request->input('username');
+        // $product_id = $request->input('product_id');
+        // $name_product = $request->input('name_product');
+
+        // $vnp_OrderInfo = 'Thanh toán đơn hàng-' . 'Người chuyển: ' . $username . '-ID sản phẩm: ' . $product_id. '-Tên sản phẩm: '.$name_product . 'User_id: ' . $vnp_Inv_Customer;
         $user_id = $request->input('user_id');
         $product_id = $request->input('product_id');
         $day = $request->input('day');
-
-        $vnp_OrderInfo =  $user_id . ' - ' . $product_id . ' - ' . $day;
-
+        $type_posting_id = $request->input('type_posting_id');
+        $vnp_OrderInfo =  $user_id . ' - ' . $product_id . ' - ' . $day . ' - ' . $type_posting_id;
         $vnp_OrderType = 'badasd';
         // $vnp_Amount = 123456789;
         $vnp_Locale = 'VN';
@@ -104,6 +108,7 @@ class PaymentController extends Controller
             $userId = isset($orderInfoParts[0]) ? $orderInfoParts[0] : null;
             $productId = isset($orderInfoParts[1]) ? $orderInfoParts[1] : null;
             $day = isset($orderInfoParts[2]) ? $orderInfoParts[2] : null;
+            $type_posting_id = isset($orderInfoParts[3]) ? $orderInfoParts[3] : null;
 
             // dd($userId);
             $data = Payment::create([
@@ -144,15 +149,17 @@ class PaymentController extends Controller
                     $request->merge(['payment' => 2]);
                     $request->merge(['remaining_days' => $day]);
                     $request->merge(['day_package_expirition' => $day]);
+                    $request->merge(['type_posting_id' => $type_posting_id]);
                     $productRentHouseController = new ProductRentHouseController();
                     $productRentHouseController->updateProductRent($request,$productId);
+                    
                 }
                 $queryString = http_build_query($queryParams);
-                $url = env('APP_URL_FRONTEND') . "/bill?" . $queryString;
+                $url = env('APP_URL_FRONTEND') . "/myads?" . $queryString;
 
                 return redirect($url);
             } else {
-                return response()->json(['data' => '401']);
+return response()->json(['data' => '401']);
             }
         } else {
             return response()->json(['data' => '402']);
