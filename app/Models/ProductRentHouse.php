@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Support\Str;
+
+
+
 class ProductRentHouse extends Model
 {
     // use Cachable;   
@@ -25,6 +28,7 @@ class ProductRentHouse extends Model
         'approved',
         'type_rental',
         'province_code',
+        'time_exipred',
         // 'district_code',
         'ward_code',
         'category_id',
@@ -73,6 +77,10 @@ class ProductRentHouse extends Model
         return [
             'name' => 'Tên sản phẩm',
             
-        ]
+        ];
+    }
+
+    public function posting_product_expect(){
+        return $this->hasMany(PostingProductExpect::class,'product_id','id');
     }
 }

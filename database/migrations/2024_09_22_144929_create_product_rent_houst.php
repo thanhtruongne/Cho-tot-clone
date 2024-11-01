@@ -22,8 +22,10 @@ return new class extends Migration
             $table->string('video');
             //mặc định là thángphp
             $table->integer('type_posting_id')->index()->default(1)->comment('loại tin đăng');
+            // $table->dateTime('day_expired')->nullable()->comment('thời gian hết hạn tin đăng dạng type là 1');
             $table->integer('payment')->index()->default(1)->comment('1 chưa thanh toán , 2 đã thanh toán');
-         
+            $table->dateTime('time_exipred')->nullable()->comment('thời gian tin đăng');
+            // $table->string('specified_time')->nullable()->comment('dạng khung giờ xác định nếu chọn tin ưu tiên, lưu theo dạng json_data theo các data dag có db trong bảng product_action_data => [1,4,2]');
             $table->tinyInteger('approved')->index()->default(2)->comment('0 là từ chối , 1 đã duyệt , 2 chờ duyệt');
             $table->tinyInteger('type_rental')->index()->default(3)->comment('1 thuê theo ngày , 2 thuê theo tuàn , 3 theo tháng , 4 theo năm');
             $table->string('province_code')->index();
