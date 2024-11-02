@@ -171,6 +171,7 @@ class PaymentController extends Controller
                       
                       }
                     }
+                    $model->save();
 
                     
                 }

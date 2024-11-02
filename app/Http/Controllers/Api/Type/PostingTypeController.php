@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Type;
 use App\Http\Controllers\Controller;
 use App\Models\PostingType;
 use Illuminate\Http\Request;
+use App\Models\PostingDataAction;
+
 
 class PostingTypeController extends Controller
 {
@@ -87,9 +89,16 @@ class PostingTypeController extends Controller
         $data->delete();
         return response()->json(['message' => 'Product deleted successfully']);
     }
-    public function getDataPostingType()
+    public function getDataPostingType(Request $request)
     {
-        $data = PostingType::whereNotNull('name')->get();
+        if($request->type && $request->type == 1){
+            $data = PostingType::whereNotNull('name')->get();
+        }
+        else {
+            $data = PostingDataAction::where('type',$request->type)->get(['id','name']);
+        }
+
+       
         return response()->json(['data' => $data]);
     }
 }

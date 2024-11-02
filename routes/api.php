@@ -85,6 +85,12 @@ Route::group([
     Route::post('/delete-posting-type/{id}', [PostingTypeController::class, 'deletePostingType']);
     Route::post('/update-posting-type/{id}', [PostingTypeController::class, 'updatePostingType']);
     Route::get('/get-data-posting-type', [PostingTypeController::class, 'getDataPostingType']);
+
+
+
+
+
+
     //type_job_category
     Route::post('/add-type-job-category', [TypeJobCategoryController::class, 'addTypeJobCategory']);
     Route::post('/delete-type-job-category/{id}', [TypeJobCategoryController::class, 'deleteTypeJobCategory']);
