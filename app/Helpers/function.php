@@ -13,8 +13,6 @@ function check_password($password){
   }
 
 }
-
-// demo khó
 function check_password_v2($password){
    if($password){
    $check = str_split($password);

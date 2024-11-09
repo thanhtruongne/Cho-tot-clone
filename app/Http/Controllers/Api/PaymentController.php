@@ -35,7 +35,7 @@ class PaymentController extends Controller
         $type_posting_id = $request->input('type_posting_id');
         $day =  $request->input('day') ;
         $vnp_OrderInfo =  $user_id . ' - ' . $product_id . ' - ' . $day . ' - ' . $type_posting_id;
-        $vnp_OrderType = $request->time_frame; //  dạng theo khung giờ
+        $vnp_OrderType = $request->hours; //  dạng theo khung giờ
         // $vnp_Amount = 123456789;
         $vnp_Locale = 'VN';
         $vnp_BankCode = 'NCB';
@@ -102,88 +102,40 @@ class PaymentController extends Controller
     {
         // convert lại sai r , lúc khi bấm đăng tin đã tạo data không phải khi thanh toán
         $vnp_HashSecret = "89M6MIY98WQOMEQS0AW9LGO785JVA83Q";
-        // dd($request->all());
         $vnp_SecureHash = $request->input('vnp_SecureHash');
         if ($request->input('vnp_TransactionStatus') == 00) {
             $vnp_OrderInfo = $request->input('vnp_OrderInfo');
             $orderInfoParts = explode('-', $vnp_OrderInfo);
-
-            $userId = isset($orderInfoParts[0]) ? $orderInfoParts[0] : null;
             $productId = isset($orderInfoParts[1]) ? $orderInfoParts[1] : null;
             $day = isset($orderInfoParts[2]) ? $orderInfoParts[2] : null;
             $type_posting_id = isset($orderInfoParts[3]) ? $orderInfoParts[3] : null;
-            // $data = Payment::create([
-            //     'user_id' => $userId,
-            //     'product_id' => $productId,
-            //     'vnp_amount' => $request->input('vnp_Amount'),
-            //     'vnp_bank_code' => $request->input('vnp_BankCode'),
-            //     'vnp_bankTran_no' => $request->input('vnp_BankTranNo'),
-            //     'vnp_card_type' => $request->input('vnp_CardType'),
-            //     'vnp_orderInfo' => $request->input('vnp_OrderInfo'),
-            //     'vnp_pay_date' => $request->input('vnp_PayDate'),
-            //     'vnp_response_code' => $request->input('vnp_ResponseCode'),
-            //     'vnp_tmn_code' => $request->input('vnp_TmnCode'),
-            //     'vnp_transaction_no' => $request->input('vnp_TransactionNo'),
-            //     'vnp_transaction_status' => $request->input('vnp_TransactionStatus'),
-            //     'vnp_txn_ref' => $request->input('vnp_TxnRef'),
-            // ]);
-
-            // if ($data) {
-                $queryParams = [
-                    'vnp_Amount' => $request->input('vnp_Amount'),
-                    'vnp_BankCode' => $request->input('vnp_BankCode'),
-                    'vnp_BankTranNo' => $request->input('vnp_BankTranNo'),
-                    'vnp_CardType' => $request->input('vnp_CardType'),
-                    'vnp_OrderInfo' => $request->input('vnp_OrderInfo'),
-                    'vnp_PayDate' => $request->input('vnp_PayDate'),
-                    'vnp_ResponseCode' => $request->input('vnp_ResponseCode'),
-                    'vnp_TmnCode' => $request->input('vnp_TmnCode'),
-                    'vnp_TransactionNo' => $request->input('vnp_TransactionNo'),
-                    'vnp_TransactionStatus' => $request->input('vnp_TransactionStatus'),
-                    'vnp_TxnRef' => $request->input('vnp_TxnRef'),
-                    'vnp_SecureHash' => $request->input('vnp_SecureHash')
-                ];
-    
-                if ($productId) {
-                    // $request->merge(['approved' => 1]);
-                    // $request->merge(['payment' => 2]);
-                    // $request->merge(['remaining_days' => $day]);
-                    // $request->merge(['day_package_expirition' => $day]);
-                    // $request->merge(['type_posting_id' => $type_posting_id]);
-                    // $productRentHouseController = new ProductRentHouseController();
-                    // $productRentHouseController->updateProductRent($request,$productId);
-                    $model = ProductRentHouse::find($productId);
-                    $model->approved = 1;
-                    $model->payment = 2;
-                    // $model->fill()
-                    // tin thường
-                    if($model->type_posting_id == 1){
-                       $model->day_posting_type = $day;
-                       $model->time_exipred = \Carbon::now()->addDays($day);
-                    }
-                    else {// dạng tin ưu tiên chọn các dạng khung giờ 8 - 10h có data trong seeder sẵn
-                      $time_frame = $request->time_frame ? explode(',',$request->time_frame) : [];
-                      if(isset($time_frame) && count($time_frame) > 0){
-                         foreach($time_frame as $item){
-                            $data[] = new PostingProductExpect(['posting_data_action_id' =>$item , 'cron_completed' => null ]);
-                         }
-                         $model->posting_product_expect()->saveMany($data);
-                      
-                      }
-                    }
-                    $model->save();
-
-                    
+            $count_post = $request->vnp_OrderType;
+            if ($productId) {
+                $model = ProductRentHouse::findOrFail($productId);
+                $model->approved = 1;
+                $model->payment = 2;
+                $model->type_posting_id = $type_posting_id;
+                // tin thường
+                if($model->type_posting_id == 1){
+                    $model->day_posting_type = $day;
+                    $model->time_exipred = \Carbon::now()->addDays($day);
                 }
-                // $queryString = http_build_query($queryParams);
-                // $url = env('APP_URL_FRONTEND') . "/myads?" . $queryString;
-                $url = env('APP_URL_FRONTEND') . "/myads" ;
+                else {// dạng tin ưu tiên chọn các dạng khung giờ 8 - 10h có data trong seeder sẵn
+                    $hours = $request->hours && !is_array($request->hours) ? explode(',',$request->hours) : [];
+                    $model->number_pick_post = $count_post;
+                    if(isset($hours) && count($hours) > 0){
+                        foreach($hours as $item){
+                            $data[] = new PostingProductExpect(['posting_data_action_id' =>$item , 'cron_completed' => null ]);
+                        }
+                        $model->posting_product_expect()->saveMany($data);
+                        
+                    }
+                }
+                $model->save();           
+            }
+            $url = env('APP_URL_FRONTEND') . "/myads" ;
 
-                return redirect($url);
-            // } 
-            // else {
-            //     return response()->json(['data' => '401']);
-            // }
+            return redirect($url);
         } else {
             return response()->json(['data' => '402']);
         }

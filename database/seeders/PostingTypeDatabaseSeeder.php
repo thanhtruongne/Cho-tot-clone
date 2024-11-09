@@ -34,7 +34,7 @@ class PostingTypeDatabaseSeeder extends Seeder
                 'type' => 2,
             ]
         ];
-
+`
         $rule_type_2 = [
             [
                 'post_id' => 2,

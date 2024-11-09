@@ -22,19 +22,22 @@ return new class extends Migration
             $table->string('video');
             //mặc định là thángphp
             $table->integer('type_posting_id')->index()->default(1)->comment('loại tin đăng');
-            // $table->dateTime('day_expired')->nullable()->comment('thời gian hết hạn tin đăng dạng type là 1');
             $table->integer('payment')->index()->default(1)->comment('1 chưa thanh toán , 2 đã thanh toán');
             $table->dateTime('time_exipred')->nullable()->comment('thời gian tin đăng');
-            // $table->string('specified_time')->nullable()->comment('dạng khung giờ xác định nếu chọn tin ưu tiên, lưu theo dạng json_data theo các data dag có db trong bảng product_action_data => [1,4,2]');
+            $table->integer('number_pick_post')->nullable()->comment('số lần đăng tin theo dạng post ưu tiên');
+
             $table->tinyInteger('approved')->index()->default(2)->comment('0 là từ chối , 1 đã duyệt , 2 chờ duyệt');
             $table->tinyInteger('type_rental')->index()->default(3)->comment('1 thuê theo ngày , 2 thuê theo tuàn , 3 theo tháng , 4 theo năm');
-            $table->string('province_code')->index();
-            // $table->string('district_code')->index();
-            $table->string('ward_code')->index();
-            $table->tinyInteger('type_user')->default(1)->comment('1 là cá nhân , 2 là môi giới');
-            $table->unsignedBigInteger('category_id')->index();
+
+        
+            $table->string('province_code');
+            $table->string('district_code');
+            $table->string('ward_code');
+
+
+            $table->tinyInteger('type_user')->default(1)->comment('1 là cá nhân , 2 là môi giới'); 
+            $table->unsignedBigInteger('category_id');
             $table->string('subdivision_code');
-            // $table->tinyInteger('show_code')->default(0)->comment('show mã rao tin code');
             $table->integer('floor')->default(0)->comment('số tầng');
             $table->unsignedBigInteger('bedroom_id')->index()->comment('phòng ngủ');
             $table->unsignedBigInteger('bathroom_id')->index()->comment('phòng tắm');
@@ -56,9 +59,11 @@ return new class extends Migration
             $table->float('length')->nullable()->comment('chiều dài');
             $table->float('cost')->comment('giá thuê');
             $table->float('cost_deposit')->comment('Số tiền cọc');
-            // $table->integer('rule_deposit')->default(3)->comment('theo type_rental');
             // nếu khách hàng hủy trong thời gian thuê  --> khách sẽ chịu bồi thường = số tiền thuê * số lần quy định
             $table->integer('rule_compensation')->default(3)->comment('quy dịnh bồi thường');
+
+
+            $table->integer('sort')->default(0);
             $table->timestamps();
         });
     }

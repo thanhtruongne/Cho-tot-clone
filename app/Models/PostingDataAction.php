@@ -23,4 +23,8 @@ class PostingDataAction extends Model
        'val_2',
        'content',
     ];
+
+    public function posting_product_rent_house(){
+        return $this->belongToMany(ProductRentHouse::class,'product_posting_expect','posting_data_action_id','product_id');
+    }
 }

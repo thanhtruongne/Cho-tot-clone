@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserDatabaseSeeder::class,
             PermissionDatabaseSeeder::class,
-            RoleDatabaseSeeder::class,
+            // RoleDatabaseSeeder::class,
             CategoriesDatabaseSeeder::class
         ]);
     }

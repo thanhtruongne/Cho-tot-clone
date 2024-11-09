@@ -91,13 +91,7 @@ class PostingTypeController extends Controller
     }
     public function getDataPostingType(Request $request)
     {
-        if($request->type && $request->type == 1){
-            $data = PostingType::whereNotNull('name')->get();
-        }
-        else {
-            $data = PostingDataAction::where('type',$request->type)->get(['id','name']);
-        }
-
+        $data = PostingType::whereNotNull('name')->where('status',1)->with('posting_data_type')->get();
        
         return response()->json(['data' => $data]);
     }
