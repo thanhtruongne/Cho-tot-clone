@@ -14,4 +14,9 @@ class PostingType extends Model
     //     'code',
     //     'name',
     // ];
+
+
+    public function posting_data_type(){
+        return $this->hasMany(PostingDataAction::class,'post_id','id');
+    }
 }

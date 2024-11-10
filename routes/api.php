@@ -16,9 +16,10 @@ use App\Http\Controllers\Api\Type\TypeJobCategoryController;
 use App\Http\Controllers\Api\Type\TypeOfHouseController;
 use App\Http\Controllers\ProductJobQuestionController;
 use App\Http\Controllers\ProductJobUserViewCvController;
-use App\Models\ProductRentHouseComment;
+use App\Http\Controllers\Api\DashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,12 +50,17 @@ Route::group([
 });
 
 Route::group([
-  'middleware' => ['api', 'jwt.vertify'],
+  // 'middleware' => ['api', 'jwt.vertify'],
   'prefix' => 'auth'
 ], function ($router) {
   Route::get('/user', [ApiAuthController::class, 'me'])->name('fe.get-user');
   
   Route::group(['prefix' => '/product'], function () {
+
+
+    Route::get('/get-data-post',[DashboardController::class,'getData'])->name('fe.get-data-post');
+
+
     //product_eletronics
     Route::post('/get-data', [ProductElectronicController::class, 'getData'])->name('fe.product-electric.getData');
     Route::post('/save', [ProductElectronicController::class, 'save'])->name('fe.product-electric.save');

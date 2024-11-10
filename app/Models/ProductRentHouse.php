@@ -67,7 +67,7 @@ class ProductRentHouse extends Model
     protected static function generateUniqueCode()
     {
         do {
-            $code = 'ISURANCE'.rand(1000, 9999);
+            $code = 'RENT_'.now().'_'.rand(1000, 9999);
         } while (self::where('code', $code)->exists()); 
         return $code;
     }
@@ -76,11 +76,22 @@ class ProductRentHouse extends Model
     public static function getAttributeName(){
         return [
             'name' => 'Tên sản phẩm',
-            
+            'title' => 'Tiêu đề sản phẩm',
+            'content' => 'Nội dung',
+            'type_product' => 'Loại sản phẩm', // 1 là nhà ở, 2 là phòng trọ
+            'images' => 'Hình ảnh', // Có thể thay đổi thành 'array' nếu là mảng ảnh
+            'video' => 'Video',
+            'province_code' => 'Thành phố/ Tỉnh',
+            'district_code' => 'Quận/Huyện',
+            'ward_code' => 'Phường/Xã',
+            'category_id' => 'Danh mục sản phẩm',
+            'land_area' => 'Diện tích đất',
+            'usable_area' => 'Diện tích đất sử dụng',
+            'cost' => 'Giá tiền'
         ];
     }
 
     public function posting_product_expect(){
-        return $this->hasMany(PostingProductExpect::class,'product_id','id');
+        return $this->belongToMany(PostingDataAction::class,'product_posting_expect','product_id','posting_data_action_id');
     }
 }
