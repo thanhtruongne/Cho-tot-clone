@@ -55,7 +55,7 @@ class ApiAuthController extends Controller
 
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt($credentials)) {
+        if (!$token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $user = \Auth::guard('api')->user();

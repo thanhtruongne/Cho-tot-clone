@@ -60,11 +60,13 @@ class ProductRentHouseController extends Controller
             $data = ProductRentHouse::firstOrNew(['id' => $request->id]);
             $data->fill($request->all());
             $data->save();
-            if ($data) {
-                return response()->json(['message' => "Thêm sản phẩm thành công", 'data' => $data]);
-            } else {
-                return response()->json(['data' => "Thêm asd phẩm asdsad công"]);
-            }
+            DB::commit();
+            return response()->json(['message' => "Thêm sản phẩm thành công", 'data' => $data] );
+            // if ($data) {
+            //     return response()->json(['message' => "Thêm sản phẩm thành công", 'data' => $data]);
+            // } else {
+            //     return response()->json(['data' => "Thêm asd phẩm asdsad công"]);
+            // }
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollback();
             return response()->json(['errors' => $e->validator->errors()], 422);

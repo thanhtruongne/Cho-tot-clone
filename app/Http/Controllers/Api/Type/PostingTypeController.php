@@ -95,7 +95,7 @@ class PostingTypeController extends Controller
             $data = PostingType::whereNotNull('name')->get();
         }
         else {
-            $data = PostingDataAction::where('type',$request->type)->get(['id','name']);
+            $data = PostingDataAction::where('post_id',$request->type)->get(['id','name']);
         }
 
        
