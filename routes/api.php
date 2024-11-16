@@ -128,6 +128,9 @@ Route::group([
     Route::post('/delete-product-rent-house-comment/{id}', [ProductRentHouseCommentController::class, 'deleteProductRentHouseComment']);
     Route::post('/update-product-rent-house-comment/{id}', [ProductRentHouseCommentController::class, 'updateProductRentHouseComment']);
     Route::get('/get-product-rent-user-id/{id}', [ProductRentHouseController::class, 'getDataProductRentByUserId']);
+    Route::get('/get-product-rent-detail/{id}', [ProductRentHouseController::class, 'getDetailProductRentById']);
+   
+   
     //product_jobs
     Route::post('/add-product-jobs', [ProductJobController::class, 'addProductJobs']);
     Route::post('/update-product-jobs/{id}', [ProductJobController::class, 'updateProductJobs']);

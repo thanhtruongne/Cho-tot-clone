@@ -78,8 +78,12 @@ class DashboardController extends Controller
             $row->cost = number_format($row->cost,2);
         }
         return response()->json(['data' => $rows,'count' => count($rows->toArray())]);
+    }
 
 
+    // get data address của data theo ward, district, province
+    public function getAddress(Request $request) {
+         
     }
 
     private function checkNameInstance(int $integer,string $type = 'model'){

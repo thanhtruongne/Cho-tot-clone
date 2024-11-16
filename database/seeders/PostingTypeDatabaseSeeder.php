@@ -19,7 +19,7 @@ class PostingTypeDatabaseSeeder extends Seeder
             [
                 'id' => 1,
                 'code' =>''.\Str::random(10).'',
-                'name' => 'Tin thường',
+                'name' => 'Tin Vip',
                 'cost' => 15000,
                 'rule_day' => json_encode('[1,3,7]'),
                 'type' => 1,
@@ -28,13 +28,21 @@ class PostingTypeDatabaseSeeder extends Seeder
             [
                 'id' => 2,
                 'code' =>  ''.\Str::random(10).'',
-                'name' => 'Tin ưu tiên theo khung giờ',
+                'name' => 'Tin ưu tiên theo khung giờ (không áp dụng cho tin Vip)',
                 'cost' => 30000,
                 'rule_day' => null,
                 'type' => 2,
+            ],
+            [
+                'id' => 3,
+                'code' =>  ''.\Str::random(10).'',
+                'name' => 'Gói load tin (theo số lần)',
+                'cost' => 30000,
+                'rule_day' => null,
+                'type' => 3,
             ]
         ];
-`
+
         $rule_type_2 = [
             [
                 'post_id' => 2,
@@ -77,10 +85,6 @@ class PostingTypeDatabaseSeeder extends Seeder
                 'val_2' => 18,
             ],
         ];
-        // foreach($data as $item){
-        //      \DB::table('posting_type')->insert($item);
-        // }
-        // dd($data);
         \DB::table('posting_type')->upsert($data,'code',['name','cost','rule_day','type']);
         foreach($rule_type_2 as $item){
             \DB::table('posting_data_action')->insert($item);
