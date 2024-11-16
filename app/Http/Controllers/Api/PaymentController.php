@@ -117,11 +117,12 @@ class PaymentController extends Controller
                 if($model->type_posting_id == 1){
                     $model->day_posting_type = $day;
                     $model->time_exipred = \Carbon::now()->addDays($day);
+                    $model->save();
                 }
                 else {// dạng tin ưu tiên chọn các dạng khung giờ 8 - 10h có data trong seeder sẵn
                     $hours = $request->hours && !is_array($request->hours) ? explode(',',$request->hours) : [];
                     $model->number_pick_post = $count_post;
-                    if(isset($hours) && count($hours) > 0){
+                    if($model->save() && isset($hours) && count($hours) > 0){
                         foreach($hours as $item){
                             $data[] = new PostingProductExpect(['posting_data_action_id' =>$item , 'cron_completed' => null ]);
                         }
@@ -129,7 +130,11 @@ class PaymentController extends Controller
 
                     }
                 }
+<<<<<<< HEAD
                 $model->save();
+=======
+                         
+>>>>>>> de474d46c541a8b790343d77a92a2b084d1b787f
             }
             $url = env('APP_URL_FRONTEND') . "/myads" ;
 

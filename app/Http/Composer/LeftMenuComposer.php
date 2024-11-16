@@ -55,14 +55,14 @@ class LeftMenuComposer
                         // 'permission' => User::canPermissionCompetencyReport(),
                     ],
                     [
-                        'name' => trans('quan li dang tin'),
+                        'name' => trans('Quản lí đăng tin'),
                         'url_name' =>'permissions/role',
                          'url' => route('manage-postings'),
                         'icon' => '<i class="fas fa-suitcase"></i>',
                         // 'permission' => User::canPermissionCompetencyReport(),
                     ],
                     [
-                        'name' => trans('quan li nguoi dung'),
+                        'name' => trans('Quản lí người dùng'),
                         'url_name' =>'permissions/role',
                          'url' => route('manage-users'),
                         'icon' => '<i class="fas fa-suitcase"></i>',

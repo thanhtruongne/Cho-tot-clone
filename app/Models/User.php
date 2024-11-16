@@ -69,7 +69,7 @@ class User extends Authenticatable implements JWTSubject
 
 
     public function login($username,$password,$remember = false){
-        $auth = \Auth::attempt([
+        $auth = auth('web')->attempt([
             'username' => $this->username,
             'password' => $password
         ], $remember);
