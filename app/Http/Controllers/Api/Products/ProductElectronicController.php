@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Api\Products;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductElectronicRequest;
 use App\Models\ProductElectronics;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 
 class ProductElectronicController extends Controller
@@ -21,8 +19,8 @@ class ProductElectronicController extends Controller
 
     public function addProduct(Request $request)
     {
-        DB::beginTransaction(); 
-    
+        DB::beginTransaction();
+
         try {
             $validatedData = $request->validate([
                 'video' => 'required|string|max:255',
@@ -52,25 +50,25 @@ class ProductElectronicController extends Controller
                 'type_hard_drive' => 'nullable|integer|in:1,2',
                 'card_screen_id' => 'nullable|integer|exists:card_screens,id',
             ]);
-    
+
             $data = ProductElectronics::create($validatedData);
-    
+
             if ($data) {
                 DB::commit();
                 return response()->json(['message' => 'Product added successfully', 'data' => $data]);
             } else {
-                DB::rollBack(); 
+                DB::rollBack();
                 return response()->json(['message' => 'Failed to add product'], 500);
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollBack(); 
+            DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'An error occurred'], 500);
         }
     }
-    
+
 
     public function deleteProduct($id)
     {
@@ -114,30 +112,29 @@ class ProductElectronicController extends Controller
                 'type_hard_drive' => 'nullable|integer|in:1,2',
                 'card_screen_id' => 'nullable|integer|exists:card_screens,id',
             ]);
-    
+
             $data = ProductElectronics::find($id);
-    
+
             if (!$data) {
-                DB::rollBack(); 
+                DB::rollBack();
                 return response()->json(['error' => 'Product not found'], 404);
             }
-    
+
             $data->fill($validatedData);
-    
+
             if ($data->save()) {
                 DB::commit();
                 return response()->json(['message' => 'Product updated successfully', 'data' => $data]);
             } else {
-                DB::rollBack(); 
+                DB::rollBack();
                 return response()->json(['message' => 'Failed to update product'], 500);
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollBack(); 
+            DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
         } catch (\Exception $e) {
-            DB::rollBack(); 
+            DB::rollBack();
             return response()->json(['error' => 'An error occurred'], 500);
         }
+        }
     }
-    
-}

@@ -36,9 +36,16 @@ class ApiAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+
+     public function getAllUser()
+     {
+         $data = User::all();
+         return view('pages.auth.manageUsers', compact('data'));
+     }
+
     public function login(Request $request)
     {
-        $rules = [ 
+        $rules = [
             'email' => 'required|email',
             'password' => 'required'
         ];
@@ -55,7 +62,7 @@ class ApiAuthController extends Controller
 
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt($credentials)) {
+        if(!$token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $user = \Auth::guard('api')->user();
@@ -67,15 +74,15 @@ class ApiAuthController extends Controller
         $vertify = explode('.',$token);
         $user->signature_key = end($vertify); // lưu chữ ký của token
         $user->save();
-       
-        return $this->respondWithToken($token);
+
+        return $this->respondWithToken($token,$user);
     }
 
 
 
      // đăng ký   tự đăng  nhập set token
     public function register(Request $request){
-        $rules = [ 
+        $rules = [
             'email' => 'required|email',
             'password' => 'required',
             'firstname' => 'required',
@@ -109,7 +116,7 @@ class ApiAuthController extends Controller
             'lastname' => $lastname,
             'password' => password_hash($password,PASSWORD_DEFAULT)
         ]);
-    
+
         if (! $token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $password ])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -121,7 +128,7 @@ class ApiAuthController extends Controller
         $user->signature_key = end($vertify); // lưu chữ ký của token
         $user->save();
 
-        return $this->respondWithToken($token);
+        return $this->respondWithToken($token,null);
 
 
     }
@@ -136,7 +143,7 @@ class ApiAuthController extends Controller
            ];
            $refreshToken = JWTAuth::getJWTProvider()->encode($payload);
         return $refreshToken;
-   
+
     }
 
     /**
@@ -146,7 +153,7 @@ class ApiAuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth('api')->user());
+        return response()->json(auth(guard: 'api')->user());
     }
 
     /**
@@ -155,7 +162,7 @@ class ApiAuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout()
-    {   
+    {
         $id = auth('api')->id();
         \DB::table('users')->where(function($subquery) use($id){
             $subquery->whereId($id);
@@ -164,7 +171,7 @@ class ApiAuthController extends Controller
             'refresh_token' => null,
             'signature_key' => null,
         ]);
-    
+
         auth('api')->logout();
         JWTAuth::invalidate(JWTAuth::parseToken());
 
@@ -177,7 +184,7 @@ class ApiAuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function refresh()
-    { 
+    {
             $token = request()->bearerToken();
             $tokenDecoded = JWTAuth::getJWTProvider()->decode($token);
             $dataVertify = explode('.',$token);
@@ -202,14 +209,15 @@ class ApiAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token,$user)
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => \Carbon::now()->addDays(1),
             'status' => true,
-            'message' => 'Thành công'
+            'message' => 'Thành công',
+            // 'data'=> $user['id']
         ]);
     }
 }

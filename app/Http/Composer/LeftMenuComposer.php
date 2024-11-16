@@ -1,10 +1,10 @@
 <?php
- 
+
 namespace App\Http\Composer;
 
 use App\Models\User;
 use Illuminate\View\View;
- 
+
 class LeftMenuComposer
 {
     protected $leftSideMenu;
@@ -14,7 +14,7 @@ class LeftMenuComposer
     public function __construct() {
         $this->getLeftMenu();
     }
- 
+
     /**
      * Bind data to the view.
      */
@@ -25,7 +25,7 @@ class LeftMenuComposer
 
     public function getLeftMenu(){
         $item = [
-            
+
             'Thống kê' => [
                 'id' => '1',
                 'name' => trans('market.summary'),
@@ -40,7 +40,7 @@ class LeftMenuComposer
             'manager_products_rents_house' => [
                 'id' => 2,
                 'name' => trans('market.manager_products_rent'),
-                'url' => '', 
+                'url' => '',
                  'is_open' => '',
                  'url_name'=> 'product_rent',
                 'icon' => '<i class="fas fa-home"></i>',
@@ -52,6 +52,20 @@ class LeftMenuComposer
                         'url' =>'',
                         'url_name'=> 'product_rent',
                         'icon' => '<i class="fas fa-house-user"></i>',
+                        // 'permission' => User::canPermissionCompetencyReport(),
+                    ],
+                    [
+                        'name' => trans('quan li dang tin'),
+                        'url_name' =>'permissions/role',
+                         'url' => route('manage-postings'),
+                        'icon' => '<i class="fas fa-suitcase"></i>',
+                        // 'permission' => User::canPermissionCompetencyReport(),
+                    ],
+                    [
+                        'name' => trans('quan li nguoi dung'),
+                        'url_name' =>'permissions/role',
+                         'url' => route('manage-users'),
+                        'icon' => '<i class="fas fa-suitcase"></i>',
                         // 'permission' => User::canPermissionCompetencyReport(),
                     ],
                 ],
@@ -124,9 +138,38 @@ class LeftMenuComposer
                 //     ],
                 // ],
             ],
+            'categories' => [
+                'id' => 4,
+                'name' => trans('market.permission_role_manager'),
+                'url' => route('categories'),
+                'is_open' => '',
+                'url_name' => 'permissions',
+                'icon' => '<i class="fas fa-suitcase"></i>',
+                // 'permission' => ,
+                'url_item_child' => ['role', 'permissions'],
+                'item_childs' => [
+                    [
+                        'name' => trans('market.permission_manager'),
+                        'url_name' =>'permissions',
+                         'url' => route('permission.index'),
+                      'icon' => '<i class="fas fa-suitcase"></i>',
+                        // 'permission' => User::canPermissionCompetencyReport(),
+                    ],
+                    [
+                        'name' => trans('market.role_manager'),
+                        'url_name' =>'permissions/role',
+                         'url' => route('categories'),
+                        'icon' => '<i class="fas fa-suitcase"></i>',
+                        // 'permission' => User::canPermissionCompetencyReport(),
+                    ],
+
+                ],
+            ],
+
+
         ];
         $this->leftSideMenu = $item;
-        
+
         return $this->leftSideMenu;
 
     }

@@ -34,7 +34,7 @@ class CategoriesController extends Controller
                    ];
                 }
             }
-             
+
         return  $data;
     }
 
@@ -47,7 +47,7 @@ class CategoriesController extends Controller
         $order = $request->input('order','desc');
         $offset = $request->input('offset',0);
         $limit = $request->input('limit',20);
-        
+
         $query = Categories::query();
         $query->select(['name','type','status','parent_id','id']);
         if($search){
@@ -64,7 +64,7 @@ class CategoriesController extends Controller
             $row->html = $this->renderHTML($row);
         }
         return response()->json(['rows' => $rows , 'total' =>$count]);
-           
+
     }
 
 
@@ -73,7 +73,7 @@ class CategoriesController extends Controller
          if($row){
             foreach($row->children as $item){
                 $hasChild =  count($item->children) > 0 ? 'is-expandable' : '';
-                $html .= 
+                $html .=
                   ' <details class="tree-nav__item '.$hasChild.'" open>
                         <summary class="tree-nav__item-title ">
                             <div class="d-flex justify-content-between align-items-center">
@@ -82,14 +82,14 @@ class CategoriesController extends Controller
                                 </div>
                                 <button id="row_'.$item->id.'" onClick="deleteRow('.$item->id.')" class="btn"><i class="fas fa-trash"></i></button>
                             </div>
-                          
+
                         </summary>
                         '.$this->renderHTML($item).'
                     </details> ';
             }
          }
          return $html;
-        
+
     }
     public function remove(Request $request){
         if($request->type && $request->type == 'all'){
@@ -111,7 +111,7 @@ class CategoriesController extends Controller
             $remove->delete();
         }
         return response()->json(['status' => 'success','message' => 'Xóa danh mục thành công']);
-      
+
     }
 
     public function changeStatus(Request $request){
@@ -182,7 +182,8 @@ class CategoriesController extends Controller
     }
 
 
- 
 
-
+    public function quanli(Request $request){
+        echo 123;
+    }
 }

@@ -29,8 +29,8 @@ class Authenticate
             $userId = \auth()->id();
             if (!session()->get('profile')) {
                 $profile = User::whereId($userId)->disableCache()->first();
-                $group_permission = \Auth::user()->roles()->first()->code;
-                session(['group_permission' => $group_permission]);
+                // $group_permission = \Auth::user()->roles()->first()->code;
+                // session(['group_permission' => $group_permission]);
                 session(['profile' => $profile]);
                 session()->save();
             }

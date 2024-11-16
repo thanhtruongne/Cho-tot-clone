@@ -19,17 +19,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // \Schema::defaultStringLength(191);
-        // if (explode(':', config('app.url'))[0] == 'https') {
-        //     $this->app['request']->server->set('HTTPS', 'on');
-        //     \URL::forceScheme('https');
-        // }
+        \Schema::defaultStringLength(191);
+        if (explode(':', config('app.url'))[0] == 'https') {
+            $this->app['request']->server->set('HTTPS', 'on');
+            \URL::forceScheme('https');
+        }
 
         view()->composer('layouts.aside','App\Http\Composer\LeftMenuComposer');
 
-        // $modules =\Module::all();
-        // foreach ($modules as $module) {
-        //     $this->loadMigrationsFrom([$module->getPath() . '/Database/Migrations']);
-        // }
+        $modules =\Module::all();
+        foreach ($modules as $module) {
+            $this->loadMigrationsFrom([$module->getPath() . '/Database/Migrations']);
+        }
     }
 }

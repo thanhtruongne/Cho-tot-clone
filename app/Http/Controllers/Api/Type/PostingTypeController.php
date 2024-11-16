@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PostingType;
 use Illuminate\Http\Request;
 
+
 class PostingTypeController extends Controller
 {
     //
@@ -43,12 +44,12 @@ class PostingTypeController extends Controller
 
             $validatedData = $request->validate([
                 'code' => 'string|max:150',
-                'name' => 'string|max:150', 
-                'content' => 'string', 
-                'status' => 'nullable|integer|in:0,1', 
-                'cost' => 'numeric', 
-                'number_day' => 'nullable|integer', 
-                'rule_make_by_order' => 'nullable|integer', 
+                'name' => 'string|max:150',
+                'content' => 'string',
+                'status' => 'nullable|integer|in:0,1',
+                'cost' => 'numeric',
+                'number_day' => 'nullable|integer',
+                'rule_make_by_order' => 'nullable|integer',
             ]);
             $data = PostingType::find($id);
             if (!$data) {
@@ -87,4 +88,5 @@ class PostingTypeController extends Controller
         $data->delete();
         return response()->json(['message' => 'Product deleted successfully']);
     }
+
 }
