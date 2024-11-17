@@ -32,28 +32,23 @@ class DashboardController extends Controller
 
         //làm tạm
         $query = $instance::query();
-        $query->where('approved',1)->where('status',1);
+    
+        $query->select(['a.*','b.email','b.username','b.phone','b.address',\DB::raw("CONCAT(b.firstname,' ',b.lastname) as user_name")]);
         $query->from( $this->checkNameInstance($type,'slug').' as a');
-        $query->join('user as b','b.id','=','a.user_id');
+        $query->leftJoin('users as b','b.id','=','a.user_id');
         $query->leftJoin('posting_type as c','c.id','=','a.type_posting_id');
 
         if($check_user == 0){
             $query->whereNotIn('a.user_id',auth('api')->id());
         }
-        $query->where(function($subquery) use($date){
-            $subquery->whereExists(function($sub_child_query) use($date){
-                $sub_child_query->where('a.time_exipred','>',$date);
-            });
-            $subquery->orWhereNotNull('a.time_exipred');
+        // $query->where(function($subquery) use($date){
+        $query->whereExists(function($subquery) use($date){
+            $subquery->where('a.time_exipred','>',$date);
+            $subquery->orWhereNull('a.time_exipred'); // set tạm
         });
-        //check theo posting type là 2
-        // $query->whereHas('posting_product_expect',function($sub_query_2) use($date){
-        //      $sub_query_2->whereNull('a.time_exipred');
-        //      $sub_query_2->with(['posting_product_expect' => function($sub_query_3) use($date){
-        //         $sub_query_3->selectRaw('DATE_FORMAT(posting_product_expect.)')
-        //         $sub_query_3->where
-        //      }]);
+            // $subquery->orWhereNotNull('a.time_exipred');
         // });
+        $query->where('a.approved',1);
         $query->orderByRaw('c.id DESC, a.sort DESC');
 
         if($check_user == 0){
@@ -77,7 +72,7 @@ class DashboardController extends Controller
             }
             $row->cost = number_format($row->cost,2);
         }
-        return response()->json(['data' => $rows,'count' => count($rows->toArray())]);
+        return response()->json($rows);
     }
 
 
