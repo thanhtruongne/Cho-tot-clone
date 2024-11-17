@@ -65,6 +65,34 @@
             backToTop();
         });
 
+
+        $('body').click('click','#logout_data',function() {
+          var btn = $(this),
+          btn_text = btn.html();
+          btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+          $.ajax({
+              type: 'POST',
+              url: '{{route('logout')}}',
+              data : true,
+          }).done(function(data){
+              btn.prop('disabled', false).html(btn_text);
+              if(data){
+                  if(data.status == 'error'){
+                      show_message(data?.message, data?.status);
+                      return false;
+                  }
+                  else {
+                    show_message(data?.message, data?.status);
+                    window.location.href = data.redirect;
+                  }
+              }
+          }).fail(function(data) {
+              btn.prop('disabled', false).html(btn_text);
+              show_message('Lỗi hệ thống', 'error');
+              return false;
+          });
+        })
+
       })
      </script>
     @yield('scripts')

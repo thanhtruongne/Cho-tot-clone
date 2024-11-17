@@ -10,6 +10,7 @@ class PostingType extends Model
     use HasFactory;
     protected $table = 'posting_type';
 
+
     // protected $fillable = [
     //     'code',
     //     'name',

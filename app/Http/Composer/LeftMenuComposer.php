@@ -1,10 +1,10 @@
 <?php
- 
+
 namespace App\Http\Composer;
 
 use App\Models\User;
 use Illuminate\View\View;
- 
+
 class LeftMenuComposer
 {
     protected $leftSideMenu;
@@ -14,7 +14,7 @@ class LeftMenuComposer
     public function __construct() {
         $this->getLeftMenu();
     }
- 
+
     /**
      * Bind data to the view.
      */
@@ -25,9 +25,9 @@ class LeftMenuComposer
 
     public function getLeftMenu(){
         $item = [
-            
+
             'Thống kê' => [
-                'id' => '1',
+                'id' => 32,
                 'name' => trans('market.summary'),
                 'url' => route('dashboard'),
                 'url_name'=> 'dashboard',
@@ -38,9 +38,9 @@ class LeftMenuComposer
                 'url_child' => [],
             ],
             'manager_products_rents_house' => [
-                'id' => 2,
+                'id' => 1,
                 'name' => trans('market.manager_products_rent'),
-                'url' => '', 
+                'url' => '',
                  'is_open' => '',
                  'url_name'=> 'product_rent',
                 'icon' => '<i class="fas fa-home"></i>',
@@ -54,10 +54,24 @@ class LeftMenuComposer
                         'icon' => '<i class="fas fa-house-user"></i>',
                         // 'permission' => User::canPermissionCompetencyReport(),
                     ],
+                    [
+                        'name' => trans('Quản lí đăng tin'),
+                        'url_name' =>'permissions/role',
+                         'url' => route('manage-postings'),
+                        'icon' => '<i class="fas fa-suitcase"></i>',
+                        // 'permission' => User::canPermissionCompetencyReport(),
+                    ],
+                    [
+                        'name' => trans('Quản lí người dùng'),
+                        'url_name' =>'permissions/role',
+                         'url' => route('manage-users'),
+                        'icon' => '<i class="fas fa-suitcase"></i>',
+                        // 'permission' => User::canPermissionCompetencyReport(),
+                    ],
                 ],
             ],
             'manager_post_sold' => [
-                'id' => 4,
+                'id' => 2,
                 'name' => trans('market.manager_post_sold'),
                 'url' => '',
                  'is_open' => '',
@@ -90,21 +104,13 @@ class LeftMenuComposer
             ],
             'manager_users' => [
                 'id' => 3,
-                'name' => trans('market.manager_provider'),
+                'name' => trans('market.manager_users'),
                 'url' => '',
                  'is_open' => '',
                  'url_name'=> 'manager-user',
                 'icon' => '<i class="fas fa-users"></i>',
-                // 'permission' => ,
-                'url_item_child' => ['product_family_info', 'product_family_create'],
-                // 'item_childs' => [
-                //     [
-                //         'name' => trans('market.manger_provider_info'),
-                //         'url' =>'',
-                //         'icon' => 'fa fa-archive',
-                //         // 'permission' => User::canPermissionCompetencyReport(),
-                //     ],
-                // ],
+               
+        
             ],
             'categories' => [
                 'id' => 4,
@@ -113,19 +119,9 @@ class LeftMenuComposer
                 'is_open' => '',
                 'url_name' => 'categories',
                 'icon' => '<i class="fas fa-suitcase"></i>',
-                // 'permission' => ,
-                'url_item_child' => ['product_family_info', 'product_family_create'],
-                // 'item_childs' => [
-                //     [
-                //         'name' => trans('market.manager_sale_man_info'),
-                //         'url' =>'',
-                //         'icon' => 'fa fa-archive',
-                //         // 'permission' => User::canPermissionCompetencyReport(),
-                //     ],
-                // ],
             ],
-            'categories' => [
-                'id' => 4,
+            'perrmissions' => [
+                'id' => 5,
                 'name' => trans('market.permission_role_manager'),
                 'url' => route('categories'),
                 'is_open' => '',
@@ -148,11 +144,14 @@ class LeftMenuComposer
                         'icon' => '<i class="fas fa-suitcase"></i>',
                         // 'permission' => User::canPermissionCompetencyReport(),
                     ],
+
                 ],
             ],
+
+
         ];
         $this->leftSideMenu = $item;
-        
+
         return $this->leftSideMenu;
 
     }

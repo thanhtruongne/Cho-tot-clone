@@ -37,9 +37,9 @@ class DashboardController extends Controller
         $query->join('user as b','b.id','=','a.user_id');
         $query->leftJoin('posting_type as c','c.id','=','a.type_posting_id');
 
-//         if($check_user == 0){
-//             $query->whereNotIn('a.user_id',auth('api')->id());
-//         }
+        if($check_user == 0){
+            $query->whereNotIn('a.user_id',auth('api')->id());
+        }
         $query->where(function($subquery) use($date){
             $subquery->whereExists(function($sub_child_query) use($date){
                 $sub_child_query->where('a.time_exipred','>',$date);
@@ -56,24 +56,22 @@ class DashboardController extends Controller
         // });
         $query->orderByRaw('c.id DESC, a.sort DESC');
 
-//         if($check_user == 0){
-//             $model =  $instance::query();
-//             $model->where('user_id',auth('api')->id());
-//             $model->unionall($query);
-//             $rows = $query->paginate($limit);
-//         }
-//         else {
-//
-//         }
-        $rows = $query->paginate($limit);
-        dd($rows);
+        if($check_user == 0){
+            $model =  $instance::query();
+            $model->where('user_id',auth('api')->id());
+            $model->unionall($query);
+            $rows = $query->paginate($limit);
+        }
+        else {
+            $rows = $query->paginate($limit);
+        }
         foreach($rows as $key => $row){
             if($row->type_posting_id == 2){
                 foreach($row->posting_product_expect as $index => $item){
                     $time_1 = \Carbon::createFromTime($item->val_1);
                     $time_2 = \Carbon::createFromTime($item->val_2);
                     if(!$item && !$date->gte($time_1) && !$date->lte($time_2)) {
-//                        $rows->forget($key);
+                       $rows->forget($key);
                     }
                 }
             }

@@ -36,9 +36,16 @@ class ApiAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+
+     public function getAllUser()
+     {
+         $data = User::all();
+         return view('pages.auth.manageUsers', compact('data'));
+     }
+
     public function login(Request $request)
     {
-        $rules = [ 
+        $rules = [
             'email' => 'required|email',
             'password' => 'required'
         ];
@@ -67,7 +74,7 @@ class ApiAuthController extends Controller
         $vertify = explode('.',$token);
         $user->signature_key = end($vertify); // lưu chữ ký của token
         $user->save();
-       
+
         return $this->respondWithToken($token,$user);
     }
 
@@ -75,7 +82,7 @@ class ApiAuthController extends Controller
 
      // đăng ký   tự đăng  nhập set token
     public function register(Request $request){
-        $rules = [ 
+        $rules = [
             'email' => 'required|email',
             'password' => 'required',
             'firstname' => 'required',
@@ -109,8 +116,13 @@ class ApiAuthController extends Controller
             'lastname' => $lastname,
             'password' => password_hash($password,PASSWORD_DEFAULT)
         ]);
+<<<<<<< HEAD
     
+        if (!$token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $password ])) {
+=======
+
         if (! $token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $password ])) {
+>>>>>>> 2565f892d726f1879a32f92cc1b5b57e5ce4c180
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $user = \Auth::guard('api')->user();
@@ -128,15 +140,15 @@ class ApiAuthController extends Controller
 
     private function checkRefreshTokenAndSignatureKey($user){
         $agent = new Agent();
-           $payload = [
-                'sub' => $user->id,
-                'exp' => strtotime(\Carbon::now()->addDays(7)),
-                'ip' => \request()->ip(),
-                'device' => $agent->device()
-           ];
-           $refreshToken = JWTAuth::getJWTProvider()->encode($payload);
+        $payload = [
+            'sub' => $user->id,
+            'exp' => strtotime(\Carbon::now()->addDays(7)),
+            'ip' => \request()->ip(),
+            'device' => $agent->device()
+        ];
+        $refreshToken = JWTAuth::getJWTProvider()->encode($payload);
         return $refreshToken;
-   
+
     }
 
     /**
@@ -146,7 +158,7 @@ class ApiAuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth('api')->user());
+        return response()->json(auth(guard: 'api')->user());
     }
 
     /**
@@ -155,7 +167,7 @@ class ApiAuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout()
-    {   
+    {
         $id = auth('api')->id();
         \DB::table('users')->where(function($subquery) use($id){
             $subquery->whereId($id);
@@ -164,7 +176,7 @@ class ApiAuthController extends Controller
             'refresh_token' => null,
             'signature_key' => null,
         ]);
-    
+
         auth('api')->logout();
         JWTAuth::invalidate(JWTAuth::parseToken());
 
@@ -177,7 +189,7 @@ class ApiAuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function refresh()
-    { 
+    {
             $token = request()->bearerToken();
             $tokenDecoded = JWTAuth::getJWTProvider()->decode($token);
             $dataVertify = explode('.',$token);
