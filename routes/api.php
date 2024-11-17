@@ -50,11 +50,11 @@ Route::group([
 });
 
 Route::group([
-  // 'middleware' => ['api', 'jwt.vertify'],
+  'middleware' => ['api', 'jwt.vertify'],
   'prefix' => 'auth'
 ], function ($router) {
   Route::get('/user', [ApiAuthController::class, 'me'])->name('fe.get-user');
-  
+
   Route::group(['prefix' => '/product'], function () {
 
 
@@ -129,8 +129,8 @@ Route::group([
     Route::post('/update-product-rent-house-comment/{id}', [ProductRentHouseCommentController::class, 'updateProductRentHouseComment']);
     Route::get('/get-product-rent-user-id/{id}', [ProductRentHouseController::class, 'getDataProductRentByUserId']);
     Route::get('/get-product-rent-detail/{id}', [ProductRentHouseController::class, 'getDetailProductRentById']);
-   
-   
+
+
     //product_jobs
     Route::post('/add-product-jobs', [ProductJobController::class, 'addProductJobs']);
     Route::post('/update-product-jobs/{id}', [ProductJobController::class, 'updateProductJobs']);

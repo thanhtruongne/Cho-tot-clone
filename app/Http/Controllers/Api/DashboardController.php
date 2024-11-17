@@ -20,7 +20,7 @@ class DashboardController extends Controller
             return response()->json(['status' => 'error','message' => 'Có lỗi xảy ra']);
         }
         $date = \Carbon::now();
-       
+
 
         $name_model = $this->checkNameInstance($type);
         $instance = $this->handleMadeClass('Models',$name_model);
@@ -28,7 +28,7 @@ class DashboardController extends Controller
         // trả ra sớ lượng bài đã đăng của current user;
         $check_user = $this->checkUserPostData($type);
         // trường hợp này làm sau
-      
+
 
         //làm tạm
         $query = $instance::query();
@@ -36,10 +36,10 @@ class DashboardController extends Controller
         $query->from( $this->checkNameInstance($type,'slug').' as a');
         $query->join('user as b','b.id','=','a.user_id');
         $query->leftJoin('posting_type as c','c.id','=','a.type_posting_id');
-     
-        if($check_user == 0){
-            $query->whereNotIn('a.user_id',auth('api')->id());
-        }
+
+//         if($check_user == 0){
+//             $query->whereNotIn('a.user_id',auth('api')->id());
+//         }
         $query->where(function($subquery) use($date){
             $subquery->whereExists(function($sub_child_query) use($date){
                 $sub_child_query->where('a.time_exipred','>',$date);
@@ -50,28 +50,30 @@ class DashboardController extends Controller
         // $query->whereHas('posting_product_expect',function($sub_query_2) use($date){
         //      $sub_query_2->whereNull('a.time_exipred');
         //      $sub_query_2->with(['posting_product_expect' => function($sub_query_3) use($date){
-        //         $sub_query_3->selectRaw('DATE_FORMAT(posting_product_expect.)')    
-        //         $sub_query_3->where 
+        //         $sub_query_3->selectRaw('DATE_FORMAT(posting_product_expect.)')
+        //         $sub_query_3->where
         //      }]);
         // });
         $query->orderByRaw('c.id DESC, a.sort DESC');
 
-        if($check_user == 0){
-            $model =  $instance::query();
-            $model->where('user_id',auth('api')->id());
-            $model->unionall($query);
-            $rows = $query->paginate($limit);
-        }
-        else {
-            $rows = $query->paginate($limit);
-        }
+//         if($check_user == 0){
+//             $model =  $instance::query();
+//             $model->where('user_id',auth('api')->id());
+//             $model->unionall($query);
+//             $rows = $query->paginate($limit);
+//         }
+//         else {
+//
+//         }
+        $rows = $query->paginate($limit);
+        dd($rows);
         foreach($rows as $key => $row){
             if($row->type_posting_id == 2){
                 foreach($row->posting_product_expect as $index => $item){
                     $time_1 = \Carbon::createFromTime($item->val_1);
                     $time_2 = \Carbon::createFromTime($item->val_2);
                     if(!$item && !$date->gte($time_1) && !$date->lte($time_2)) {
-                       $rows->forget($key);
+//                        $rows->forget($key);
                     }
                 }
             }
@@ -83,7 +85,7 @@ class DashboardController extends Controller
 
     // get data address của data theo ward, district, province
     public function getAddress(Request $request) {
-         
+
     }
 
     private function checkNameInstance(int $integer,string $type = 'model'){
