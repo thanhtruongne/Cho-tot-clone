@@ -50,7 +50,7 @@ Route::group([
 });
 
 Route::group([
-  // 'middleware' => ['api', 'jwt.vertify'],
+  'middleware' => ['api', 'jwt.vertify','logvisit:api'],
   'prefix' => 'auth'
 ], function ($router) {
   Route::get('/user', [ApiAuthController::class, 'me'])->name('fe.get-user');

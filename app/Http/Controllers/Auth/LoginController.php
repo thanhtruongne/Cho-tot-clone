@@ -22,6 +22,8 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+
+        
         $rules = [
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
@@ -31,18 +33,41 @@ class LoginController extends Controller
             'username.required' => trans('auth.username_not_blank'),
         ];
 
-
+        
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()->all()[0] , 'status' => 'error']);
         }
         $password = $request->post('password');
         $username = $request->post('username');
-        $user = User::whereUsername($username)->first(['id', 'username','last_login','status','firstname','lastname','username']);
+        
+        $user = User::whereUsername($username)->first(['id', 'username','last_login','status','firstname','lastname','username','role']);
+        $user_View = "user_block_by_".$user->id."_cache_".$user->username;
+        
+        if(cache()->has($user_View)) {
+             return response()->json(['message' =>  trans('auth.blocked_by_time'), 'status' => 'error']);
+        }
+
+        //đăng nhập sai qua 5 lần
+        if(request()->session()->get('login_attempts') > 5) {       
+             if(!cache()->has($user_View)) {
+                cache()->put($user_View,true,Carbon::now()->addMinutes(10));
+                \Artisan::call('modelCache:clear --model=App\Models\User');
+                
+                request()->session()->put(['login_attempts' => 0]);
+                request()->session()->save(); //  test ở local
+                return response()->json(['message' =>  trans('auth.blocked_by_time'), 'status' => 'error']);
+             }
+        }
+
         if ($user) { //Kiểm tra username tồn tại và không bị khoá
             if ($user->status == 0) {
                 $this->sendFailedLoginResponse($request);
                 return response()->json(['message' =>  trans('auth.blocked'), 'status' => 'error']);
+            }
+            if(!in_array($user->username,['admin','superadmin'])){
+                $this->sendFailedLoginResponse($request);
+                return response()->json(['message' =>  trans('auth.vertify_fail'), 'status' => 'error']);
             }
             elseif(isset($user) && $user->status != 0){ 
                 if ($user->login($username,$password)) {
@@ -71,6 +96,10 @@ class LoginController extends Controller
                     // dd($targetUrl);
                     return response()->json(['message' =>  trans('auth.success'), 'status' => 'success','redirect' => route('dashboard')]);
                 }
+                else {
+                    $this->sendFailedLoginResponse($request);
+                    return response()->json(['message' =>  trans('auth.vertify_fail'), 'status' => 'error']);
+                }
             }
         }
         else {
@@ -81,24 +110,24 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        $model = LoginHistory::where('user_id', '=', \Auth::id())->orderBy('created_at', 'DESC')->first();
+        $id = auth('web')->id();
+        $model = LoginHistory::where('user_id', '=', $id)->orderBy('created_at', 'DESC')->first();
         if ($model) {
             $model->updated_at = time();
             $model->save();
         }
         $sessionId = session()->getId();
+        UserActivities::endUserActivityDuration($id,$sessionId);
         session()->flush();
-        $this->guard()->logout();
+        auth('web')->logout();
         $request->session()->invalidate();
-
-        UserActivities::endUserActivityDuration(\Auth::id(),$sessionId);
-        return  redirect(route('login'));
+        return response()->json(['status' => 'success','redirect' => route('login')]);
     }
 
  
     public function showLoginForm()
     {
-        if (\auth()->check()) {
+        if (\auth('web')->check()) {
             return redirect()->route('dashboard');
         }
         return view('pages.auth.login');

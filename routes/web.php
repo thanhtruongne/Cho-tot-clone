@@ -2,6 +2,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductElectronicController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +23,11 @@ Route::prefix('system')->group(function () {
     Route::post('/login',[LoginController::class,'login'])->name('post.login');
  
 
-    Route::group(['middleware' => ['auth']],function(){
+    Route::group(['middleware' => ['auth','logvisit:admin']],function(){
+        Route::post('/logout',[LoginController::class,'logout'])->name('logout');
+
+ 
+
        Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
 
        Route::get('/categories',[CategoriesController::class,'index'])->name('categories');
@@ -35,6 +40,14 @@ Route::prefix('system')->group(function () {
        Route::post('/categories/change-status',[CategoriesController::class,'changeStatus'])->name('categories.change.status');
        Route::post('/categories/remove',[CategoriesController::class,'remove'])->name('categories.remove');
        Route::post('/categories/removeSelectAll',[CategoriesController::class,'removeSelectAll'])->name('categories.remove.select');
+   
+
+
+
+       //User
+       Route::get('/user',[UserController::class,'index'])->name('user.index');
+       Route::get('/user/getData',[UserController::class,'getData'])->name('user.getData');
+       Route::post('/user/remove',[UserController::class,'remove'])->name('user.remove');
    
     });
    

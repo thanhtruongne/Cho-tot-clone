@@ -28,24 +28,25 @@ class DashboardController extends Controller
         // trả ra sớ lượng bài đã đăng của current user;
         $check_user = $this->checkUserPostData($type);
         // trường hợp này làm sau
-      
-
         //làm tạm
         $query = $instance::query();
-        $query->where('approved',1)->where('status',1);
+        $query->select(['a.*','b.username','b.email','c.status as posting_type','b.phone','b.address',\DB::Raw("CONCAT(b.firstname,' ',b.lastname) as user_name"),"b.status as user_status"]);
         $query->from( $this->checkNameInstance($type,'slug').' as a');
-        $query->join('user as b','b.id','=','a.user_id');
+        $query->leftJoin('users as b','b.id','=','a.user_id');
         $query->leftJoin('posting_type as c','c.id','=','a.type_posting_id');
-     
+    
         if($check_user == 0){
             $query->whereNotIn('a.user_id',auth('api')->id());
         }
         $query->where(function($subquery) use($date){
             $subquery->whereExists(function($sub_child_query) use($date){
                 $sub_child_query->where('a.time_exipred','>',$date);
+                $sub_child_query->orWhereNull('a.time_exipred'); // set tạm
             });
-            $subquery->orWhereNotNull('a.time_exipred');
+            // $subquery->orWhereNotNull('a.time_exipred');
+           
         });
+        $query->where('a.approved',1);
         //check theo posting type là 2
         // $query->whereHas('posting_product_expect',function($sub_query_2) use($date){
         //      $sub_query_2->whereNull('a.time_exipred');
@@ -54,7 +55,7 @@ class DashboardController extends Controller
         //         $sub_query_3->where 
         //      }]);
         // });
-        $query->orderByRaw('c.id DESC, a.sort DESC');
+        // $query->orderByRaw('c.id DESC, a.sort DESC');
 
         if($check_user == 0){
             $model =  $instance::query();

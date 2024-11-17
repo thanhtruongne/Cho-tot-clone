@@ -110,7 +110,7 @@ class ApiAuthController extends Controller
             'password' => password_hash($password,PASSWORD_DEFAULT)
         ]);
     
-        if (! $token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $password ])) {
+        if (!$token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $password ])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $user = \Auth::guard('api')->user();
@@ -128,13 +128,13 @@ class ApiAuthController extends Controller
 
     private function checkRefreshTokenAndSignatureKey($user){
         $agent = new Agent();
-           $payload = [
-                'sub' => $user->id,
-                'exp' => strtotime(\Carbon::now()->addDays(7)),
-                'ip' => \request()->ip(),
-                'device' => $agent->device()
-           ];
-           $refreshToken = JWTAuth::getJWTProvider()->encode($payload);
+        $payload = [
+            'sub' => $user->id,
+            'exp' => strtotime(\Carbon::now()->addDays(7)),
+            'ip' => \request()->ip(),
+            'device' => $agent->device()
+        ];
+        $refreshToken = JWTAuth::getJWTProvider()->encode($payload);
         return $refreshToken;
    
     }

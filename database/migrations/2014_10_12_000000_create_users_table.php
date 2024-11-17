@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('username')->nullable()->unique();
-            $table->integer('role')->default(2)->comment('set tạm role, 1 là admin , 2 là user');
+            // $table->integer('role')->default(2)->comment('set tạm role, 1 là admin , 2 là user');
             $table->text('avatar')->nullable();
             $table->string('firstname',150)->nullable();
             $table->string('lastname',150)->nullable(); 
