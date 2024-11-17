@@ -89,6 +89,6 @@ class PostingTypeDatabaseSeeder extends Seeder
         foreach($rule_type_2 as $item){
             \DB::table('posting_data_action')->insert($item);
         }
-        
+
     }
 }

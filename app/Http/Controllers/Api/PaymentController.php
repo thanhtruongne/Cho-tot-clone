@@ -1,9 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Http\Controllers\Api\Products\ProductRentHouseController;
 use App\Http\Controllers\Controller;
-use App\Models\Payment;
 use App\Models\PostingProductExpect;
 use App\Models\ProductRentHouse;
 use Illuminate\Http\Request;
@@ -19,12 +17,12 @@ class PaymentController extends Controller
 
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         $vnp_Returnurl = "http://localhost:8000/api/zalopay/handle-return-url";
-        $vnp_TmnCode = "IT1YF6TR";  
+        $vnp_TmnCode = "IT1YF6TR";
         $vnp_HashSecret = "89M6MIY98WQOMEQS0AW9LGO785JVA83Q";
         $vnp_Inv_Customer =$request->input('user_id');
         $vnp_TxnRef = $request->input('vnp_txnref');
         $vnp_Amount = $request->input('vnp_amount');
-        
+
         // $username = $request->input('username');
         // $product_id = $request->input('product_id');
         // $name_product = $request->input('name_product');
@@ -82,7 +80,7 @@ class PaymentController extends Controller
 
         $vnp_Url = $vnp_Url . "?" . $query;
         if (isset($vnp_HashSecret)) {
-            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //  
+            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
         $returnData = array(
@@ -129,10 +127,14 @@ class PaymentController extends Controller
                             $data[] = new PostingProductExpect(['posting_data_action_id' =>$item , 'cron_completed' => null ]);
                         }
                         $model->posting_product_expect()->saveMany($data);
-                        
+
                     }
                 }
+<<<<<<< HEAD
+                $model->save();
+=======
                          
+>>>>>>> de474d46c541a8b790343d77a92a2b084d1b787f
             }
             $url = env('APP_URL_FRONTEND') . "/myads" ;
 

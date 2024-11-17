@@ -2,16 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
-use Illuminate\Support\Str;
-
-
 
 class ProductRentHouse extends Model
 {
-    // use Cachable;   
+    // use Cachable;
     protected $table = 'product_rent_house';
     protected $fillable = [
         'day_package_expirition',
@@ -28,8 +24,6 @@ class ProductRentHouse extends Model
         'approved',
         'type_rental',
         'province_code',
-        'time_exipred',
-        // 'district_code',
         'ward_code',
         'category_id',
         'subdivision_code',
@@ -54,6 +48,7 @@ class ProductRentHouse extends Model
         'cost',
         'cost_deposit',
         'rule_compensation',
+        // 'district_code',
         'type_user',
     ];
 
@@ -69,7 +64,7 @@ class ProductRentHouse extends Model
     {
         do {
             $code = 'RENT_'.now().'_'.rand(1000, 9999);
-        } while (self::where('code', $code)->exists()); 
+        } while (self::where('code', $code)->exists());
         return $code;
     }
 

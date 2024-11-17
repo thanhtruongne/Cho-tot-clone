@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\Type;
 use App\Http\Controllers\Controller;
 use App\Models\PostingType;
 use Illuminate\Http\Request;
-use App\Models\PostingDataAction;
 
 
 class PostingTypeController extends Controller
@@ -45,12 +44,12 @@ class PostingTypeController extends Controller
 
             $validatedData = $request->validate([
                 'code' => 'string|max:150',
-                'name' => 'string|max:150', 
-                'content' => 'string', 
-                'status' => 'nullable|integer|in:0,1', 
-                'cost' => 'numeric', 
-                'number_day' => 'nullable|integer', 
-                'rule_make_by_order' => 'nullable|integer', 
+                'name' => 'string|max:150',
+                'content' => 'string',
+                'status' => 'nullable|integer|in:0,1',
+                'cost' => 'numeric',
+                'number_day' => 'nullable|integer',
+                'rule_make_by_order' => 'nullable|integer',
             ]);
             $data = PostingType::find($id);
             if (!$data) {
@@ -89,6 +88,9 @@ class PostingTypeController extends Controller
         $data->delete();
         return response()->json(['message' => 'Product deleted successfully']);
     }
+<<<<<<< HEAD
+
+=======
     public function getDataPostingType(Request $request)
     {
         if($request->type && $request->type == 1){
@@ -101,4 +103,5 @@ class PostingTypeController extends Controller
        
         return response()->json(['data' => $data]);
     }
+>>>>>>> de474d46c541a8b790343d77a92a2b084d1b787f
 }
