@@ -52,7 +52,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(json_decode($data, true) as $item)
+            @foreach($data as $item)
                 <tr>
                     <td>{{ $item['id'] }}</td>
                     <td>{{ $item['title'] }}</td>
@@ -75,6 +75,7 @@
             @endforeach
         </tbody>
     </table>
+    {{ $data->links() }}
 </div>
 
 

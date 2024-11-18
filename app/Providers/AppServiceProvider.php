@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
+use Illuminate\Pagination\Paginator;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -31,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
         foreach ($modules as $module) {
             $this->loadMigrationsFrom([$module->getPath() . '/Database/Migrations']);
         }
+        Paginator::useBootstrap();
     }
 }

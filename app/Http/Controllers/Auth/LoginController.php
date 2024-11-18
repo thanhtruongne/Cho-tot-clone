@@ -111,13 +111,11 @@ class LoginController extends Controller
         }
         $request->session()->put('login_attempts', $attempts + 1);
     }
-
     public function manageUsers()
     {
-        $data = User::all();
+        $data = User::paginate(2);
         return view('pages.auth.manageUsers', compact('data'));
     }
-
 
     public function manageUsersAdd(Request $request)
     {
