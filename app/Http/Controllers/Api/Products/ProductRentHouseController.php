@@ -72,16 +72,8 @@ class ProductRentHouseController extends Controller
             $data = ProductRentHouse::create($validatedData);
 
             DB::commit();
-<<<<<<< HEAD
             return response()->json(['message' => 'Product added successfully', 'data' => $data]);
-=======
-            return response()->json(['message' => "Thêm sản phẩm thành công", 'data' => $data] );
-            // if ($data) {
-            //     return response()->json(['message' => "Thêm sản phẩm thành công", 'data' => $data]);
-            // } else {
-            //     return response()->json(['data' => "Thêm asd phẩm asdsad công"]);
-            // }
->>>>>>> de474d46c541a8b790343d77a92a2b084d1b787f
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
@@ -158,21 +150,10 @@ class ProductRentHouseController extends Controller
         return response()->json(['data' => $data]);
     }
 
-<<<<<<< HEAD
     public function getDataProductRentById($id)
     {
         $data = ProductRentHouse::where('id', operator: $id)->get();
         return response()->json(['data' => $data]);
     }
-=======
-    public function getDetailProductRentById($id)
-    {
-        $data = ProductRentHouse::find($id);
-        return response()->json(['data' => $data,"status" => 'success']);
-    }
 
-
-
-
->>>>>>> de474d46c541a8b790343d77a92a2b084d1b787f
 }
