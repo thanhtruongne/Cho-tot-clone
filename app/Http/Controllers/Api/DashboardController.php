@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $instance = $this->handleMadeClass('Models',$name_model);
 
         // trả ra sớ lượng bài đã đăng của current user;
-        $check_user = $this->checkUserPostData($type);
+        // $check_user = $this->checkUserPostData($type);
         // trường hợp này làm sau
 
 
@@ -38,9 +38,9 @@ class DashboardController extends Controller
         $query->leftJoin('users as b','b.id','=','a.user_id');
         $query->leftJoin('posting_type as c','c.id','=','a.type_posting_id');
 
-        if($check_user == 0){
-            $query->whereNotIn('a.user_id',auth('api')->id());
-        }
+        // if($check_user == 0){
+        //     $query->whereNotIn('a.user_id',auth('api')->id());
+        // }
         // $query->where(function($subquery) use($date){
         $query->whereExists(function($subquery) use($date){
             $subquery->where('a.time_exipred','>',$date);
@@ -51,15 +51,15 @@ class DashboardController extends Controller
         $query->where('a.approved',1);
         $query->orderByRaw('c.id DESC, a.sort DESC');
 
-        if($check_user == 0){
-            $model =  $instance::query();
-            $model->where('user_id',auth('api')->id());
-            $model->unionall($query);
+        // if($check_user == 0){
+        //     $model =  $instance::query();
+        //     $model->where('user_id',auth('api')->id());
+        //     $model->unionall($query);
+        //     $rows = $query->paginate($limit);
+        // }
+        // else {
             $rows = $query->paginate($limit);
-        }
-        else {
-            $rows = $query->paginate($limit);
-        }
+        // }
         foreach($rows as $key => $row){
             if($row->type_posting_id == 2){
                 foreach($row->posting_product_expect as $index => $item){
@@ -98,7 +98,7 @@ class DashboardController extends Controller
 
     private function checkUserPostData($type){
         $slug_name = $this->checkNameInstance($type,'slug');
-        $count_product = User::where(['id' => auth('api')->id(),'status' => 1])->first(['id'])->{$slug_name}->count() ?? null;
+        $count_product = User::where(['id' => auth('api')->id(),'status' => 1])->first()->{$slug_name}->count() ?? null;
         return $count_product;
     }
 
