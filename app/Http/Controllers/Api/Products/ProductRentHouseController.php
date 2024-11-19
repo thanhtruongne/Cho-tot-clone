@@ -73,11 +73,7 @@ class ProductRentHouseController extends Controller
 
             DB::commit();
             return response()->json(['message' => 'Product added successfully', 'data' => $data]);
-            // if ($data) {
-            //     return response()->json(['message' => "Thêm sản phẩm thành công", 'data' => $data]);
-            // } else {
-            //     return response()->json(['data' => "Thêm asd phẩm asdsad công"]);
-            // }
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
@@ -153,6 +149,5 @@ class ProductRentHouseController extends Controller
         $data = ProductRentHouse::where('user_id', $id)->get();
         return response()->json(['data' => $data]);
     }
-
 
 }

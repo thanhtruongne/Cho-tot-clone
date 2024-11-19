@@ -2,6 +2,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductElectronicController;
 use App\Http\Controllers\Api\Products\ProductRentHouseController;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +24,11 @@ Route::prefix('system')->group(function () {
     Route::post('/login',[LoginController::class,'login'])->name('post.login');
 
 
-    Route::group(['middleware' => ['auth']],function(){
+    Route::group(['middleware' => ['auth','logvisit:admin']],function(){
+        Route::post('/logout',[LoginController::class,'logout'])->name('logout');
+
+ 
+
        Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
 
        Route::get('/categories',[CategoriesController::class,'index'])->name('categories');

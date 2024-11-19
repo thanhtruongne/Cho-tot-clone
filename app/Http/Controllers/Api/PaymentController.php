@@ -130,11 +130,7 @@ class PaymentController extends Controller
 
                     }
                 }
-<<<<<<< HEAD
-                $model->save();
-=======
-                         
->>>>>>> de474d46c541a8b790343d77a92a2b084d1b787f
+
             }
             $url = env('APP_URL_FRONTEND') . "/myads" ;
 
