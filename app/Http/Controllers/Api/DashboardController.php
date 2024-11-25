@@ -37,36 +37,23 @@ class DashboardController extends Controller
         $query->from( $this->checkNameInstance($type,'slug').' as a');
         $query->leftJoin('users as b','b.id','=','a.user_id');
         $query->leftJoin('posting_type as c','c.id','=','a.type_posting_id');
-
-        // if($check_user == 0){
-        //     $query->whereNotIn('a.user_id',auth('api')->id());
-        // }
-        // $query->where(function($subquery) use($date){
         $query->whereExists(function($subquery) use($date){
-            $subquery->where('a.time_exipred','>',$date);
-            $subquery->orWhereNull('a.time_exipred'); // set tạm
+            $subquery->where('a.time_exipred','>=',$date);
+            $subquery->orWhereNotNull('a.time_exipred'); // set tạm
         });
-            // $subquery->orWhereNotNull('a.time_exipred');
-        // });
         $query->where('a.approved',1);
-        $query->orderByRaw('c.id DESC, a.sort DESC');
+        $query->where('a.status',1);
+        $query->orderByRaw('a.updated_at ASC, a.type_posting_id DESC');
 
-        // if($check_user == 0){
-        //     $model =  $instance::query();
-        //     $model->where('user_id',auth('api')->id());
-        //     $model->unionall($query);
-        //     $rows = $query->paginate($limit);
-        // }
-        // else {
-            $rows = $query->paginate($limit);
-        // }
+
+        $rows = $query->paginate($limit);
         foreach($rows as $key => $row){
-            if($row->type_posting_id == 2){
+            if($row->type_posting_id == 1){
                 foreach($row->posting_product_expect as $index => $item){
                     $time_1 = \Carbon::createFromTime($item->val_1);
                     $time_2 = \Carbon::createFromTime($item->val_2);
-                    if(!$item && !$date->gte($time_1) && !$date->lte($time_2)) {
-                       $rows->forget($key);
+                    if($item && $date->gte($time_1) && !date->lte($time_2)) {
+                        $rows->updated_at = \Carbon::now();
                     }
                 }
             }

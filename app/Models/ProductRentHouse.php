@@ -42,13 +42,13 @@ class ProductRentHouse extends Model
         'diff_situation',
         'land_area',
         'usable_area',
-        // 'status',
+        'status',
         'horizontal',
         'length',
         'cost',
         'cost_deposit',
-        'rule_compensation',
-        // 'district_code',
+        'rule_compensation',    
+        'district_code',
         'type_user',
     ];
 

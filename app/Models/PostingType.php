@@ -11,10 +11,18 @@ class PostingType extends Model
     protected $table = 'posting_type';
 
 
-    // protected $fillable = [
-    //     'code',
-    //     'name',
-    // ];
+    protected $fillable = [
+        'code',
+        'benefits',
+        'cost',
+        'rule_day',
+        'type',
+        'name',
+    ];
+
+    protected $casts = [
+        'rule_day' => 'json'
+    ];
 
 
     public function posting_data_type(){

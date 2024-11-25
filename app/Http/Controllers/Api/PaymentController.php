@@ -107,7 +107,8 @@ class PaymentController extends Controller
             $productId = isset($orderInfoParts[1]) ? $orderInfoParts[1] : null;
             $day = isset($orderInfoParts[2]) ? $orderInfoParts[2] : null;
             $type_posting_id = isset($orderInfoParts[3]) ? $orderInfoParts[3] : null;
-            $count_post = $request->vnp_OrderType;
+            $hours = $request->hours && !is_array($request->hours) ? explode(',',$request->hours) : [];
+            // $count_post = $request->vnp_OrderType;
             if ($productId) {
                 $model = ProductRentHouse::findOrFail($productId);
                 $model->approved = 1;
@@ -118,26 +119,25 @@ class PaymentController extends Controller
                     $model->day_posting_type = $day;
                     $model->time_exipred = \Carbon::now()->addDays($day);
                     $model->save();
-                }
-                else {// dạng tin ưu tiên chọn các dạng khung giờ 8 - 10h có data trong seeder sẵn
-                    $hours = $request->hours && !is_array($request->hours) ? explode(',',$request->hours) : [];
-                    $model->number_pick_post = $count_post;
-                    if($model->save() && isset($hours) && count($hours) > 0){
+
+                    // tin ưu tiên
+                    if(!empty($hours) && $request->priority_post && $model) {
                         foreach($hours as $item){
                             $data[] = new PostingProductExpect(['posting_data_action_id' =>$item , 'cron_completed' => null ]);
                         }
                         $model->posting_product_expect()->saveMany($data);
-
                     }
                 }
-<<<<<<< HEAD
-                $model->save();
-=======
-                         
->>>>>>> de474d46c541a8b790343d77a92a2b084d1b787f
+                //tin vip
+                elseif($model->type_posting_id == 3) {
+                    $model->day_posting_type = $day;
+                    $model->time_exipred = \Carbon::now()->addDays($day);
+                    //set tạm theo thời gian tạo
+                    // $model->sort = 100;//
+                    $model->save();
+                }
             }
             $url = env('APP_URL_FRONTEND') . "/myads" ;
-
             return redirect($url);
         } else {
             return response()->json(['data' => '402']);

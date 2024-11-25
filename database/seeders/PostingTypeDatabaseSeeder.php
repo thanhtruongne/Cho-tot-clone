@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Faker\Factory;
+
+use App\Models\PostingType;
 use Illuminate\Database\Seeder;
 
 class PostingTypeDatabaseSeeder extends Seeder
@@ -14,14 +16,14 @@ class PostingTypeDatabaseSeeder extends Seeder
     {
        \DB::table('posting_type')->truncate();
        \DB::table('posting_data_action')->truncate();
-       $faker = \Faker\Factory::create();
        $data = [
             [
                 'id' => 1,
                 'code' =>''.\Str::random(10).'',
-                'name' => 'Tin Vip',
+                'name' => 'Tin thường',
+                'benefits' => 'Tin đăng thường, hiển thị với kích thước tiêu chuẩn',
                 'cost' => 15000,
-                'rule_day' => json_encode('[1,3,7]'),
+                'rule_day' => [1,3,7],
                 'type' => 1,
 
             ],
@@ -29,6 +31,7 @@ class PostingTypeDatabaseSeeder extends Seeder
                 'id' => 2,
                 'code' =>  ''.\Str::random(10).'',
                 'name' => 'Tin ưu tiên theo khung giờ (không áp dụng cho tin Vip)',
+                'benefits' => 'Áp dụng cho tin đăng thường',
                 'cost' => 30000,
                 'rule_day' => null,
                 'type' => 2,
@@ -36,9 +39,10 @@ class PostingTypeDatabaseSeeder extends Seeder
             [
                 'id' => 3,
                 'code' =>  ''.\Str::random(10).'',
-                'name' => 'Gói load tin (theo số lần)',
-                'cost' => 30000,
-                'rule_day' => null,
+                'name' => 'Tin Vip',
+                'benefits' => 'Tin đăng Vip hiển thị ưu tiên',
+                'cost' => 50000,
+                'rule_day' => [1,3,7],
                 'type' => 3,
             ]
         ];
@@ -85,7 +89,9 @@ class PostingTypeDatabaseSeeder extends Seeder
                 'val_2' => 18,
             ],
         ];
-        \DB::table('posting_type')->upsert($data,'code',['name','cost','rule_day','type']);
+        foreach($data as $value){
+            PostingType::create($value);
+        }
         foreach($rule_type_2 as $item){
             \DB::table('posting_data_action')->insert($item);
         }

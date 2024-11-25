@@ -23,8 +23,6 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-
-        
         $rules = [
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
@@ -42,7 +40,7 @@ class LoginController extends Controller
         $password = $request->post('password');
         $username = $request->post('username');
         
-        $user = User::whereUsername($username)->first(['id', 'username','last_login','status','firstname','lastname','username','role']);
+        $user = User::whereUsername($username)->first(['id', 'username','last_login','status','firstname','lastname','username']);
         $user_View = "user_block_by_".$user->id."_cache_".$user->username;
         
         if(cache()->has($user_View)) {
