@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Type;
 
 use App\Http\Controllers\Controller;
+use App\Models\PostingDataAction;
 use App\Models\PostingType;
 use Illuminate\Http\Request;
 
