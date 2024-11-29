@@ -88,9 +88,7 @@ class PostingTypeController extends Controller
         $data->delete();
         return response()->json(['message' => 'Product deleted successfully']);
     }
-<<<<<<< HEAD
 
-=======
     public function getDataPostingType(Request $request)
     {
         if($request->type && $request->type == 1){
@@ -99,9 +97,6 @@ class PostingTypeController extends Controller
         else {
             $data = PostingDataAction::where('post_id',$request->type)->get(['id','name']);
         }
-
-       
         return response()->json(['data' => $data]);
     }
->>>>>>> de474d46c541a8b790343d77a92a2b084d1b787f
 }

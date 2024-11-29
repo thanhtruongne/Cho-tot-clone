@@ -30,9 +30,10 @@ class ProductRentHouseController extends Controller
 
     public function addProductRent(Request $request)
     {
+    
         DB::beginTransaction();
         try {
-            $validatedData = $request->validate([
+            $this->validateRequest([
                 'title' => 'required|string|max:255',
                 'content' => 'required|string',
                 'user_id' => 'required|exists:users,id',
@@ -64,13 +65,17 @@ class ProductRentHouseController extends Controller
                 'usable_area' => 'nullable|numeric|min:0',
                 'horizontal' => 'nullable|numeric|min:0',
                 'length' => 'nullable|numeric|min:0',
-                'cost' => 'required|numeric|min:0',
+                // 'cost' => 'required|numeric|min:0',
                 'cost_deposit' => 'nullable|numeric|min:0',
                 'rule_compensation' => 'nullable|integer|min:0',
-            ]);
-
-            $data = ProductRentHouse::create($validatedData);
-
+            ],$request,ProductRentHouse::getAttributeName());
+    
+    
+    
+            $data = ProductRentHouse::create($request->all());
+            // $data->fill($request->all());
+            // $data->save();
+            // $data = \DB::table('product_rent_house')->insert($request->all());
             DB::commit();
             return response()->json(['message' => 'Product added successfully', 'data' => $data]);
 

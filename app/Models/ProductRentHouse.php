@@ -7,8 +7,10 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class ProductRentHouse extends Model
 {
-    // use Cachable;
+    use Cachable;
     protected $table = 'product_rent_house';
+    protected $primaryKey = 'id';
+    
     protected $fillable = [
         'day_package_expirition',
         'payment',
