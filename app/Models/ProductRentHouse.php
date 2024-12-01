@@ -7,8 +7,10 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class ProductRentHouse extends Model
 {
-    // use Cachable;
+    use Cachable;
     protected $table = 'product_rent_house';
+    protected $primaryKey = 'id';
+    
     protected $fillable = [
         'day_package_expirition',
         'payment',
@@ -42,13 +44,13 @@ class ProductRentHouse extends Model
         'diff_situation',
         'land_area',
         'usable_area',
-        // 'status',
+        'status',
         'horizontal',
         'length',
         'cost',
         'cost_deposit',
-        'rule_compensation',
-        // 'district_code',
+        'rule_compensation',    
+        'district_code',
         'type_user',
     ];
 

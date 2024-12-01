@@ -26,6 +26,10 @@ return new class extends Migration
             $table->dateTime('time_exipred')->nullable()->comment('thời gian tin đăng');
             $table->integer('number_pick_post')->nullable()->comment('số lần đăng tin theo dạng post ưu tiên');
 
+
+            //TYPE posting 2
+            $table->integer('day_posting_type')->nullable()->comment('Số ngày');
+
             $table->tinyInteger('approved')->index()->default(2)->comment('0 là từ chối , 1 đã duyệt , 2 chờ duyệt');
             $table->tinyInteger('type_rental')->index()->default(3)->comment('1 thuê theo ngày , 2 thuê theo tuàn , 3 theo tháng , 4 theo năm');
 
@@ -57,12 +61,12 @@ return new class extends Migration
             $table->float( 'usable_area')->nullable()->comment('diện tích sử dụng');
             $table->float('horizontal')->nullable()->comment('chiều ngang');
             $table->float('length')->nullable()->comment('chiều dài');
-            $table->float('cost')->comment('giá thuê');
+            $table->decimal('cost',10)->comment('giá thuê');
             $table->float('cost_deposit')->comment('Số tiền cọc');
             // nếu khách hàng hủy trong thời gian thuê  --> khách sẽ chịu bồi thường = số tiền thuê * số lần quy định
             $table->integer('rule_compensation')->default(3)->comment('quy dịnh bồi thường');
 
-
+            $table->integer('status')->default(1);
             $table->integer('sort')->default(0);
             $table->timestamps();
         });
