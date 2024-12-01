@@ -3,16 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 
-use App\Models\LoginHistory;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
+
 use Jenssegers\Agent\Agent;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Redirect;
+
 use App\Models\User;
 use App\Models\UserActivities;
 use App\Models\Visits;
@@ -23,6 +20,8 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+
+
         $rules = [
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
@@ -32,33 +31,32 @@ class LoginController extends Controller
             'username.required' => trans('auth.username_not_blank'),
         ];
 
-        
+
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()->all()[0], 'status' => 'error']);
         }
         $password = $request->post('password');
         $username = $request->post('username');
-        
+
         $user = User::whereUsername($username)->first(['id', 'username','last_login','status','firstname','lastname','username']);
         $user_View = "user_block_by_".$user->id."_cache_".$user->username;
-        
+
         if(cache()->has($user_View)) {
              return response()->json(['message' =>  trans('auth.blocked_by_time'), 'status' => 'error']);
         }
 
         //đăng nhập sai qua 5 lần
-        if(request()->session()->get('login_attempts') > 5) {       
+        if(request()->session()->get('login_attempts') > 5) {
              if(!cache()->has($user_View)) {
                 cache()->put($user_View,true,Carbon::now()->addMinutes(10));
                 \Artisan::call('modelCache:clear --model=App\Models\User');
-                
+
                 request()->session()->put(['login_attempts' => 0]);
                 request()->session()->save(); //  test ở local
                 return response()->json(['message' =>  trans('auth.blocked_by_time'), 'status' => 'error']);
              }
         }
-
         if ($user) { //Kiểm tra username tồn tại và không bị khoá
             if ($user->status == 0) {
                 $this->sendFailedLoginResponse($request);
@@ -68,7 +66,7 @@ class LoginController extends Controller
                 $this->sendFailedLoginResponse($request);
                 return response()->json(['message' =>  trans('auth.vertify_fail'), 'status' => 'error']);
             }
-            elseif(isset($user) && $user->status != 0){ 
+            elseif(isset($user) && $user->status != 0){
                 if ($user->login($username,$password)) {
                     $request->session()->put('login_attempts', 0);
                     $agent = new Agent();
@@ -140,13 +138,11 @@ class LoginController extends Controller
         }
         $request->session()->put('login_attempts', $attempts + 1);
     }
-
     public function manageUsers()
     {
-        $data = User::all();
+        $data = User::paginate(2);
         return view('pages.auth.manageUsers', compact('data'));
     }
-
 
     public function manageUsersAdd(Request $request)
     {
