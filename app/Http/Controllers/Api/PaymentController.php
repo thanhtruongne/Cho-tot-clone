@@ -114,6 +114,7 @@ class PaymentController extends Controller
                 $model->approved = 1;
                 $model->payment = 2;
                 $model->type_posting_id = $type_posting_id;
+
                 // tin thường
                 if($model->type_posting_id == 1){
                     $model->day_posting_type = $day;
@@ -128,11 +129,6 @@ class PaymentController extends Controller
                         $model->posting_product_expect()->saveMany($data);
                     }
                 }
-<<<<<<< HEAD
-                $model->save();
-=======
-
->>>>>>> de474d46c541a8b790343d77a92a2b084d1b787f
             }
             $url = env('APP_URL_FRONTEND') . "/myads" ;
             return redirect($url);

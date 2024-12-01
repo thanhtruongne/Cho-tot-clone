@@ -107,50 +107,65 @@ class PayPalController extends Controller
 
 
 
-    public function executePayment(Request $request)
-    {
-        // Lấy các tham số từ request
-        $paymentId = $request->input('paymentId');
-        $payerId = $request->input('PayerID');
+public function executePayment(Request $request)
+{
+    // Lấy các tham số từ request
+    $paymentId = $request->input('paymentId');
+    $payerId = $request->input('PayerID');
 
-        try {
-            // Lấy thông tin giao dịch từ PayPal
-            $payment = Payment::get($paymentId, $this->apiContext);
+    try {
+        // Lấy thông tin giao dịch từ PayPal
+        $payment = Payment::get($paymentId, $this->apiContext);
 
-            // Thực hiện thanh toán
-            $paymentExecution = new PaymentExecution();
-            $paymentExecution->setPayerId($payerId);
-            $result = $payment->execute($paymentExecution, $this->apiContext);
+        // Thực hiện thanh toán
+        $paymentExecution = new PaymentExecution();
+        $paymentExecution->setPayerId($payerId);
+        $result = $payment->execute($paymentExecution, $this->apiContext);
 
-            // Lấy thông tin từ trường custom
-            $transaction = $result->getTransactions()[0];
-            $customData = json_decode($transaction->getCustom(), true); // Giải mã JSON
-            dd($customData['user_id']);
-            dd($customData['product_id']);
-            $productId = $customData['product_id'];
-            $day = $customData['day'];
-            $type_posting_id = $customData['type_posting_id'];
-            if ($productId) {
-                $model = ProductRentHouse::findOrFail($productId);
-                $model->approved = 1;
-                $model->payment = 2;
-                $model->type_posting_id = $type_posting_id;
-                // tin thường
-                if($model->type_posting_id == 1){
-                    $model->day_posting_type = $day;
-                    $model->approved = 1;
-                    $model->payment = 2;
-                    $model->time_exipred = \Carbon::now()->addDays($day);
-                    $model->save();
+        // Lấy thông tin từ trường custom
+        $transaction = $result->getTransactions()[0];
+        $customData = json_decode($transaction->getCustom(), true); // Giải mã JSON
+
+        $productId = $customData['product_id'];
+        $day = $customData['day'];
+        $type_posting_id = $customData['type_posting_id'];
+
+        if ($productId) {
+            // Tìm bản ghi ProductRentHouse theo productId
+            $model = ProductRentHouse::findOrFail($productId);
+
+            // Đảm bảo rằng chúng ta thay đổi đúng giá trị và lưu vào cơ sở dữ liệu
+            $model->approved = 1; // Đặt trạng thái approved là 1
+            $model->payment = 2; // Cập nhật payment là 2
+            $model->type_posting_id = $type_posting_id;
+
+            // Tiến hành lưu thay đổi vào cơ sở dữ liệu
+            $model->save();
+
+            // Xử lý các trường hợp khác với type_posting_id = 1 (tin thường)
+            if ($model->type_posting_id == 1) {
+                $model->day_posting_type = $day;
+                $model->time_exipred = \Carbon::now()->addDays($day);
+                $model->save();
+
+                // Kiểm tra tin ưu tiên (priority_post)
+                if (!empty($hours) && $request->priority_post && $model) {
+                    foreach ($hours as $item) {
+                        $data[] = new PostingProductExpect(['posting_data_action_id' => $item, 'cron_completed' => null]);
+                    }
+                    $model->posting_product_expect()->saveMany($data);
                 }
-
-
             }
-            $url = env('APP_URL_FRONTEND') . "/myads" ;
-
-            return redirect($url);
-        } catch (\Exception $ex) {
-            return response()->json(['error' => $ex->getMessage()], 500);
         }
+
+        // Redirect về trang myads
+        $url = env('APP_URL_FRONTEND') . "/myads";
+        return redirect($url);
+
+    } catch (\Exception $ex) {
+        // Trả về lỗi nếu có vấn đề xảy ra
+        return response()->json(['error' => $ex->getMessage()], 500);
     }
+}
+
 }
