@@ -50,7 +50,7 @@ Route::group([
 });
 
 Route::group([
-  // 'middleware' => ['api', 'jwt.vertify'],
+  'middleware' => ['api', 'jwt.vertify'],
   'prefix' => 'auth'
 ], function ($router) {
   Route::get('/user', [ApiAuthController::class, 'me'])->name('fe.get-user');
@@ -75,6 +75,7 @@ Route::group([
     Route::post('/add-product-rent', [ProductRentHouseController::class, 'addProductRent']);
     Route::post('/delete-product-rent/{id}', [ProductRentHouseController::class, 'deleteProductRent']);
     Route::post('/update-product-rent/{id}', [ProductRentHouseController::class, 'updateProductRent']);
+    Route::get('/get-product-rent-detail/{id}', [ProductRentHouseController::class, 'getDataProductRentById']);
 
     //bathroom_type
     Route::post('/add-bathroom-type', [BathroomTypeController::class, 'addBathroomType']);
@@ -128,7 +129,7 @@ Route::group([
     Route::post('/delete-product-rent-house-comment/{id}', [ProductRentHouseCommentController::class, 'deleteProductRentHouseComment']);
     Route::post('/update-product-rent-house-comment/{id}', [ProductRentHouseCommentController::class, 'updateProductRentHouseComment']);
     Route::get('/get-product-rent-user-id/{id}', [ProductRentHouseController::class, 'getDataProductRentByUserId']);
-    Route::get('/get-product-rent-detail/{id}', [ProductRentHouseController::class, 'getDetailProductRentById']);
+//     Route::get('/get-product-rent-detail/{id}', [ProductRentHouseController::class, 'getDetailProductRentById']);
 
 
     //product_jobs

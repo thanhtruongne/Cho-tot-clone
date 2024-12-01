@@ -32,7 +32,7 @@ class DashboardController extends Controller
 
         //làm tạm
         $query = $instance::query();
-    
+
         $query->select(['a.*','b.email','b.username','b.phone','b.address',\DB::raw("CONCAT(b.firstname,' ',b.lastname) as user_name")]);
         $query->from( $this->checkNameInstance($type,'slug').' as a');
         $query->leftJoin('users as b','b.id','=','a.user_id');
@@ -48,15 +48,15 @@ class DashboardController extends Controller
 
         $rows = $query->paginate($limit);
         foreach($rows as $key => $row){
-            if($row->type_posting_id == 1){
-                foreach($row->posting_product_expect as $index => $item){
-                    $time_1 = \Carbon::createFromTime($item->val_1);
-                    $time_2 = \Carbon::createFromTime($item->val_2);
-                    if($item && $date->gte($time_1) && !date->lte($time_2)) {
-                        $rows->updated_at = \Carbon::now();
-                    }
-                }
-            }
+//             if($row->type_posting_id == 1){
+//                 foreach($row->posting_product_expect as $index => $item){
+//                     $time_1 = \Carbon::createFromTime($item->val_1);
+//                     $time_2 = \Carbon::createFromTime($item->val_2);
+//                     if($item && $date->gte($time_1) && !date->lte($time_2)) {
+//                         $rows->updated_at = \Carbon::now();
+//                     }
+//                 }
+//             }
             $row->cost = number_format($row->cost,2);
         }
         return response()->json($rows);

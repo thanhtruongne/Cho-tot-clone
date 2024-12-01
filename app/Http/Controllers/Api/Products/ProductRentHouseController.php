@@ -67,6 +67,7 @@ class ProductRentHouseController extends Controller
                 'cost' => 'required|numeric|min:0',
                 'cost_deposit' => 'nullable|numeric|min:0',
                 'rule_compensation' => 'nullable|integer|min:0',
+                'district_code' => 'required|string',
             ]);
 
             $data = ProductRentHouse::create($validatedData);
@@ -78,6 +79,11 @@ class ProductRentHouseController extends Controller
             DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
         }
+    }
+    public function getDataProductRentById($id)
+    {
+        $data = ProductRentHouse::where('id', operator: $id)->get();
+        return response()->json(['data' => $data]);
     }
 
     public function updateProductRent(Request $request, $id)
@@ -150,10 +156,6 @@ class ProductRentHouseController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function getDataProductRentById($id)
-    {
-        $data = ProductRentHouse::where('id', operator: $id)->get();
-        return response()->json(['data' => $data]);
-    }
+
 
 }
