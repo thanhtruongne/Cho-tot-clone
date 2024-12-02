@@ -24,12 +24,6 @@ class DashboardController extends Controller
 
         $name_model = $this->checkNameInstance($type);
         $instance = $this->handleMadeClass('Models',$name_model);
-
-        // trả ra sớ lượng bài đã đăng của current user;
-        // $check_user = $this->checkUserPostData($type);
-        // trường hợp này làm sau
-
-
         //làm tạm
         $query = $instance::query();
     
@@ -43,7 +37,7 @@ class DashboardController extends Controller
         });
         $query->where('a.approved',1);
         $query->where('a.status',1);
-        $query->orderByRaw('a.updated_at ASC, a.type_posting_id DESC');
+        $query->orderByRaw('a.updated_at DESC, a.type_posting_id DESC');
 
 
         $rows = $query->paginate($limit);
@@ -52,7 +46,7 @@ class DashboardController extends Controller
                 foreach($row->posting_product_expect as $index => $item){
                     $time_1 = \Carbon::createFromTime($item->val_1);
                     $time_2 = \Carbon::createFromTime($item->val_2);
-                    if($item && $date->gte($time_1) && !date->lte($time_2)) {
+                    if($item && $date->gte($time_1) && !$date->lte($time_2)) {
                         $rows->updated_at = \Carbon::now();
                     }
                 }
@@ -60,6 +54,31 @@ class DashboardController extends Controller
             $row->cost = number_format($row->cost,2);
         }
         return response()->json($rows);
+    }
+
+    public function loadDataPostCount(Request $request) {
+        $this->validateRequest([
+            'id' => 'required'
+        ],$request,[
+            'id' => 'Có lỗi xảy ra'
+        ]);
+        $id = $request->input('id');
+
+        $model = ProductRentHouse::find($id);
+        if(is_null($model->load_btn_post) ) {
+          return response()->json(['message' => 'Có lỗi xảy ra','status' => 'error']);
+        }
+        // lưu cache theo thời gian thực thi === > cách 10 phút sau khi load
+        $post_key = 'product_rent_house_'.$id.'_'.$model->user_id;
+        if(cache()->has($post_key)) {
+            return response()->json(['message' => 'Tin đăng giới hạn load tin trong 10 phút','status' => 'warning']);
+        }
+        cache()->put($post_key,true,\Carbon::now()->addMinutes(10));
+        $model->decrement('load_btn_post');
+        $model->updated_at = \Carbon::now();
+        $model->created_at = \Carbon::now();
+        $model->save();
+        return response()->json(['message' => 'Thành công','status' => 'success']);
     }
 
 

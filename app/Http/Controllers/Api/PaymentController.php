@@ -30,14 +30,14 @@ class PaymentController extends Controller
         $user_id = $request->input('user_id');
         $product_id = $request->input('product_id');
         $type_posting_id = $request->input('type_posting_id');
+        $load_key_post = $request->input('load_key_post');
         $day =  $request->input('day') ;
-        $vnp_OrderInfo =  $user_id . ' - ' . $product_id . ' - ' . $day . ' - ' . $type_posting_id;
+        $vnp_OrderInfo =  $user_id . ' - ' . $product_id . ' - ' . $day . ' - ' . $type_posting_id . ' - ' . $load_key_post;
         // $vnp_OrderType = $request->hours; //  dạng theo khung giờ
         // $vnp_Amount = 123456789;
         $vnp_Locale = 'VN';
         $vnp_BankCode = 'NCB';
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
-        //Add Params of 2.0.1 Version
 
         $inputData = array(
             "vnp_Version" => "2.1.0",
@@ -49,7 +49,7 @@ class PaymentController extends Controller
             "vnp_IpAddr" => $vnp_IpAddr,
             "vnp_Locale" => $vnp_Locale,
             "vnp_OrderInfo" => $vnp_OrderInfo,
-            // "vnp_OrderType" => $vnp_OrderType,
+            "vnp_OrderType" => 'other',
             "vnp_ReturnUrl" => $vnp_Returnurl,
             "vnp_TxnRef" => $vnp_TxnRef,
 
@@ -106,6 +106,7 @@ class PaymentController extends Controller
             $productId = isset($orderInfoParts[1]) ? $orderInfoParts[1] : null;
             $day = isset($orderInfoParts[2]) ? $orderInfoParts[2] : null;
             $type_posting_id = isset($orderInfoParts[3]) ? $orderInfoParts[3] : null;
+            $load_key_post = isset($orderInfoParts[4]) ? $orderInfoParts[4] : null;
             $hours = $request->hours && !is_array($request->hours) ? explode(',',$request->hours) : [];
             // $count_post = $request->vnp_OrderType;
             if ($productId) {
@@ -113,13 +114,13 @@ class PaymentController extends Controller
                 $model->approved = 1;
                 $model->payment = 2;
                 $model->type_posting_id = $type_posting_id;
-
+                $model->day_posting_type = $day;
+                // theo dạng load tin lưu số lần
+                $model->load_btn_post = $load_key_post;
+                $model->time_exipred = \Carbon::now()->addDays($day);
+                $model->save();
                 // tin thường
                 if($model->type_posting_id == 1){
-                    $model->day_posting_type = $day;
-                    $model->time_exipred = \Carbon::now()->addDays($day);
-                    $model->save();
-
                     // tin ưu tiên
                     if(!empty($hours) && $request->priority_post && $model) {
                         foreach($hours as $item){

@@ -84,6 +84,7 @@ Route::group([
 
     Route::get('/get-data-post',[DashboardController::class,'getData'])->name('fe.get-data-post');
 
+    Route::post('/update-load-post-personal',[DashboardController::class,'loadDataPostCount'])->name('fe.update-load-post');
 
     //product_eletronics
     Route::post('/get-data', [ProductElectronicController::class, 'getData'])->name('fe.product-electric.getData');

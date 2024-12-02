@@ -20,15 +20,23 @@ return new class extends Migration
             $table->tinyInteger('type_product')->comment('1 là nhà ở ,  2  là phòng trọ');
             $table->longText('images');
             $table->string('video');
+
+
+
             //mặc định là thángphp
             $table->integer('type_posting_id')->index()->default(1)->comment('loại tin đăng');
             $table->integer('payment')->index()->default(1)->comment('1 chưa thanh toán , 2 đã thanh toán');
             $table->dateTime('time_exipred')->nullable()->comment('thời gian tin đăng');
             $table->integer('number_pick_post')->nullable()->comment('số lần đăng tin theo dạng post ưu tiên');
-
-
             //TYPE posting 2
             $table->integer('day_posting_type')->nullable()->comment('Số ngày');
+
+            // nút load tin lưu số lần
+            $table->integer('load_btn_post')->nullable()->comment('nút load tin , tin theo dạng nút load tin');
+
+
+
+
 
             $table->tinyInteger('approved')->index()->default(2)->comment('0 là từ chối , 1 đã duyệt , 2 chờ duyệt');
             $table->tinyInteger('type_rental')->index()->default(3)->comment('1 thuê theo ngày , 2 thuê theo tuàn , 3 theo tháng , 4 theo năm');

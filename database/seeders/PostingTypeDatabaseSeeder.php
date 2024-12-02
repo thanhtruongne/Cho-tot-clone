@@ -44,6 +44,15 @@ class PostingTypeDatabaseSeeder extends Seeder
                 'cost' => 50000,
                 'rule_day' => [1,3,7],
                 'type' => 3,
+            ],
+            [
+                'id' => 4,
+                'code' =>  ''.\Str::random(10).'',
+                'name' => 'Load tin',
+                'benefits' => 'Giúp tin của bạn có vị trí thuận lợi',
+                'cost' => 30000,
+                'rule_day' => null,
+                'type' => 4,
             ]
         ];
 
