@@ -19,7 +19,6 @@ class PaymentController extends Controller
         $vnp_Returnurl = "http://localhost:8000/api/zalopay/handle-return-url";
         $vnp_TmnCode = "IT1YF6TR";
         $vnp_HashSecret = "89M6MIY98WQOMEQS0AW9LGO785JVA83Q";
-        $vnp_Inv_Customer =$request->input('user_id');
         $vnp_TxnRef = $request->input('vnp_txnref');
         $vnp_Amount = $request->input('vnp_amount');
 
@@ -33,7 +32,7 @@ class PaymentController extends Controller
         $type_posting_id = $request->input('type_posting_id');
         $day =  $request->input('day') ;
         $vnp_OrderInfo =  $user_id . ' - ' . $product_id . ' - ' . $day . ' - ' . $type_posting_id;
-        $vnp_OrderType = $request->hours; //  dạng theo khung giờ
+        // $vnp_OrderType = $request->hours; //  dạng theo khung giờ
         // $vnp_Amount = 123456789;
         $vnp_Locale = 'VN';
         $vnp_BankCode = 'NCB';
@@ -50,7 +49,7 @@ class PaymentController extends Controller
             "vnp_IpAddr" => $vnp_IpAddr,
             "vnp_Locale" => $vnp_Locale,
             "vnp_OrderInfo" => $vnp_OrderInfo,
-            "vnp_OrderType" => $vnp_OrderType,
+            // "vnp_OrderType" => $vnp_OrderType,
             "vnp_ReturnUrl" => $vnp_Returnurl,
             "vnp_TxnRef" => $vnp_TxnRef,
 
