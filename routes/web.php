@@ -27,7 +27,7 @@ Route::prefix('system')->group(function () {
     Route::group(['middleware' => ['auth','logvisit:admin']],function(){
         Route::post('/logout',[LoginController::class,'logout'])->name('logout');
 
- 
+
 
        Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
 

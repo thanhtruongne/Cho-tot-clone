@@ -113,6 +113,7 @@ class PaymentController extends Controller
                 $model->approved = 1;
                 $model->payment = 2;
                 $model->type_posting_id = $type_posting_id;
+
                 // tin thường
                 if($model->type_posting_id == 1){
                     $model->day_posting_type = $day;
@@ -126,14 +127,6 @@ class PaymentController extends Controller
                         }
                         $model->posting_product_expect()->saveMany($data);
                     }
-                }
-                //tin vip
-                elseif($model->type_posting_id == 3) {
-                    $model->day_posting_type = $day;
-                    $model->time_exipred = \Carbon::now()->addDays($day);
-                    //set tạm theo thời gian tạo
-                    // $model->sort = 100;//
-                    $model->save();
                 }
             }
             $url = env('APP_URL_FRONTEND') . "/myads" ;

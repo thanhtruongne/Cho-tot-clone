@@ -17,7 +17,7 @@ class ProductRentHouseController extends Controller
 
     public function managePostings()
     {
-        $data = ProductRentHouse::all();
+        $data = ProductRentHouse::paginate(2);
         return view('pages.products.productHouse.managePostings', compact('data'));
     }
 
@@ -152,12 +152,6 @@ class ProductRentHouseController extends Controller
     public function getDataProductRentByUserId($id)
     {
         $data = ProductRentHouse::where('user_id', $id)->get();
-        return response()->json(['data' => $data]);
-    }
-
-    public function getDataProductRentById($id)
-    {
-        $data = ProductRentHouse::where('id', operator: $id)->get();
         return response()->json(['data' => $data]);
     }
 

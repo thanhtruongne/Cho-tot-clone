@@ -17,9 +17,12 @@ use App\Http\Controllers\Api\Type\TypeOfHouseController;
 use App\Http\Controllers\ProductJobQuestionController;
 use App\Http\Controllers\ProductJobUserViewCvController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\PayPalController;
+use App\Http\Controllers\Api\ZaloPayController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +38,27 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+// Route::post('/zalopay/create-order', [ZaloPayController::class, 'createOrder']);
+
+// Route tạo payment
+Route::post('paypal/create-payment', [PayPalController::class, 'createPayment'])
+    ->name('paypal.create');
+
+// Route xử lý sau khi thanh toán thành công
+Route::get('paypal/success', [PayPalController::class, 'executePayment'])
+    ->name('paypal.success');
+
+// Route xử lý khi người dùng hủy thanh toán
+Route::get('paypal/cancel', function () {
+    return response()->json([
+        'status' => 'error',
+        'message' => 'Payment cancelled.'
+    ], 400); // Trả về lỗi HTTP 400
+})->name('paypal.cancel');
+
+
+
 Route::post('/zalopay/payment', [PaymentController::class, 'createPaymentLink']);
 Route::get('/zalopay/handle-return-url', [PaymentController::class, 'handleReturnUrl']);
 
