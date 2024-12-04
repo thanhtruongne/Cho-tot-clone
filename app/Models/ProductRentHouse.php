@@ -90,6 +90,6 @@ class ProductRentHouse extends Model
     }
 
     public function posting_product_expect(){
-        return $this->belongToMany(PostingDataAction::class,'product_posting_expect','product_id','posting_data_action_id');
+        return $this->belongsToMany(PostingDataAction::class,'product_posting_expect','product_id','posting_data_action_id');
     }
 }

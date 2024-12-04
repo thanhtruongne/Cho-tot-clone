@@ -101,6 +101,9 @@ Route::group([
     Route::post('/delete-product-rent/{id}', [ProductRentHouseController::class, 'deleteProductRent']);
     Route::post('/update-product-rent/{id}', [ProductRentHouseController::class, 'updateProductRent']);
 
+    Route::post('/change-status-post', [ProductRentHouseController::class, 'changeStatusPostData']);
+
+
     //bathroom_type
     Route::post('/add-bathroom-type', [BathroomTypeController::class, 'addBathroomType']);
     Route::post('/delete-bathroom-type/{id}', [BathroomTypeController::class, 'deleteBathroomType']);

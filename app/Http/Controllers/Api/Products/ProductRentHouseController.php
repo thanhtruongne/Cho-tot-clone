@@ -155,4 +155,18 @@ class ProductRentHouseController extends Controller
         return response()->json(['data' => $data]);
     }
 
+    public function changeStatusPostData(Request $request){
+        $this->validateRequest([
+            'id' => 'required'
+        ],$request,[
+            'id' => 'Có lỗi xảy ra'
+        ]);
+        $model = ProductRentHouse::find($request->id);
+        if(!$model)
+            return response()->json(['message' => 'Không tìm thấy tin', 'status' => 'error']);
+        $model->status = 0;
+        $model->save();
+        return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
+    }
+
 }
