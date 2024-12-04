@@ -10,7 +10,7 @@ class ProductRentHouse extends Model
     use Cachable;
     protected $table = 'product_rent_house';
     protected $primaryKey = 'id';
-    
+
     protected $fillable = [
         'day_package_expirition',
         'payment',
@@ -49,7 +49,7 @@ class ProductRentHouse extends Model
         'length',
         'cost',
         'cost_deposit',
-        'rule_compensation',    
+        'rule_compensation',
         'district_code',
         'type_user',
     ];
@@ -90,6 +90,6 @@ class ProductRentHouse extends Model
     }
 
     public function posting_product_expect(){
-        return $this->belongToMany(PostingDataAction::class,'product_posting_expect','product_id','posting_data_action_id');
+        return $this->belongsToMany(PostingDataAction::class,'product_posting_expect','product_id','posting_data_action_id');
     }
 }

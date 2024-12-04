@@ -66,7 +66,7 @@ Route::group([
 });
 
 Route::group([
-  // 'middleware' => ['api', 'jwt.vertify'],
+  'middleware' => ['api', 'jwt.vertify'],
   'prefix' => 'auth'
 ], function ($router) {
   Route::get('/user', [ApiAuthController::class, 'me'])->name('fe.get-user');
@@ -76,6 +76,7 @@ Route::group([
 
     Route::get('/get-data-post',[DashboardController::class,'getData'])->name('fe.get-data-post');
 
+    Route::post('/update-load-post-personal',[DashboardController::class,'loadDataPostCount'])->name('fe.update-load-post');
 
     //product_eletronics
     Route::post('/get-data', [ProductElectronicController::class, 'getData'])->name('fe.product-electric.getData');

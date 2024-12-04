@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class PostingTypeController extends Controller
 {
-    //
+
     public function addPostingType(Request $request)
     {
         try {
@@ -91,6 +91,7 @@ class PostingTypeController extends Controller
 
 
 
+
   public function getDataPostingType(Request $request)
       {
           $data = PostingType::whereNotNull('name')->with('posting_data_type')->get();
@@ -98,3 +99,4 @@ class PostingTypeController extends Controller
       }
 
 }
+
