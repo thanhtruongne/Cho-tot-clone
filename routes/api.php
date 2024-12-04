@@ -102,6 +102,7 @@ Route::group([
     Route::post('/update-product-rent/{id}', [ProductRentHouseController::class, 'updateProductRent']);
 
     Route::post('/change-status-post', [ProductRentHouseController::class, 'changeStatusPostData']);
+    Route::post('/change-load-btn-post', [ProductRentHouseController::class, 'loadDataBtnPost']);
 
 
     //bathroom_type
@@ -110,7 +111,7 @@ Route::group([
     Route::post('/update-bathroom-type/{id}', [BathroomTypeController::class, 'updateBathroomType']);
 
     //bedroom_type
-        Route::post('/add-bedroom-type', [BedroomTypeController::class, 'addBedroomType']);
+    Route::post('/add-bedroom-type', [BedroomTypeController::class, 'addBedroomType']);
     Route::post('/delete-bedroom-type/{id}', [BedroomTypeController::class, 'deleteBedroomType']);
     Route::post('/update-bedroom-type/{id}', [BedroomTypeController::class, 'updateBedroomType']);
 

@@ -51,6 +51,13 @@ class DashboardController extends Controller
                     }
                 }
             }
+            if($row->load_btn_post) {
+                $key = 'post_id_'.$row->id_.'_load_btn';
+                if(cache()->has($key)){
+                    $row->load_btn_post = 'Đang khóa 20 phút';
+                }
+                
+            }
             $row->cost = number_format($row->cost,2);
         }
         return response()->json($rows);
