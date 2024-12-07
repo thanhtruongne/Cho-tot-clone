@@ -162,14 +162,16 @@ public function getDetailProductRentById($id){
 }
     public function changeStatusPostData(Request $request){
         $this->validateRequest([
-            'id' => 'required'
+            'id' => 'required',
+            'status' => 'required|numeric|in:0,1'
         ],$request,[
-            'id' => 'Có lỗi xảy ra'
+            'id' => 'Đường dẫn dữ liệu',
+            'status' => 'Trạng thái'
         ]);
         $model = ProductRentHouse::find($request->id);
         if(!$model)
             return response()->json(['message' => 'Không tìm thấy tin', 'status' => 'error']);
-        $model->status = 0;
+        $model->status = $request->status;
         $model->save();
         return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
     }

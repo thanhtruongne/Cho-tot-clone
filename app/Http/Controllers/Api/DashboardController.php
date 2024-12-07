@@ -31,26 +31,30 @@ class DashboardController extends Controller
         $query->from( $this->checkNameInstance($type,'slug').' as a');
         $query->leftJoin('users as b','b.id','=','a.user_id');
         $query->leftJoin('posting_type as c','c.id','=','a.type_posting_id');
-        $query->whereExists(function($subquery) use($date){
-            $subquery->where('a.time_exipred','>=',$date);
-            $subquery->orWhereNotNull('a.time_exipred'); // set tạm
-        });
-        $query->where('a.approved',1);
+        // $query->whereExists(function($subquery) use($date){
+        //     $subquery->where('a.time_exipred','>=',$date);
+        //     $subquery->orWhereNotNull('a.time_exipred'); // set tạm
+        // });
+        // $query->where('a.approved',1);
         $query->where('a.status',1);
         $query->orderByRaw('a.updated_at DESC, a.type_posting_id DESC');
 
 
         $rows = $query->paginate($limit);
         foreach($rows as $key => $row){
-            if($row->type_posting_id == 1){
-                foreach($row->posting_product_expect as $index => $item){
-                    $time_1 = \Carbon::createFromTime($item->val_1);
-                    $time_2 = \Carbon::createFromTime($item->val_2);
-                    if($item && $date->gte($time_1) && !$date->lte($time_2)) {
-                        $rows->updated_at = \Carbon::now();
-                    }
-                }
-            }
+
+
+
+
+            // if($row->type_posting_id == 1){
+            //     // foreach($row->posting_product_expect as $index => $item){
+            //     //     $time_1 = \Carbon::createFromTime($item->val_1);
+            //     //     $time_2 = \Carbon::createFromTime($item->val_2);
+            //     //     if($item && $date->gte($time_1) && !$date->lte($time_2)) {
+            //     //         $rows->updated_at = \Carbon::now();
+            //     //     }
+            //     // }
+            // }
 
             if($row->load_btn_post) {
                 $key = 'post_id_'.$row->id_.'_load_btn';
@@ -60,7 +64,10 @@ class DashboardController extends Controller
 
             }
 
-            $row->cost = number_format($row->cost,2);
+
+            $row->cost = convert_price((int)$row->cost,true);
+            $row->cost_deposit = convert_price((int)$row->cost_deposit,true);
+
         }
         return response()->json($rows);
     }

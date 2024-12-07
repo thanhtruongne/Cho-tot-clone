@@ -23,7 +23,7 @@ class PostingTypeDatabaseSeeder extends Seeder
                 'name' => 'Tin thường',
                 'benefits' => 'Tin đăng thường, hiển thị với kích thước tiêu chuẩn',
                 'cost' => 15000,
-                'rule_day' => [1,3,7],
+                'rule_day' => null,
                 'type' => 1,
 
             ],
@@ -42,7 +42,7 @@ class PostingTypeDatabaseSeeder extends Seeder
                 'name' => 'Tin Vip',
                 'benefits' => 'Tin đăng Vip hiển thị ưu tiên',
                 'cost' => 50000,
-                'rule_day' => [1,3,7],
+                'rule_day' => null,
                 'type' => 3,
             ],
             [
