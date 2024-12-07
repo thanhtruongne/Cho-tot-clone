@@ -156,6 +156,45 @@ class ProductRentHouseController extends Controller
         return response()->json(['data' => $data]);
     }
 
+public function getDetailProductRentById($id){
+    $model = ProductRentHouse::findOrFail($id);
+    return response()->json(['data' => $model]);
+}
+    public function changeStatusPostData(Request $request){
+        $this->validateRequest([
+            'id' => 'required'
+        ],$request,[
+            'id' => 'Có lỗi xảy ra'
+        ]);
+        $model = ProductRentHouse::find($request->id);
+        if(!$model)
+            return response()->json(['message' => 'Không tìm thấy tin', 'status' => 'error']);
+        $model->status = 0;
+        $model->save();
+        return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
+    }
+
+    public function loadDataBtnPost(Request $request){
+        $this->validateRequest([
+            'id' => 'required'
+        ],$request,[
+            'id' => 'Sản phẩm'
+        ]);
+
+        $model = ProductRentHouse::find($request->id);
+        if(!$model->load_btn_post){
+            return response()->json(['message' => 'Có lỗi xảy ra', 'status' => 'error']);
+        }
+        $model->created_at = \Carbon::now();
+        $model->decrement('load_btn_post');
+        $model->save();
+
+        $key = 'post_id_'.$model->id_.'_load_btn';
+        if(!cache()->has($key)){
+            cache()->put($key,true,\Carbon::now()->addMinutes(20));
+        }
+        return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
+    }
 
 
 }
