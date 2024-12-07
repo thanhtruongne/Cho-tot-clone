@@ -114,10 +114,10 @@ class PaymentController extends Controller
                 $model->approved = 1;
                 $model->payment = 2;
                 $model->type_posting_id = $type_posting_id;
-                $model->day_posting_type = $day;
+                // $model->day_posting_type = $day;
                 // theo dạng load tin lưu số lần
                 $model->load_btn_post = $load_key_post;
-                $model->time_exipred = \Carbon::now()->addDays($day);
+                // $model->time_exipred = \Carbon::now()->addDays($day);
                 $model->save();
                 // tin thường
                 if($model->type_posting_id == 1){

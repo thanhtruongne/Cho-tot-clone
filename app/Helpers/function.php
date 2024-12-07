@@ -13,7 +13,9 @@ function check_password($password){
   }
 
 }
-
+function convert_price(string $price = '' , bool $title = true) {
+    return ($title == false) ? str_replace('.','',$price) : number_format($price,0,',','.');
+ }
 // demo khó
 function check_password_v2($password){
    if($password){
