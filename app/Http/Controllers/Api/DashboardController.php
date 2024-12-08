@@ -12,56 +12,81 @@ class DashboardController extends Controller
 {
 
     public function getData(Request $request){
-        $search = $request->search;
-        $order = $request->input('order','id');
+        $search = $request->input('search');
+        $price_lte = $request->input('price_lte');//max price
+        $price_gte = $request->input('price_gte');//min price
+        $bedroom = $request->input('bedroom_id');
+        $type_product = $request->input('type_product'); // dạng tin
+        $address_code = $request->input('address_code'); // --> gửi request code tới {'provinces} => code, ....}
         $limit = $request->input('limit',12);
+
         $type = $request->type;//dạng tin nhà ở , buôn bán , việc làm;
         if(!$type || !is_int((int)$type)){
             return response()->json(['status' => 'error','message' => 'Có lỗi xảy ra']);
         }
-        $date = \Carbon::now();
-
-
+        // $date = \Carbon::now();
         $name_model = $this->checkNameInstance($type);
         $instance = $this->handleMadeClass('Models',$name_model);
         //làm tạm
         $query = $instance::query();
-    
+
         $query->select(['a.*','b.email','b.username','b.phone','b.address',\DB::raw("CONCAT(b.firstname,' ',b.lastname) as user_name")]);
         $query->from( $this->checkNameInstance($type,'slug').' as a');
         $query->leftJoin('users as b','b.id','=','a.user_id');
         $query->leftJoin('posting_type as c','c.id','=','a.type_posting_id');
-        $query->whereExists(function($subquery) use($date){
-            $subquery->where('a.time_exipred','>=',$date);
-            $subquery->orWhereNotNull('a.time_exipred'); // set tạm
-        });
-        $query->where('a.approved',1);
+        if($search){
+            $query->where(function($subquery) use($search){
+                $subquery->where('title','like',$search."%");
+                $subquery->orWhere('code','like',$search."%");
+                $subquery->orWhere('address','like',$search."%");
+                $subquery->orWhere('email','like',$search."%");
+            });
+        }
+
+        if($address_code){
+            foreach($address_code as $key => $code) {
+                if(isset($key) && !is_null($code)){
+                    $query->where($key,$code);
+                }
+            }
+        }
+        if($price_lte || $price_gte){
+            if($price_lte && $price_gte) {
+                $query->whereBetween('cost',[$price_gte,$price_lte]);
+            } elseif($price_gte){
+                $query->where('cost','<=',$price_gte);
+            } else {
+                $query->where('cost','>=',$price_lte);
+            }
+        }
+        if($bedroom) {
+            $query->where('bedroom_id',$bedroom);
+        }
+        //dạng tin đăng
+        if($type_product){
+            $query->where('type_product',$type_product);
+        }
+
         $query->where('a.status',1);
         $query->orderByRaw('a.updated_at DESC, a.type_posting_id DESC');
 
-
         $rows = $query->paginate($limit);
         foreach($rows as $key => $row){
-            if($row->type_posting_id == 1){
-                foreach($row->posting_product_expect as $index => $item){
-                    $time_1 = \Carbon::createFromTime($item->val_1);
-                    $time_2 = \Carbon::createFromTime($item->val_2);
-                    if($item && $date->gte($time_1) && !$date->lte($time_2)) {
-                        $rows->updated_at = \Carbon::now();
-                    }
-                }
-            }
             if($row->load_btn_post) {
                 $key = 'post_id_'.$row->id_.'_load_btn';
                 if(cache()->has($key)){
                     $row->load_btn_post = 'Đang khóa 20 phút';
                 }
-                
+
             }
-            $row->cost = number_format($row->cost,2);
+            $row->cost = convert_price((int)$row->cost,true);
+            $row->cost_deposit = convert_price((int)$row->cost_deposit,true);
+
         }
         return response()->json($rows);
     }
+
+
 
     public function loadDataPostCount(Request $request) {
         $this->validateRequest([
@@ -113,6 +138,38 @@ class DashboardController extends Controller
         $slug_name = $this->checkNameInstance($type,'slug');
         $count_product = User::where(['id' => auth('api')->id(),'status' => 1])->first()->{$slug_name}->count() ?? null;
         return $count_product;
+    }
+
+
+    public function getLocation(Request $request){
+        $this->validateRequest([
+            'type' => 'required|in:provinces,districts,wards',
+            'code' => 'required_if:type,districts,wards'
+        ],$request,[
+            'type' => 'Dạng location',
+            'code' => 'Mã location'
+        ]);
+        $type = $request->input('type'); // dạng nào thì truyền key đó vào
+        $code = $request->input('code'); // code của dạng đó nếu là type là district hay wards
+        $instance = $this->handleMadeClass('Models',$type);
+        if(!$instance) 
+            return response()->json(['message' => 'Định dạng locaiton không hợp lệ','status' => 'error']);
+        $query = $instance::select(['id', 'code', 'full_name']);
+        if($request->search){
+            $query->where('full_name', 'like', $request->search . '%');
+            $query->orWhere('code', 'like', $request->search . '%');
+        }
+        if($type && $code) {
+            if($type == 'districts'){
+                $query->where('province_code', $code);
+            } elseif($type== 'wards') {
+                $query->where('district_code', $code);
+            }
+        }
+        $data = $query->paginate(10);
+        return response()->json($data);
+
+
     }
 
 }

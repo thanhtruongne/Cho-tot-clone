@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api\Type;
 
 use App\Http\Controllers\Controller;
-use App\Models\PostingDataAction;
 use App\Models\PostingType;
 use Illuminate\Http\Request;
 
 
 class PostingTypeController extends Controller
 {
-    //
+
     public function addPostingType(Request $request)
     {
         try {
@@ -91,10 +90,13 @@ class PostingTypeController extends Controller
     }
 
 
-    public function getDataPostingType(Request $request)
-    {
-        $data = PostingType::whereNotNull('name')->with('posting_data_type')->get();
-        return response()->json(['data' => $data]);
-    }
+
+
+  public function getDataPostingType(Request $request)
+      {
+          $data = PostingType::whereNotNull('name')->with('posting_data_type')->get();
+          return response()->json(['data' => $data]);
+      }
 
 }
+

@@ -17,7 +17,7 @@ class ProductRentHouseController extends Controller
 
     public function managePostings()
     {
-        $data = ProductRentHouse::paginate(2);
+        $data = ProductRentHouse::all();
         return view('pages.products.productHouse.managePostings', compact('data'));
     }
 
@@ -30,10 +30,9 @@ class ProductRentHouseController extends Controller
 
     public function addProductRent(Request $request)
     {
-    
         DB::beginTransaction();
         try {
-            $this->validateRequest([
+            $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
                 'content' => 'required|string',
                 'user_id' => 'required|exists:users,id',
@@ -65,17 +64,14 @@ class ProductRentHouseController extends Controller
                 'usable_area' => 'nullable|numeric|min:0',
                 'horizontal' => 'nullable|numeric|min:0',
                 'length' => 'nullable|numeric|min:0',
-                // 'cost' => 'required|numeric|min:0',
+                'cost' => 'required|numeric|min:0',
                 'cost_deposit' => 'nullable|numeric|min:0',
                 'rule_compensation' => 'nullable|integer|min:0',
-            ],$request,ProductRentHouse::getAttributeName());
-    
-    
-    
-            $data = ProductRentHouse::create($request->all());
-            // $data->fill($request->all());
-            // $data->save();
-            // $data = \DB::table('product_rent_house')->insert($request->all());
+                'district_code' => 'required|string',
+            ]);
+
+            $data = ProductRentHouse::create($validatedData);
+
             DB::commit();
             return response()->json(['message' => 'Product added successfully', 'data' => $data]);
 
@@ -83,6 +79,11 @@ class ProductRentHouseController extends Controller
             DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
         }
+    }
+    public function getDataProductRentById($id)
+    {
+        $data = ProductRentHouse::where('id', operator: $id)->get();
+        return response()->json(['data' => $data]);
     }
 
     public function updateProductRent(Request $request, $id)
@@ -155,16 +156,22 @@ class ProductRentHouseController extends Controller
         return response()->json(['data' => $data]);
     }
 
+public function getDetailProductRentById($id){
+    $model = ProductRentHouse::findOrFail($id);
+    return response()->json(['data' => $model]);
+}
     public function changeStatusPostData(Request $request){
         $this->validateRequest([
-            'id' => 'required'
+            'id' => 'required',
+            'status' => 'required|numeric|in:0,1'
         ],$request,[
-            'id' => 'Có lỗi xảy ra'
+            'id' => 'Đường dẫn dữ liệu',
+            'status' => 'Trạng thái'
         ]);
         $model = ProductRentHouse::find($request->id);
         if(!$model)
             return response()->json(['message' => 'Không tìm thấy tin', 'status' => 'error']);
-        $model->status = 0;
+        $model->status = $request->status;
         $model->save();
         return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
     }
@@ -179,7 +186,7 @@ class ProductRentHouseController extends Controller
         $model = ProductRentHouse::find($request->id);
         if(!$model->load_btn_post){
             return response()->json(['message' => 'Có lỗi xảy ra', 'status' => 'error']);
-        } 
+        }
         $model->created_at = \Carbon::now();
         $model->decrement('load_btn_post');
         $model->save();
@@ -190,5 +197,6 @@ class ProductRentHouseController extends Controller
         }
         return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
     }
+
 
 }

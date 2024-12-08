@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\Api\PayPalController;
 use App\Http\Controllers\Api\Auth\ApiAuthController;
 use App\Http\Controllers\Api\BrokerController;
 use App\Http\Controllers\Api\PaymentController;
@@ -17,17 +17,17 @@ use App\Http\Controllers\Api\Type\TypeOfHouseController;
 use App\Http\Controllers\ProductJobQuestionController;
 use App\Http\Controllers\ProductJobUserViewCvController;
 use App\Http\Controllers\Api\DashboardController;
-use App\Http\Controllers\Api\PayPalController;
-use App\Http\Controllers\Api\ZaloPayController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 
+
 Route::get('forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{userId}', [PasswordResetController::class, 'showResetForm']);
 Route::post('password/reset/{userID}', [PasswordResetController::class, 'resetPassword']);
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -45,6 +45,9 @@ Route::post('password/reset/{userID}', [PasswordResetController::class, 'resetPa
 
 // Route::post('/zalopay/create-order', [ZaloPayController::class, 'createOrder']);
 Route::get('/', [PaymentController::class, 'index']);
+Route::post('/zalopay/payment', [PaymentController::class, 'createPaymentLink']);
+Route::get('/zalopay/handle-return-url', [PaymentController::class, 'handleReturnUrl']);
+
 // Route tạo payment
 Route::post('paypal/create-payment', [PayPalController::class, 'createPayment'])
     ->name('paypal.create');
@@ -60,11 +63,6 @@ Route::get('paypal/cancel', function () {
         'message' => 'Payment cancelled.'
     ], 400); // Trả về lỗi HTTP 400
 })->name('paypal.cancel');
-
-
-
-Route::post('/zalopay/payment', [PaymentController::class, 'createPaymentLink']);
-Route::get('/zalopay/handle-return-url', [PaymentController::class, 'handleReturnUrl']);
 
 Route::group([
   'middleware' => 'api',
@@ -96,7 +94,7 @@ Route::group([
     //product_eletronics
     Route::post('/get-data', [ProductElectronicController::class, 'getData'])->name('fe.product-electric.getData');
     Route::post('/save', [ProductElectronicController::class, 'save'])->name('fe.product-electric.save');
-    Route::post('/add-product', [ProductElectronicController::class, 'addProduct'])->name('fe.product-electric.addProduct');
+    Route::post('/add-product', [ProductElectronicController::class, 'addPr oduct'])->name('fe.product-electric.addProduct');
     Route::post('/delete-product/{id}', [ProductElectronicController::class, 'deleteProduct'])->name('fe.product-electric.deleteProduct');
     Route::post('/update-product/{id}', [ProductElectronicController::class, 'updateProduct'])->name('fe.product-electric.updateProduct');
 
@@ -110,7 +108,7 @@ Route::group([
 
     Route::post('/change-status-post', [ProductRentHouseController::class, 'changeStatusPostData']);
     Route::post('/change-load-btn-post', [ProductRentHouseController::class, 'loadDataBtnPost']);
-
+    Route::get('/get-data-location',[DashboardController::class, 'getLocation']);
 
     //bathroom_type
     Route::post('/add-bathroom-type', [BathroomTypeController::class, 'addBathroomType']);
@@ -164,7 +162,7 @@ Route::group([
     Route::post('/delete-product-rent-house-comment/{id}', [ProductRentHouseCommentController::class, 'deleteProductRentHouseComment']);
     Route::post('/update-product-rent-house-comment/{id}', [ProductRentHouseCommentController::class, 'updateProductRentHouseComment']);
     Route::get('/get-product-rent-user-id/{id}', [ProductRentHouseController::class, 'getDataProductRentByUserId']);
-    Route::get('/get-product-rent-detail/{id}', [ProductRentHouseController::class, 'getDataProductRentById']);
+    Route::get('/get-product-rent-detail/{id}', [ProductRentHouseController::class, 'getDetailProductRentById']);
 
 
     //product_jobs
