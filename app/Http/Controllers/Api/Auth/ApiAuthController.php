@@ -28,7 +28,7 @@ class ApiAuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['api','jwt.vertify'], ['except' => ['login', 'refresh','register']]);
+        $this->middleware(['auth:api','jwt.vertify'], ['except' => ['login', 'refresh','register']]);
     }
 
     /**
@@ -165,8 +165,8 @@ class ApiAuthController extends Controller
             'signature_key' => null,
         ]);
 
-        JWTAuth::invalidate(JWTAuth::parseToken());
         auth('api')->logout();
+        JWTAuth::invalidate(JWTAuth::parseToken());
 
         return response()->json(['message' => 'Logout thành công' , 'status' => true] , 200);
     }
@@ -213,4 +213,56 @@ class ApiAuthController extends Controller
             // 'data'=> $user['id']
         ]);
     }
+
+    public function updateUser(Request $request, $id)
+    {
+        // Tìm user theo id
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        // dd($request->all());
+        $data = $request->all();
+        if ($request->hasFile('avatar')) {
+            // Lấy file ảnh (avatar)
+            $img = $request->file('avatar');
+
+                $avatarName = $img->getClientOriginalName();
+
+            // Lưu ảnh vào thư mục public/img
+            $img->move(public_path('img'), $avatarName);
+
+            // Thêm đường dẫn ảnh (avatar) vào mảng dữ liệu
+            $data['avatar'] = 'img/' . $avatarName; // Lưu đường dẫn ảnh vào DB
+        } else {
+            // Trường hợp không có avatar, giữ nguyên avatar cũ
+            $data['avatar'] = $user->avatar;
+        }
+
+
+        $user->fill($data);
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user' => [
+                'id' => $user->id,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'username' => $user->username,
+                'avatar' => isset($data['avatar']) ? url($data['avatar']) : null,
+                'address' => $user->address,
+                'identity_card' => $user->identity_card,
+                'date_range' => $user->date_range,
+                'gender' => $user->gender,
+            ],
+        ]);
+    }
+
+
+
+
+
 }

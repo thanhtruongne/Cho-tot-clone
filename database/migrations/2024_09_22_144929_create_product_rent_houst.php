@@ -17,11 +17,9 @@ return new class extends Migration
             $table->text('content');
             $table->unsignedBigInteger('user_id')->index();
             $table->string('code', 150)->unique();
-            $table->tinyInteger('type_product')->comment('1 là nhà ở ,  2  là phòng trọ');
+            $table->tinyInteger('type_product')->nullable()->comment('1 là mua bán, 2  là cho thuê');
             $table->longText('images');
             $table->string('video');
-
-
 
             //mặc định là thángphp
             $table->integer('type_posting_id')->index()->default(1)->comment('loại tin đăng');

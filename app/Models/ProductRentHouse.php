@@ -52,6 +52,7 @@ class ProductRentHouse extends Model
         'rule_compensation',
         'district_code',
         'type_user',
+        'load_btn_post'
     ];
 
     protected static function boot()

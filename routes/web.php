@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductElectronicController;
 use App\Http\Controllers\Api\Products\ProductRentHouseController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Auth\PasswordResetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// Routes for password reset
+
 
 Route::prefix('system')->group(function () {
     Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
