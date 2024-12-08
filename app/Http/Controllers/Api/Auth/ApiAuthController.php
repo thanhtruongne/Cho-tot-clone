@@ -28,7 +28,7 @@ class ApiAuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['auth:api','jwt.vertify'], ['except' => ['login', 'refresh','register']]);
+        $this->middleware(['api','jwt.vertify'], ['except' => ['login', 'refresh','register']]);
     }
 
     /**
@@ -38,7 +38,7 @@ class ApiAuthController extends Controller
      */
     public function login(Request $request)
     {
-        $rules = [ 
+        $rules = [
             'email' => 'required|email',
             'password' => 'required'
         ];
@@ -67,7 +67,7 @@ class ApiAuthController extends Controller
         $vertify = explode('.',$token);
         $user->signature_key = end($vertify); // lưu chữ ký của token
         $user->save();
-       
+
         return $this->respondWithToken($token,$user);
     }
 
@@ -75,7 +75,7 @@ class ApiAuthController extends Controller
 
      // đăng ký   tự đăng  nhập set token
     public function register(Request $request){
-        $rules = [ 
+        $rules = [
             'email' => 'required|email',
             'password' => 'required',
             'firstname' => 'required',
@@ -109,7 +109,7 @@ class ApiAuthController extends Controller
             'lastname' => $lastname,
             'password' => password_hash($password,PASSWORD_DEFAULT)
         ]);
-    
+
         if (! $token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $password ])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -136,7 +136,7 @@ class ApiAuthController extends Controller
            ];
            $refreshToken = JWTAuth::getJWTProvider()->encode($payload);
         return $refreshToken;
-   
+
     }
 
     /**
@@ -155,7 +155,7 @@ class ApiAuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout()
-    {   
+    {
         $id = auth('api')->id();
         \DB::table('users')->where(function($subquery) use($id){
             $subquery->whereId($id);
@@ -164,9 +164,9 @@ class ApiAuthController extends Controller
             'refresh_token' => null,
             'signature_key' => null,
         ]);
-    
-        auth('api')->logout();
+
         JWTAuth::invalidate(JWTAuth::parseToken());
+        auth('api')->logout();
 
         return response()->json(['message' => 'Logout thành công' , 'status' => true] , 200);
     }
@@ -177,7 +177,7 @@ class ApiAuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function refresh()
-    { 
+    {
             $token = request()->bearerToken();
             $tokenDecoded = JWTAuth::getJWTProvider()->decode($token);
             $dataVertify = explode('.',$token);
