@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use Illuminate\Database\Eloquent\Model;
+
+class Wards extends Model
+{
+    use Cachable;
+
+   protected $table = 'wards';
+    protected $fillable = [
+        'code',
+        'name',
+        'name_en',
+        'full_name',
+        'full_name_en',
+        'code_name',
+        'district_code'
+    ];
+}

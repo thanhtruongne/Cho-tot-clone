@@ -95,7 +95,7 @@ Route::group([
 
     Route::post('/change-status-post', [ProductRentHouseController::class, 'changeStatusPostData']);
     Route::post('/change-load-btn-post', [ProductRentHouseController::class, 'loadDataBtnPost']);
-
+    Route::get('/get-data-location',[DashboardController::class, 'getLocation']);
 
     //bathroom_type
     Route::post('/add-bathroom-type', [BathroomTypeController::class, 'addBathroomType']);

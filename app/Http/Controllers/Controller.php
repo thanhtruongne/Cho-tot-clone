@@ -14,14 +14,14 @@ class Controller extends BaseController
 
     public function validateRequest($rules, Request $request, $attributeNames = null)
     {
+       
         $validator = Validator::make($request->all(), $rules);
 
         if ($attributeNames) {
             $validator->setAttributeNames($attributeNames);
         }
-
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()->all()[0], 'status' =>'error']);
+            abort(response()->json(['message' => $validator->errors()->all()[0], 'status' =>'error']));
         }
     }
 
