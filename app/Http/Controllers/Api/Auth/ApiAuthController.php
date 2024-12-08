@@ -228,8 +228,7 @@ class ApiAuthController extends Controller
             // Lấy file ảnh (avatar)
             $img = $request->file('avatar');
 
-            // Tạo tên file duy nhất (ví dụ: timestamp + tên file gốc)
-            $avatarName = time() . '.' . $img->getClientOriginalExtension();
+                $avatarName = $img->getClientOriginalName();
 
             // Lưu ảnh vào thư mục public/img
             $img->move(public_path('img'), $avatarName);
