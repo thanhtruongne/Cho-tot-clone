@@ -10,7 +10,7 @@ class ProductRentHouse extends Model
     use Cachable;
     protected $table = 'product_rent_house';
     protected $primaryKey = 'id';
-    
+
     protected $fillable = [
         'day_package_expirition',
         'payment',
@@ -49,9 +49,10 @@ class ProductRentHouse extends Model
         'length',
         'cost',
         'cost_deposit',
-        'rule_compensation',    
+        'rule_compensation',
         'district_code',
         'type_user',
+        'load_btn_post'
     ];
 
     protected static function boot()

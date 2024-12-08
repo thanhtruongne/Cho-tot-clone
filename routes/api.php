@@ -22,8 +22,12 @@ use App\Http\Controllers\Api\ZaloPayController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\Api\Auth\PasswordResetController;
 
-
+Route::get('forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{userId}', [PasswordResetController::class, 'showResetForm']);
+Route::post('password/reset/{userID}', [PasswordResetController::class, 'resetPassword']);
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -40,7 +44,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 // });
 
 // Route::post('/zalopay/create-order', [ZaloPayController::class, 'createOrder']);
-
+Route::get('/', [PaymentController::class, 'index']);
 // Route tạo payment
 Route::post('paypal/create-payment', [PayPalController::class, 'createPayment'])
     ->name('paypal.create');
@@ -71,12 +75,15 @@ Route::group([
   Route::post('logout', [ApiAuthController::class, 'logout'])->name('fe.logout');
   Route::post('refresh', [ApiAuthController::class, 'refresh'])->name('fe.refresh');
   Route::post('register', [ApiAuthController::class, 'register'])->name('fe.register');
+
 });
 
 Route::group([
   'middleware' => ['api', 'jwt.vertify'],
   'prefix' => 'auth'
 ], function ($router) {
+  Route::post('update/{id}', [ApiAuthController::class, 'updateUser'])->name('fe.updateUser');
+
   Route::get('/user', [ApiAuthController::class, 'me'])->name('fe.get-user');
 
   Route::group(['prefix' => '/product'], function () {

@@ -38,7 +38,7 @@ class ApiAuthController extends Controller
      */
     public function login(Request $request)
     {
-        $rules = [ 
+        $rules = [
             'email' => 'required|email',
             'password' => 'required'
         ];
@@ -67,7 +67,7 @@ class ApiAuthController extends Controller
         $vertify = explode('.',$token);
         $user->signature_key = end($vertify); // lưu chữ ký của token
         $user->save();
-       
+
         return $this->respondWithToken($token,$user);
     }
 
@@ -75,7 +75,7 @@ class ApiAuthController extends Controller
 
      // đăng ký   tự đăng  nhập set token
     public function register(Request $request){
-        $rules = [ 
+        $rules = [
             'email' => 'required|email',
             'password' => 'required',
             'firstname' => 'required',
@@ -109,7 +109,7 @@ class ApiAuthController extends Controller
             'lastname' => $lastname,
             'password' => password_hash($password,PASSWORD_DEFAULT)
         ]);
-    
+
         if (! $token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $password ])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -136,7 +136,7 @@ class ApiAuthController extends Controller
            ];
            $refreshToken = JWTAuth::getJWTProvider()->encode($payload);
         return $refreshToken;
-   
+
     }
 
     /**
@@ -155,7 +155,7 @@ class ApiAuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout()
-    {   
+    {
         $id = auth('api')->id();
         \DB::table('users')->where(function($subquery) use($id){
             $subquery->whereId($id);
@@ -164,7 +164,7 @@ class ApiAuthController extends Controller
             'refresh_token' => null,
             'signature_key' => null,
         ]);
-    
+
         auth('api')->logout();
         JWTAuth::invalidate(JWTAuth::parseToken());
 
@@ -177,7 +177,7 @@ class ApiAuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function refresh()
-    { 
+    {
             $token = request()->bearerToken();
             $tokenDecoded = JWTAuth::getJWTProvider()->decode($token);
             $dataVertify = explode('.',$token);
@@ -213,4 +213,57 @@ class ApiAuthController extends Controller
             // 'data'=> $user['id']
         ]);
     }
+
+    public function updateUser(Request $request, $id)
+    {
+        // Tìm user theo id
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        // dd($request->all());
+        $data = $request->all();
+        if ($request->hasFile('avatar')) {
+            // Lấy file ảnh (avatar)
+            $img = $request->file('avatar');
+
+            // Tạo tên file duy nhất (ví dụ: timestamp + tên file gốc)
+            $avatarName = time() . '.' . $img->getClientOriginalExtension();
+
+            // Lưu ảnh vào thư mục public/img
+            $img->move(public_path('img'), $avatarName);
+
+            // Thêm đường dẫn ảnh (avatar) vào mảng dữ liệu
+            $data['avatar'] = 'img/' . $avatarName; // Lưu đường dẫn ảnh vào DB
+        } else {
+            // Trường hợp không có avatar, giữ nguyên avatar cũ
+            $data['avatar'] = $user->avatar;
+        }
+
+
+        $user->fill($data);
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user' => [
+                'id' => $user->id,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'username' => $user->username,
+                'avatar' => isset($data['avatar']) ? url($data['avatar']) : null,
+                'address' => $user->address,
+                'identity_card' => $user->identity_card,
+                'date_range' => $user->date_range,
+                'gender' => $user->gender,
+            ],
+        ]);
+    }
+
+
+
+
+
 }
