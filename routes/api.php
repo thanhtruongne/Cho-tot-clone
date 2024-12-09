@@ -55,7 +55,7 @@ Route::get('paypal/cancel', function () {
 })->name('paypal.cancel');
 
 Route::group([
-  'middleware' => 'api',
+  // 'middleware' => 'api',
   'prefix' => 'auth'
 ], function ($router) {
 

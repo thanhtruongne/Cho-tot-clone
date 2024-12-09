@@ -52,11 +52,11 @@ class DashboardController extends Controller
         }
         if($price_lte || $price_gte){
             if($price_lte && $price_gte) {
-                $query->whereBetween('cost',[$price_gte,$price_lte]);
+                $query->whereBetween('a.cost',[$price_gte,$price_lte]);
             } elseif($price_gte){
-                $query->where('cost','<=',$price_gte);
+                $query->where('a.cost','<=',$price_gte);
             } else {
-                $query->where('cost','>=',$price_lte);
+                $query->where('a.cost','>=',$price_lte);
             }
         }
         if($bedroom) {
@@ -166,7 +166,7 @@ class DashboardController extends Controller
                 $query->where('district_code', $code);
             }
         }
-        $data = $query->paginate(10);
+        $data = $query->paginate(10);   
         return response()->json($data);
 
 
