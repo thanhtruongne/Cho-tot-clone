@@ -25,4 +25,34 @@ class Controller extends BaseController
         }
     }
 
+
+    public function UploadImages($images) {
+        $storage = \Storage::disk('upload');
+        $data = [];
+        foreach($images as $key => $image) {
+            $mime_type  = $image->getMimeType();
+            if(!in_array($mime_type, ['image/jpg','image/png','image/jpeg','image/gif'])){
+                return response()->json(['message' => 'Không phù hợp định dạng','status' => 'error']);
+            }
+            $filename = $image->getClientOriginalName();
+            $extension = $image->getClientOriginalExtension();
+            $filename = \Str::slug(basename($filename, "." . $extension)) . '.'. $extension;
+            $data[] = $filename;
+            if($storage->exists($filename))
+                continue;
+            $image = $storage->putFileAs(date('Y/m/d'), $image, $filename);
+         
+        }
+        if(count($data) > 0) {
+            return json_encode($data);
+        }
+        return null;
+           
+         
+
+            
+            
+        
+    }
+
 }

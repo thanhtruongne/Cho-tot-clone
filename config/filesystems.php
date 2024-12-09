@@ -43,7 +43,12 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
-
+        'upload' => [
+            'driver' => 'local',
+            'root' => config('app.datafile.path') . '/uploads',
+            'url' => config('app.datafile.public_url', '/uploads'),
+            'visibility' => 'public',
+        ],
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

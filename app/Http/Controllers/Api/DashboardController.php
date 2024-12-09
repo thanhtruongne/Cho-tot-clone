@@ -21,7 +21,7 @@ class DashboardController extends Controller
         $limit = $request->input('limit',12);
 
         $type = $request->type;//dạng tin nhà ở , buôn bán , việc làm;
-        if(!$type || !is_int((int)$type)){
+        if(!$type){
             return response()->json(['status' => 'error','message' => 'Có lỗi xảy ra']);
         }
         // $date = \Carbon::now();
