@@ -166,11 +166,9 @@ class DashboardController extends Controller
                 $query->where('district_code', $code);
             }
         }
-<<<<<<< HEAD
+
         $data = $query->get();
-=======
-        $data = $query->paginate(10);   
->>>>>>> 35b864b5d3bb1120efc8b4ba0e6687887357d0f0
+
         return response()->json($data);
 
 
