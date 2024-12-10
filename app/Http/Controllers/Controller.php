@@ -37,22 +37,13 @@ class Controller extends BaseController
             $filename = $image->getClientOriginalName();
             $extension = $image->getClientOriginalExtension();
             $filename = \Str::slug(basename($filename, "." . $extension)) . '.'. $extension;
-            $data[] = $filename;
+
             if($storage->exists($filename))
                 continue;
             $image = $storage->putFileAs(date('Y/m/d'), $image, $filename);
-         
+            $data[] = env('APP_STORAGE').$storage->url($image);
         }
-        if(count($data) > 0) {
-            return json_encode($data);
-        }
-        return null;
-           
-         
-
-            
-            
-        
+        return $data;
     }
 
 }
