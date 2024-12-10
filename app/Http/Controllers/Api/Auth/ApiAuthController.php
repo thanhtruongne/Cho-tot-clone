@@ -28,7 +28,7 @@ class ApiAuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['auth:api','jwt.vertify'], ['except' => ['login', 'refresh','register']]);
+        $this->middleware(['api','jwt.vertify'], ['except' => ['login', 'refresh','register']]);
     }
 
     /**
@@ -164,9 +164,8 @@ class ApiAuthController extends Controller
             'refresh_token' => null,
             'signature_key' => null,
         ]);
-
-        auth('api')->logout();
         JWTAuth::invalidate(JWTAuth::parseToken());
+        auth('api')->logout();
 
         return response()->json(['message' => 'Logout thành công' , 'status' => true] , 200);
     }

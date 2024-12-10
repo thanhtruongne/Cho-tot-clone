@@ -21,7 +21,7 @@ class DashboardController extends Controller
         $limit = $request->input('limit',12);
 
         $type = $request->type;//dạng tin nhà ở , buôn bán , việc làm;
-        if(!$type || !is_int((int)$type)){
+        if(!$type){
             return response()->json(['status' => 'error','message' => 'Có lỗi xảy ra']);
         }
         // $date = \Carbon::now();
@@ -166,7 +166,11 @@ class DashboardController extends Controller
                 $query->where('district_code', $code);
             }
         }
+<<<<<<< HEAD
         $data = $query->get();
+=======
+        $data = $query->paginate(10);   
+>>>>>>> 35b864b5d3bb1120efc8b4ba0e6687887357d0f0
         return response()->json($data);
 
 

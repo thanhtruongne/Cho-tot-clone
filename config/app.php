@@ -253,4 +253,10 @@ return [
         'Purifier' => Mews\Purifier\Facades\Purifier::class,
     ])->toArray(),
 
+
+    'datafile' => [
+        'path' => env('APP_STORAGE'),
+        'public_url' => env('APP_STORAGE_PUBLIC', '/uploads'),
+        'upload_disk' => env('APP_UPLOAD_DISK', 'upload'),
+    ],
 ];

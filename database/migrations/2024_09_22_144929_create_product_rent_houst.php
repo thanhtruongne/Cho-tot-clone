@@ -32,18 +32,12 @@ return new class extends Migration
             // nút load tin lưu số lần
             $table->integer('load_btn_post')->nullable()->comment('nút load tin , tin theo dạng nút load tin');
 
-
-
-
-
             $table->tinyInteger('approved')->index()->default(2)->comment('0 là từ chối , 1 đã duyệt , 2 chờ duyệt');
             $table->tinyInteger('type_rental')->index()->default(3)->comment('1 thuê theo ngày , 2 thuê theo tuàn , 3 theo tháng , 4 theo năm');
 
-        
             $table->string('province_code');
             $table->string('district_code');
             $table->string('ward_code');
-
 
             $table->tinyInteger('type_user')->default(1)->comment('1 là cá nhân , 2 là môi giới'); 
             $table->unsignedBigInteger('category_id');
@@ -78,9 +72,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('product_rent_house');
