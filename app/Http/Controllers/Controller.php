@@ -27,7 +27,7 @@ class Controller extends BaseController
 
 
     public function UploadImages($images) {
-        $storage = \Storage::disk('upload');
+        $storage = \Storage::disk('public');
         $data = [];
         foreach($images as $key => $image) {
             $mime_type  = $image->getMimeType();
@@ -41,7 +41,9 @@ class Controller extends BaseController
             if($storage->exists($filename))
                 continue;
             $image = $storage->putFileAs(date('Y/m/d'), $image, $filename);
-            $data[] = env('APP_STORAGE').$storage->url($image);
+            // $data[] = env('APP_STORAGE').$storage->url($image);
+            $data[] = $storage->url($image);
+
         }
         return $data;
     }
