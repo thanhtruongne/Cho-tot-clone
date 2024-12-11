@@ -30,8 +30,11 @@ class ProductRentHouseController extends Controller
 
     public function addProductRent(Request $request)
     {
+<<<<<<< HEAD
     
     
+=======
+>>>>>>> 713cbfeda15664f68232033ffa762ed37b9bd3b8
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
@@ -71,7 +74,10 @@ class ProductRentHouseController extends Controller
                 'rule_compensation' => 'nullable|integer|min:0',
                 'district_code' => 'required|string',
             ]);
+<<<<<<< HEAD
             
+=======
+>>>>>>> 713cbfeda15664f68232033ffa762ed37b9bd3b8
             if($request->has('images')){
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
              
@@ -91,8 +97,15 @@ class ProductRentHouseController extends Controller
     }
     public function getDataProductRentById($id)
     {
-        $data = ProductRentHouse::where('id', operator: $id)->get();
-        return response()->json(['data' => $data]);
+        try{
+            $data = ProductRentHouse::findOrFail($id);
+            $data->cost = convert_price((int)$data->cost,true);
+            $data->cost_deposit = convert_price((int)$data->cost_deposit,true);
+            return response()->json(['data' => $data]);
+        }catch (\Illuminate\Validation\ValidationException $e) {
+
+            return response()->json(['errors' => $e->validator->errors()], 422);
+        }       
     }
 
     public function updateProductRent(Request $request, $id)
@@ -142,7 +155,12 @@ class ProductRentHouseController extends Controller
                 return response()->json(['error' => 'Product not found'], 404);
             }
 
+            if($request->has('images')){
+                $images = $this->UploadImages($request->file('images')); //  trả ra json encode
+            }
+
             $data->fill($validatedData);
+            $data->images = isset($images) && !is_null($images) ? $images : null;
             $data->save();
 
             DB::commit();
@@ -161,14 +179,31 @@ class ProductRentHouseController extends Controller
 
     public function getDataProductRentByUserId($id)
     {
-        $data = ProductRentHouse::where('user_id', $id)->get();
-        return response()->json(['data' => $data]);
+        $rows = ProductRentHouse::where('user_id', $id)->with(['province','district','ward'])->get();
+        if($rows){
+            foreach($rows as $row) {
+                $row->cost = convert_price((int)$row->cost,true);
+                $row->cost_deposit = convert_price((int)$row->cost_deposit,true);
+            }
+        }
+        return response()->json(['data' => $rows]);
     }
 
-public function getDetailProductRentById($id){
-    $model = ProductRentHouse::findOrFail($id);
-    return response()->json(['data' => $model]);
-}
+    public function getDetailProductRentById($id){
+       
+        try{
+            $model = ProductRentHouse::findOrFail($id);
+            $model->loadMissing(['province','ward','district']);
+            $model->cost = convert_price((int)$model->cost,true);
+            $model->cost_deposit = convert_price((int)$model->cost_deposit,true);
+            return response()->json(['data' => $model]);
+
+        }catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->validator->errors()], 422);
+        }      
+    }
+
+    
     public function changeStatusPostData(Request $request){
         $this->validateRequest([
             'id' => 'required',

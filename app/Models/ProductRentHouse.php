@@ -55,6 +55,10 @@ class ProductRentHouse extends Model
         'load_btn_post'
     ];
 
+    protected $casts = [
+        'images' => 'json'
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -70,6 +74,8 @@ class ProductRentHouse extends Model
         } while (self::where('code', $code)->exists());
         return $code;
     }
+
+
 
 
     public static function getAttributeName(){
@@ -92,5 +98,17 @@ class ProductRentHouse extends Model
 
     public function posting_product_expect(){
         return $this->belongsToMany(PostingDataAction::class,'product_posting_expect','product_id','posting_data_action_id');
+    }
+
+    public function province(){
+        return $this->belongsTo(Provinces::class,'code','province_code')->select('full_name');
+    }
+
+    public function district(){
+        return $this->belongsTo(Districts::class,'code','district_code')->select('full_name');
+    }
+
+    public function ward(){
+        return $this->belongsTo(Wards::class,'code','ward_code')->select('full_name');
     }
 }
