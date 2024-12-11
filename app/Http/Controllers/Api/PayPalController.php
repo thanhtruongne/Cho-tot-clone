@@ -38,17 +38,18 @@ class PayPalController extends Controller
             'log.LogLevel' => 'ERROR', // DEBUG để debug
         ]);
     }
-   
+
     public function createPayment(Request $request)
     {
         // dd($request->all());
 
         // Lấy các tham số từ request
-        $userId = $request->input('user_id');
-        $productId = $request->input('product_id');
-        $day = $request->input('day');
-        $typePostingId = $request->input('type_posting_id');
-        $price = $request->input('price');
+        $userId = $request->input('user_id','');
+        $productId = $request->input('product_id','');
+        $day = $request->input('day','');
+        $typePostingId = $request->input('type_posting_id','');
+        $price = $request->input('price','');
+        $load_key_post = $request->input('load_key_post', '');
 
         // Tạo đối tượng Payer
         $payer = new Payer();
@@ -80,6 +81,7 @@ class PayPalController extends Controller
                 'product_id' => $productId,
                 'day' => $day,
                 'type_posting_id' => $typePostingId,
+                'load_key_post' => $load_key_post
             ])); // Lưu thông tin bổ sung dưới dạng JSON
 
         // Đường dẫn chuyển hướng sau khi thanh toán thành công
@@ -130,6 +132,7 @@ class PayPalController extends Controller
             $productId = $customData['product_id'];
             $day = $customData['day'];
             $type_posting_id = $customData['type_posting_id'];
+            $load_key_post = $customData['load_key_post'];
 
             if ($productId) {
                 // Tìm bản ghi ProductRentHouse theo productId
@@ -139,7 +142,7 @@ class PayPalController extends Controller
                 $model->approved = 1; // Đặt trạng thái approved là 1
                 $model->payment = 2; // Cập nhật payment là 2
                 $model->type_posting_id = $type_posting_id;
-
+                $model->load_btn_post = $load_key_post;
                 // Tiến hành lưu thay đổi vào cơ sở dữ liệu
                 $model->save();
 
