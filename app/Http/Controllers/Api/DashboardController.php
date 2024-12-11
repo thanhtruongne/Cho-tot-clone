@@ -152,7 +152,7 @@ class DashboardController extends Controller
         $type = $request->input('type'); // dạng nào thì truyền key đó vào
         $code = $request->input('code'); // code của dạng đó nếu là type là district hay wards
         $instance = $this->handleMadeClass('Models',$type);
-        if(!$instance) 
+        if(!$instance)
             return response()->json(['message' => 'Định dạng locaiton không hợp lệ','status' => 'error']);
         $query = $instance::select(['id', 'code', 'full_name']);
         if($request->search){
@@ -166,7 +166,9 @@ class DashboardController extends Controller
                 $query->where('district_code', $code);
             }
         }
-        $data = $query->paginate(10);   
+
+        $data = $query->get();
+
         return response()->json($data);
 
 

@@ -32,7 +32,7 @@ class PasswordResetController extends Controller
             return response()->json(['message' => 'Email not found'], 404);
         }
 
-        $resetLink = url('api/password/reset/' . $user->id);
+$resetLink = url('http://localhost:5173/confirm_reset_password/' . $user->id);
  // Sử dụng ID của người dùng làm phần của URL
         Mail::send('emails.test', ['name' => $user->firstname.' ' .$user->lastname, 'resetLink' => $resetLink], function ($message) use ($email) {
             $message->to($email)->subject('Reset Password');

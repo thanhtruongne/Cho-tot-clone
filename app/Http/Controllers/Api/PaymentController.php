@@ -42,7 +42,7 @@ class PaymentController extends Controller
         $vnp_Locale = 'VN';
         $vnp_BankCode = 'NCB';
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
-
+      
         $inputData = array(
             "vnp_Version" => "2.1.0",
             "vnp_TmnCode" => $vnp_TmnCode,
@@ -106,19 +106,20 @@ class PaymentController extends Controller
         $vnp_SecureHash = $request->input('vnp_SecureHash');
         if ($request->input('vnp_TransactionStatus') == 00) {
             $vnp_OrderInfo = $request->input('vnp_OrderInfo');
-            $orderInfoParts = explode('-', $vnp_OrderInfo);
+            $orderInfoParts = explode('_', $vnp_OrderInfo);
             $productId = isset($orderInfoParts[1]) ? $orderInfoParts[1] : null;
             $day = isset($orderInfoParts[2]) ? $orderInfoParts[2] : null;
             $type_posting_id = isset($orderInfoParts[3]) ? $orderInfoParts[3] : null;
             $load_key_post = isset($orderInfoParts[4]) ? $orderInfoParts[4] : null;
             $hours = $request->hours && !is_array($request->hours) ? explode(',',$request->hours) : [];
             // $count_post = $request->vnp_OrderType;
+          
             if ($productId) {
                 $model = ProductRentHouse::findOrFail($productId);
                 $model->approved = 1;
                 $model->payment = 2;
                 $model->type_posting_id = $type_posting_id;
-                $model->day_posting_type = $day;
+                $model->day_posting_type = null;
                 // theo dạng load tin lưu số lần
                 $model->load_btn_post = $load_key_post;
                 $model->time_exipred = \Carbon::now()->addDays($day);

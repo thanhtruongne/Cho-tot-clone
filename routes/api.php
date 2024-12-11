@@ -26,7 +26,8 @@ use App\Http\Controllers\Api\Auth\PasswordResetController;
 Route::get('forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{userId}', [PasswordResetController::class, 'showResetForm']);
-Route::post('password/reset/{userID}', [PasswordResetController::class, 'resetPassword']);
+Route::post('password/reset/{userId}', [PasswordResetController::class, 'resetPassword']);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -65,7 +66,7 @@ Route::get('paypal/cancel', function () {
 })->name('paypal.cancel');
 
 Route::group([
-  // 'middleware' => 'api',
+  'middleware' => 'api',
   'prefix' => 'auth'
 ], function ($router) {
 

@@ -14,7 +14,7 @@ class Controller extends BaseController
 
     public function validateRequest($rules, Request $request, $attributeNames = null)
     {
-       
+
         $validator = Validator::make($request->all(), $rules);
 
         if ($attributeNames) {
@@ -45,7 +45,17 @@ class Controller extends BaseController
             $data[] = $storage->url($image);
 
         }
+
+
+
+
+
+            
+
+
+
         return $data;
+
     }
 
 }
