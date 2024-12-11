@@ -43,10 +43,8 @@ class Controller extends BaseController
             $image = $storage->putFileAs(date('Y/m/d'), $image, $filename);
          
         }
-        if(count($data) > 0) {
-            return json_encode($data);
-        }
-        return null;
+        return json_encode($data);
+     
            
          
 

@@ -30,7 +30,8 @@ class ProductRentHouseController extends Controller
 
     public function addProductRent(Request $request)
     {
-        
+    
+    
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
@@ -70,10 +71,11 @@ class ProductRentHouseController extends Controller
                 'rule_compensation' => 'nullable|integer|min:0',
                 'district_code' => 'required|string',
             ]);
-            if($request->has('file')){
+            
+            if($request->has('images')){
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
+             
             }
-        
             $data = new ProductRentHouse();
             $data->fill($validatedData);
             $data->images = isset($images) && !is_null($images) ? $images : null;
