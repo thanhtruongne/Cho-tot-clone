@@ -43,17 +43,8 @@ class Controller extends BaseController
             $image = $storage->putFileAs(date('Y/m/d'), $image, $filename);
             // $data[] = env('APP_STORAGE').$storage->url($image);
             $data[] = $storage->url($image);
-
+           
         }
-
-
-
-
-
-            
-
-
-
         return $data;
 
     }

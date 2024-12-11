@@ -30,7 +30,6 @@ class ProductRentHouseController extends Controller
 
     public function addProductRent(Request $request)
     {
-
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
@@ -70,10 +69,10 @@ class ProductRentHouseController extends Controller
                 'rule_compensation' => 'nullable|integer|min:0',
                 'district_code' => 'required|string',
             ]);
-           if($request->has('images')){
+            if($request->has('images')){
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
-
             }
+        
             $data = new ProductRentHouse();
             $data->fill($validatedData);
             $data->images = isset($images) && !is_null($images) ? $images : null;
@@ -97,7 +96,7 @@ class ProductRentHouseController extends Controller
         }catch (\Illuminate\Validation\ValidationException $e) {
 
             return response()->json(['errors' => $e->validator->errors()], 422);
-        }
+        }       
     }
 
     public function updateProductRent(Request $request, $id)
@@ -182,7 +181,7 @@ class ProductRentHouseController extends Controller
     }
 
     public function getDetailProductRentById($id){
-
+       
         try{
             $model = ProductRentHouse::findOrFail($id);
             $model->loadMissing(['province','ward','district']);
@@ -192,10 +191,10 @@ class ProductRentHouseController extends Controller
 
         }catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->validator->errors()], 422);
-        }
+        }      
     }
 
-
+    
     public function changeStatusPostData(Request $request){
         $this->validateRequest([
             'id' => 'required',
