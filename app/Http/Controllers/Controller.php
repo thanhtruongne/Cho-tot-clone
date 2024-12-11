@@ -14,7 +14,7 @@ class Controller extends BaseController
 
     public function validateRequest($rules, Request $request, $attributeNames = null)
     {
-       
+
         $validator = Validator::make($request->all(), $rules);
 
         if ($attributeNames) {
@@ -43,18 +43,17 @@ class Controller extends BaseController
             $image = $storage->putFileAs(date('Y/m/d'), $image, $filename);
             $data[] = env('APP_STORAGE').$storage->url($image);
         }
-<<<<<<< HEAD
-        return json_encode($data);
-     
-           
-         
+
+
+
+
 
             
-            
-        
-=======
+
+
+
         return $data;
->>>>>>> 713cbfeda15664f68232033ffa762ed37b9bd3b8
+
     }
 
 }
