@@ -11,6 +11,7 @@ use Jenssegers\Agent\Agent;
 use App\Http\Controllers\Controller;
 
 use App\Models\User;
+use App\Models\LoginHistory;
 use App\Models\UserActivities;
 use App\Models\Visits;
 use Carbon\Carbon;

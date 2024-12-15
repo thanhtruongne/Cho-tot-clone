@@ -68,7 +68,7 @@ class DashboardController extends Controller
         }
 
         $query->where('a.status',1);
-        $query->orderByRaw('a.updated_at DESC, a.type_posting_id DESC');
+        $query->orderByRaw('a.type_posting_id DESC, a.updated_at DESC');
 
         $rows = $query->paginate($limit);
         foreach($rows as $key => $row){
@@ -77,7 +77,6 @@ class DashboardController extends Controller
                 if(cache()->has($key)){
                     $row->load_btn_post = 'Đang khóa 20 phút';
                 }
-
             }
             $row->cost = convert_price((int)$row->cost,true);
             $row->cost_deposit = convert_price((int)$row->cost_deposit,true);
