@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;;
 
-
+use Yajra\DataTables\Facades\DataTables;
 use Jenssegers\Agent\Agent;
 use App\Http\Controllers\Controller;
 
@@ -140,8 +140,18 @@ class LoginController extends Controller
     }
     public function manageUsers()
     {
-        $data = User::paginate(2);
-        return view('pages.auth.manageUsers', compact('data'));
+        return view('pages.auth.manageUsers');
+    }
+    public function manageUsersData()
+    {
+        $data = User::all();
+
+        if($data->isEmpty()) {
+            return response()->json(['data' => []]);
+        }
+
+        return DataTables::of($data)
+            ->make(true);
     }
 
     public function manageUsersAdd(Request $request)
@@ -175,7 +185,7 @@ class LoginController extends Controller
     public function manageUsersEdit($id)
     {
         $user = User::find($id);
-
+        
         if (!$user) {
             return redirect()->route('manage-users')->with('error', 'Không tìm thấy người dùng!');
         }

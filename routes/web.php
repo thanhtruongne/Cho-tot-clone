@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoriesController;
@@ -22,45 +23,47 @@ use App\Http\Controllers\Api\Auth\PasswordResetController;
 
 
 Route::prefix('system')->group(function () {
-    Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
-    Route::post('/login',[LoginController::class,'login'])->name('post.login');
-
-
-    Route::group(['middleware' => ['auth','logvisit:admin']],function(){
-        Route::post('/logout',[LoginController::class,'logout'])->name('logout');
+    Route::post('/login', [LoginController::class, 'login'])->name('post.login');
 
 
-
-       Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
-
-       Route::get('/categories',[CategoriesController::class,'index'])->name('categories');
-
-       Route::get('/quanli',[CategoriesController::class,'quanli'])->name('quanli');
+    Route::group(['middleware' => ['auth', 'logvisit:admin']], function () {
+        Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
-       Route::get('/cagetories/get-data',[CategoriesController::class,'getData'])->name('categories.getdata');
 
-       Route::post('/cagetories/remove',[CategoriesController::class,'remove'])->name('categories.remove');
-       Route::post('/cagetories/save',[CategoriesController::class,'save'])->name('categories.save');
-       Route::get('/cagetories/edit',[CategoriesController::class,'form'])->name('categories.edit');
-       Route::get('/cagetories/create',[CategoriesController::class,'form'])->name('categories.create');
-       Route::post('/categories/change-status',[CategoriesController::class,'changeStatus'])->name('categories.change.status');
-       Route::post('/categories/remove',[CategoriesController::class,'remove'])->name('categories.remove');
-       Route::post('/categories/removeSelectAll',[CategoriesController::class,'removeSelectAll'])->name('categories.remove.select');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('/categories', [CategoriesController::class, 'index'])->name('categories');
+
+        Route::get('/quanli', [CategoriesController::class, 'quanli'])->name('quanli');
 
 
-       //product rent
-       Route::get("/manage-postings", [ProductRentHouseController::class, 'managePostings'])->name('manage-postings');
-       Route::post("/manage-postings-delete/{id}", [ProductRentHouseController::class, 'deletemanagePostings'])->name('manage-postings-delete');
+        Route::get('/cagetories/get-data', [CategoriesController::class, 'getData'])->name('categories.getdata');
+
+        Route::post('/cagetories/remove', [CategoriesController::class, 'remove'])->name('categories.remove');
+        Route::post('/cagetories/save', [CategoriesController::class, 'save'])->name('categories.save');
+        Route::get('/cagetories/edit', [CategoriesController::class, 'form'])->name('categories.edit');
+        Route::get('/cagetories/create', [CategoriesController::class, 'form'])->name('categories.create');
+        Route::post('/categories/change-status', [CategoriesController::class, 'changeStatus'])->name('categories.change.status');
+        Route::post('/categories/remove', [CategoriesController::class, 'remove'])->name('categories.remove');
+        Route::post('/categories/removeSelectAll', [CategoriesController::class, 'removeSelectAll'])->name('categories.remove.select');
 
 
-       //manage Users
-       Route::get('/manage-users',action: [LoginController::class,'manageUsers'])->name('manage-users');
-       Route::post('/manage-users-add',action: [LoginController::class,'manageUsersAdd'])->name('manage-users-add');
-       Route::post('/manage-users-delete/{id}',action: [LoginController::class,'manageUsersDelete'])->name('manage-users-delete');
-       Route::get('/manage-users-edit/{id}',action: [LoginController::class,'manageUsersEdit'])->name('manage-users-edit');
-       Route::post('/manage-users-update/{id}',action: [LoginController::class,'manageUsersUpdate'])->name('manage-users-update');
+        //product rentProductRentHouseController
+        Route::get('manage-postings', [ProductRentHouseController::class, 'managePostings'])->name('manage-postings');
+        Route::get('manage-postings-get-data', [ProductRentHouseController::class, 'getProductData'])->name('manage-postings.data');
+        Route::post('manage-postings-delete/{id}', [ProductRentHouseController::class, 'deletePosting'])->name('manage-postings-delete');
+
+
+
+        //manage Users
+        Route::get('/manage-users', [LoginController::class, 'manageUsers'])->name('manage-users');
+        Route::get('/manage-users-data', [LoginController::class, 'manageUsersData'])->name('manage-users.data');
+        Route::post('/manage-users-add', [LoginController::class, 'manageUsersAdd'])->name('manage-users-add');
+        Route::post('/manage-users-delete/{id}', [LoginController::class, 'manageUsersDelete'])->name('manage-users-delete');
+        Route::get('/manage-users-edit/{id}', [LoginController::class, 'manageUsersEdit'])->name('manage-users-edit');
+        Route::post('/manage-users-update/{id}', [LoginController::class, 'manageUsersUpdate'])->name('manage-users-update');
     });
-
 });

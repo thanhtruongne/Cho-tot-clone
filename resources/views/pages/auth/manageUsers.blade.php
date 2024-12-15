@@ -35,22 +35,6 @@
 
     <div class="container">
         <h2 class="mb-4">Danh sách người dùng</h2>
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <!-- Hiển thị thông báo lỗi -->
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
         <!-- Button thêm mới người dùng -->
         <div class="mb-3">
             <button class="btn btn-info btn-lg fw-bold shadow-sm" id="addUserButton">Thêm người dùng</button>
@@ -102,150 +86,59 @@
 
 
     {{-- hien thi --}}
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>first name</th>
-                <th>lastname</th>
-                <th>Email</th>
-                <th>Ngày sinh</th>
-                <th>Giới tính</th>
-                <th>Ngày đăng ký</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($data as $user)
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="productTable">
+            <thead class="thead-dark">
                 <tr>
-                    <td>{{ $user->id }}</td>
-                    <td>{{ $user->username ?? 'N/A' }}</td>
-                    <td>{{ $user->firstname }}</td>
-                    <td>{{ $user->lastname }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->dob ? \Carbon\Carbon::parse($user->dob)->format('d/m/Y') : 'N/A' }}</td>
-                    <td>{{ $user->gender == 1 ? 'Nam' : 'Nữ' }}</td>
-                    <td>{{ $user->created_at ? $user->created_at->format('d/m/Y H:i') : 'N/A' }}</td>
-                    <td>{{ $user->status == 1 ? 'Hoạt động' : 'Không hoạt động' }}</td>
-                    <td>
-                        <!-- Button cập nhật -->
-                        <a href="{{ route('manage-users-edit',$user->id) }}" class="btn btn-warning btn-sm">Cập nhật</a>
-                        <!-- Button xóa -->
-                        <form action="{{ route('manage-users-delete',$user->id) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            <button type="submit" class="btn btn-danger btn-sm"
-                                onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">Xóa</button>
-                        </form>
-                    </td>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                    <th>gender</th>
+                    <th>Phone</th>
+                    <th>status</th>
+                    <th>Created At</th>
+                    <th>Action</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
-    {{ $data->links() }}
+            </thead>
+            <tbody>
+                <!-- Dữ liệu sẽ được tải bằng AJAX -->
+            </tbody>
+        </table>
+    </div>
     </div>
 
 @endsection
 
 @section('scripts')
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
     <script src="{{ asset('js/treeSelect.min.js') }}"></script>
     <script>
-        document.getElementById('addUserButton').addEventListener('click', function() {
-            document.getElementById('addUserForm').style.display = 'block';
-        });
-
-        document.getElementById('cancelButton').addEventListener('click', function() {
-            document.getElementById('addUserForm').style.display = 'none';
-        });
-
-
-        document.getElementById('userForm').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const passwordError = document.getElementById('passwordError');
-
-            if (password !== confirmPassword) {
-                e.preventDefault(); // Ngăn không cho gửi form
-                passwordError.style.display = 'block'; // Hiển thị lỗi
-            } else {
-                passwordError.style.display = 'none'; // Ẩn lỗi nếu khớp
-            }
-        });
-
-        function index_formatter(value, row, index) {
-            console.log(row);
-            return (index + 1);
-        }
-
-        function name_formatter(value, row, index) {
-            return '<a class="overide" id="edit_' + row.id + '" href="#" onClick="edit(' + row.id + ')">' + row.name +
-                '</a>';
-        }
-
-        function getModalCategory(value, row, index) {
-            return '<a id="row_' + row.id + '" class="overide" href="#" onClick="getModal(' + row.id + ')">' + row
-                .category_child + '</a>';
-        }
-
-
-        function detailFormatter(index, row) {
-            var html = []
-            var rows = $('<nav>').addClass('tree-nav');
-            rows.html(row.html)
-            return rows;
-        }
-
-
-
-
-        function status_formatter(value, row, index) {
-            var status = row.status == 1 ? 'checked' : '';
-            var html = `<div class="custom-control custom-switch">
-                            <input type="checkbox" ` + status + ` onclick="changeStatus(` + row.id +
-                `)" class="custom-control-input" id="customSwitch_` + row.id + `">
-                            <label class="custom-control-label" for="customSwitch_` + row.id + `"></label>
-                        </div>`;
-            return html;
-        }
-
-        var table = new LoadBootstrapTable({
-            locale: '{{ \App::getLocale() }}',
-            url: '{{ route('categories.getdata') }}',
-            remove_url: '{{ route('categories.remove', ['type' => 'all']) }}'
-        });
-
-
-        function changeStatus(status, type) {
-            var ids = $("input[name=btSelectItem]:checked").map(function() {
-                return $(this).val();
-            }).get();
-            let _this = $('#' + type);
-            let html = _this.html();
-            _this.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Đang xử lý...');
-            if (ids.length <= 0) {
-                show_message('Vui lòng chọn 1 dòng dữ liệu', 'error');
-                return false;
-            }
-            $.ajax({
-                url: '{{ route('categories.change.status') }}',
-                type: 'post',
-                data: {
-                    ids: ids,
-                    status: status
+         $(document).ready(function() {
+        var table = $('#productTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('manage-users.data') }}',
+            columns: [
+                { data: 'id', name: 'id' },
+                { data: 'username', name: 'username' },
+                { data: 'firstname', name: 'firstname' },
+                { data: 'lastname', name: 'lastname' },
+                { data: 'gender', name: 'gender' },
+                { data: 'phone', name: 'phone' },
+                { data: 'status', name: 'status' },
+                { data: 'created_at', name: 'created_at' },
+                {
+                    data: 'id',
+                    render: function(data, type, row) {
+                        return `<a href="{{ url('/manage-users-edit/') }}/${data}" class="btn btn-warning btn-sm">Cập nhật</a>`;
+                    },
+                    orderable: false,
+                    searchable: false
                 }
-            }).done(function(data) {
-                // if (id == 0) {
-                //     show_message(data.message, data.status);
-                // }
-                _this.prop('disabled', false).html(html);
-                $(table.table).bootstrapTable('refresh');
-                return false;
-            }).fail(function(data) {
-                _this.prop('disabled', false).html(html);
-                show_message('Lỗi hệ thống', 'error');
-                return false;
-            });
-        };
+            ]
+        });
+    });
     </script>
 @endsection
