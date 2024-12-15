@@ -56,7 +56,7 @@
                                     <i class="fa fa-check-circle"></i> &nbsp;Tắt
                                 </button>
                                 <a class="btn"><i class="fa fa-download"></i> Xuất file</a>
-                                <a href="{{route()}}" class="btn" href="#">
+                                <a href="{{route('manage-users.form')}}" class="btn" href="#">
                                     <i class="fa fa-plus"></i> 
                                     Thêm mới
                                 </a>
@@ -73,18 +73,17 @@
 
                 <table
                     class="tDefault table table-bordered bootstrap-table"
-                    data-detail-view="true"
-                    data-detail-formatter="detailFormatter"
                 >
                     <thead>
                         <tr>    
                           <th data-field="index" data-align="center" data-width="5%" data-formatter="index_formatter">#</th> 
                             <th data-field="check" data-checkbox="true" data-width="4%"></th>
                             <th data-field="name" data-width="20%" data-formatter="name_formatter">Họ và Tên</th>
-                            <th data-field="email" data-width="10%" data-formatter="email_formatter">Email</th>
+                            <th data-field="email" data-width="10%">Email</th>
                             <th data-field="phone" data-width="20%">Số điện thoại</th>
-                            <th data-field="created_at" data-align="center" data-width="10%">Ngày tạo </th>
-                            <th data-field="active" data-align="center" data-width="10%">Hoạt động</th>
+                            <th data-field="address_temp" data-width="20%">Địa chỉ</th>
+                            <th data-field="created_at" data-align="center" data-formatter="time_formatter" data-width="10%">Ngày tạo </th>
+                            <th data-field="online" data-align="center" data-formatter="active_formatter" data-width="10%">Hoạt động</th>
                             <th data-field="status" data-align="center" data-width="12%" data-formatter="status_formatter">Trạng thái</th>    
                         </tr>
                     </thead>
@@ -99,19 +98,28 @@
 @section('scripts')
     <script>
         function index_formatter(value, row, index) {
-            console.log(row);
             return (index+1);
         }
 
         function name_formatter(value,row,index){
-            return '<a class="overide" id="edit_'+row.id+'" href="#" onClick="edit('+row.id+')">'+ row.name +'</a>';
+            let full_name = row.firstname + ' ' + row.lastname;
+            return '<a class="overide" id="edit_'+row.id+'" href="#">'+ full_name +'</a>';
         }
 
-        function email_formatter(value,row,index){
-            return '<a id="row_'+row.id+'" class="overide" href="#" onClick="getModal('+ row.id +')">'+ row.category_child +'</a>';
+        function time_formatter(value,row,index){
+            return formatDate(value)
         }
 
-         function status_formatter(value, row, index) {
+        function active_formatter(value,row,index){
+            if(row.online == 'active'){
+                return '<i class="fas fa-circle" style="color: #11e70d;"></i>'
+            } else {
+                return '<a class="overide" id="acrive_'+row.id+'" href="#">'+ row.online +'</a>';
+            }
+        }
+
+
+        function status_formatter(value, row, index) {
             var status = row.status == 1 ? 'checked' : '';
             var html = `<div class="custom-control custom-switch">
                             <input type="checkbox" `+ status +` onclick="changeStatus(`+row.id+`)" class="custom-control-input" id="customSwitch_`+row.id+`">
@@ -122,7 +130,7 @@
 
         var table = new LoadBootstrapTable({
             locale: '{{ \App::getLocale() }}',
-            url: '{{ route('user.getData') }}',
+            url: '{{ route('manage-users.getData') }}',
             remove_url: '{{ route('manage-users.remove') }}'
         });
 

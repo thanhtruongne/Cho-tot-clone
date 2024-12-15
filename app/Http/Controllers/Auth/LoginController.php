@@ -114,12 +114,25 @@ class LoginController extends Controller
             $model->updated_at = time();
             $model->save();
         }
+        $this->setCacheOnline($id); //  set cache online user
+   
         $sessionId = session()->getId();
+
         UserActivities::endUserActivityDuration($id,$sessionId);
         session()->flush();
         auth('web')->logout();
         $request->session()->invalidate();
+        \Artisan::call("modelCache:clear --model=App\Model\User"); // set tạm 
         return response()->json(['status' => 'success','redirect' => route('login')]);
+
+    }
+
+    private function setCacheOnline($id){
+        $users_online = \Cache::get('online-users');
+        $users_online = collect($users_online)->filter(function ($online) use($id) {
+            return $online['id'] != $id;
+        });
+        \Cache::put('online-users', $users_online, \Config::get('session.lifetime'));
     }
 
 
@@ -143,83 +156,83 @@ class LoginController extends Controller
     {
         return view('pages.auth.manageUsers');
     }
-    public function manageUsersData()
-    {
-        $data = User::all();
+    // public function manageUsersData()
+    // {
+    //     $data = User::all();
 
-        if($data->isEmpty()) {
-            return response()->json(['data' => []]);
-        }
+    //     if($data->isEmpty()) {
+    //         return response()->json(['data' => []]);
+    //     }
 
-        return DataTables::of($data)
-            ->make(true);
-    }
+    //     return DataTables::of($data)
+    //         ->make(true);
+    // }
 
-    public function manageUsersAdd(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|unique:users,email',
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-        ], [
-            'email.unique' => 'Email này đã được sử dụng.',
-        ]);
+    // public function manageUsersAdd(Request $request)
+    // {
+    //     $request->validate([
+    //         'email' => 'required|email|unique:users,email',
+    //         'firstname' => 'required|string|max:255',
+    //         'lastname' => 'required|string|max:255',
+    //     ], [
+    //         'email.unique' => 'Email này đã được sử dụng.',
+    //     ]);
 
-        $user = new User();
-        $user->email = $request->email;
-        $user->firstname = $request->firstname;
-        $user->lastname = $request->lastname;
-        $user->password = bcrypt($request->password);
-        $user->save();
+    //     $user = new User();
+    //     $user->email = $request->email;
+    //     $user->firstname = $request->firstname;
+    //     $user->lastname = $request->lastname;
+    //     $user->password = bcrypt($request->password);
+    //     $user->save();
 
-        // Trả về thông báo thành công
-        return redirect()->route('manage-users')->with('success', 'Người dùng đã được thêm thành công!');
-    }
+    //     // Trả về thông báo thành công
+    //     return redirect()->route('manage-users')->with('success', 'Người dùng đã được thêm thành công!');
+    // }
 
-    public function manageUsersDelete($id)
-    {
-        $user = User::find($id);
-        $user->delete();
-        return redirect()->route('manage-users')->with('success', '');
-    }
+    // public function manageUsersDelete($id)
+    // {
+    //     $user = User::find($id);
+    //     $user->delete();
+    //     return redirect()->route('manage-users')->with('success', '');
+    // }
 
-    public function manageUsersEdit($id)
-    {
-        $user = User::find($id);
+    // public function manageUsersEdit($id)
+    // {
+    //     $user = User::find($id);
         
-        if (!$user) {
-            return redirect()->route('manage-users')->with('error', 'Không tìm thấy người dùng!');
-        }
+    //     if (!$user) {
+    //         return redirect()->route('manage-users')->with('error', 'Không tìm thấy người dùng!');
+    //     }
 
-        return view('pages.auth.manageUsersEdit', compact('user')); // Chuyển dữ liệu user vào view
-    }
+    //     return view('pages.auth.manageUsersEdit', compact('user')); // Chuyển dữ liệu user vào view
+    // }
 
-    public function manageUsersUpdate(Request $request, $id)
-    {
-        $request->validate([
-            'email' => 'required|email|unique:users,email,' . $id,
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-        ], [
-            'email.unique' => 'Email này đã được sử dụng.',
-        ]);
+    // public function manageUsersUpdate(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'email' => 'required|email|unique:users,email,' . $id,
+    //         'firstname' => 'required|string|max:255',
+    //         'lastname' => 'required|string|max:255',
+    //     ], [
+    //         'email.unique' => 'Email này đã được sử dụng.',
+    //     ]);
 
-        $user = User::find($id);
+    //     $user = User::find($id);
 
-        if (!$user) {
-            return redirect()->route('manage-users')->with('error', 'Không tìm thấy người dùng!');
-        }
+    //     if (!$user) {
+    //         return redirect()->route('manage-users')->with('error', 'Không tìm thấy người dùng!');
+    //     }
 
-        $user->email = $request->email;
-        $user->firstname = $request->firstname;
-        $user->lastname = $request->lastname;
+    //     $user->email = $request->email;
+    //     $user->firstname = $request->firstname;
+    //     $user->lastname = $request->lastname;
 
-        if ($request->password) {
-            $user->password = bcrypt($request->password);
-        }
+    //     if ($request->password) {
+    //         $user->password = bcrypt($request->password);
+    //     }
 
-        $user->save();
+    //     $user->save();
 
-        return redirect()->route('manage-users')->with('success', 'Người dùng đã được cập nhật thành công!');
-    }
+    //     return redirect()->route('manage-users')->with('success', 'Người dùng đã được cập nhật thành công!');
+    // }
 }

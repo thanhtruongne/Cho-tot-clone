@@ -58,10 +58,10 @@ Route::prefix('system')->group(function () {
 
         //manage Users
         Route::get('manage-users', [UserController::class, 'index'])->name('manage-users');
-        Route::get('user/getData', [UserController::class, 'getData'])->name('user.getData');
+        Route::get('user/getData', [UserController::class, 'getData'])->name('manage-users.getData');
         Route::post('user/change-status', [UserController::class, 'getData'])->name('manage-users.changeStatus');
         Route::post('user/remove', [UserController::class, 'remove'])->name('manage-users.remove');
-        Route::get('user/form',[UserController::class, 'form'])->name('user.form');
+        Route::get('user/form',[UserController::class, 'form'])->name('manage-users.form');
     
         // Route::get('/manage-users-data', [LoginController::class, 'manageUsersData'])->name('manage-users.data');
         // Route::post('/manage-users-add', [LoginController::class, 'manageUsersAdd'])->name('manage-users-add');
