@@ -42,7 +42,6 @@ class ProductRentHouseController extends Controller
 
     public function addProductRent(Request $request)
     {
-
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
@@ -82,10 +81,14 @@ class ProductRentHouseController extends Controller
                 'rule_compensation' => 'nullable|integer|min:0',
                 'district_code' => 'required|string',
             ]);
+<<<<<<< HEAD
             if ($request->has('images')) {
+=======
+            if($request->has('images')){
+>>>>>>> c7a2e17b450472dad1838f9f75fc170894a47b40
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
-
             }
+        
             $data = new ProductRentHouse();
             $data->fill($validatedData);
             $data->images = isset($images) && !is_null($images) ? $images : null;
@@ -108,7 +111,7 @@ class ProductRentHouseController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
 
             return response()->json(['errors' => $e->validator->errors()], 422);
-        }
+        }       
     }
 
     public function updateProductRent(Request $request, $id)
@@ -192,10 +195,16 @@ class ProductRentHouseController extends Controller
         return response()->json(['data' => $rows]);
     }
 
+<<<<<<< HEAD
     public function getDetailProductRentById($id)
     {
 
         try {
+=======
+    public function getDetailProductRentById($id){
+       
+        try{
+>>>>>>> c7a2e17b450472dad1838f9f75fc170894a47b40
             $model = ProductRentHouse::findOrFail($id);
             $model->loadMissing(['province', 'ward', 'district']);
             $model->cost = convert_price((int)$model->cost, true);
@@ -203,12 +212,17 @@ class ProductRentHouseController extends Controller
             return response()->json(['data' => $model]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->validator->errors()], 422);
-        }
+        }      
     }
 
+<<<<<<< HEAD
 
     public function changeStatusPostData(Request $request)
     {
+=======
+    
+    public function changeStatusPostData(Request $request){
+>>>>>>> c7a2e17b450472dad1838f9f75fc170894a47b40
         $this->validateRequest([
             'id' => 'required',
             'status' => 'required|numeric|in:0,1'

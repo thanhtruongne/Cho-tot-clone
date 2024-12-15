@@ -27,17 +27,17 @@ class PostingTypeDatabaseSeeder extends Seeder
                 'type' => 1,
 
             ],
+            // [
+            //     'id' => 2,
+            //     'code' =>  ''.\Str::random(10).'',
+            //     'name' => 'Tin ưu tiên theo khung giờ (không áp dụng cho tin Vip)',
+            //     'benefits' => 'Áp dụng cho tin đăng thường',
+            //     'cost' => 30000,
+            //     'rule_day' => null,
+            //     'type' => 2,
+            // ],
             [
                 'id' => 2,
-                'code' =>  ''.\Str::random(10).'',
-                'name' => 'Tin ưu tiên theo khung giờ (không áp dụng cho tin Vip)',
-                'benefits' => 'Áp dụng cho tin đăng thường',
-                'cost' => 30000,
-                'rule_day' => null,
-                'type' => 2,
-            ],
-            [
-                'id' => 3,
                 'code' =>  ''.\Str::random(10).'',
                 'name' => 'Tin Vip',
                 'benefits' => 'Tin đăng Vip hiển thị ưu tiên',
@@ -46,9 +46,9 @@ class PostingTypeDatabaseSeeder extends Seeder
                 'type' => 3,
             ],
             [
-                'id' => 4,
+                'id' => 3,
                 'code' =>  ''.\Str::random(10).'',
-                'name' => 'Load tin',
+                'name' => 'Nút đăng tin',
                 'benefits' => 'Giúp tin của bạn có vị trí thuận lợi',
                 'cost' => 30000,
                 'rule_day' => null,
