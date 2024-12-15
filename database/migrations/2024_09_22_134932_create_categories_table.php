@@ -16,6 +16,7 @@ return new class extends Migration
             NestedSet::columns($table);
             $table->string('name')->nullable();
             $table->string('icon')->nullable();
+            $table->string('key')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->integer('type')->nullable()->comment('1 là thuê nhà , 2 là buôn bán , 3 là dv việc làm');
             $table->timestamps();

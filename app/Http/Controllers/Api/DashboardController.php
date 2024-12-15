@@ -112,12 +112,6 @@ class DashboardController extends Controller
         return response()->json(['message' => 'Thành công','status' => 'success']);
     }
 
-
-    // get data address của data theo ward, district, province
-    public function getAddress(Request $request) {
-
-    }
-
     private function checkNameInstance(int $integer,string $type = 'model'){
         if($type != 'model'){
             return $integer == 1 ? 'product_rent_house' : ($integer == 2 ? 'product_electrinic' : 'product_jobs');
@@ -165,9 +159,7 @@ class DashboardController extends Controller
                 $query->where('district_code', $code);
             }
         }
-
         $data = $query->get();
-
         return response()->json($data);
 
 

@@ -217,8 +217,12 @@ class ProductRentHouseController extends Controller
         ],$request,[
             'id' => 'Sản phẩm'
         ]);
-
+  
         $model = ProductRentHouse::find($request->id);
+        $key = 'post_id_'.$model->id_.'_load_btn';
+        if(cache()->has($key)){
+            return response()->json(['message' => 'Sau thời gian thực hiện kể từ lúc đẩy tin cách 5 tiếng', 'status' => 'error']); 
+        }
         if(!$model->load_btn_post){
             return response()->json(['message' => 'Có lỗi xảy ra', 'status' => 'error']);
         }
@@ -226,12 +230,10 @@ class ProductRentHouseController extends Controller
         $model->decrement('load_btn_post');
         $model->save();
 
-        $key = 'post_id_'.$model->id_.'_load_btn';
+        
         if(!cache()->has($key)){
-            cache()->put($key,true,\Carbon::now()->addMinutes(20));
+            cache()->put($key,true,\Carbon::now()->addHours(5));
         }
         return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
     }
-
-
 }

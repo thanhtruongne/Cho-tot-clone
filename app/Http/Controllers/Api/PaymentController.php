@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
+
+    protected $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+
+    protected $vnp_Returnurl ="http://localhost:8000/api/zalopay/handle-return-url";
+
+    protected $vnp_TmnCode = "IT1YF6TR";
+
+    protected  $vnp_HashSecret = "89M6MIY98WQOMEQS0AW9LGO785JVA83Q";
+
     public function index()
     {
         return '123123';
@@ -134,6 +143,92 @@ class PaymentController extends Controller
                         $model->posting_product_expect()->saveMany($data);
                     }
                 }
+            }
+            $url = env('APP_URL_FRONTEND') . "/myads" ;
+            return redirect($url);
+        } else {
+            return response()->json(['data' => '402']);
+        }
+    }
+
+    public function setReturnURL(string $url) {
+        $this->vnp_Returnurl = $url;
+    }
+
+    public function handleLoadVertifyPost(Request $request ){
+
+        $this->setReturnURL(route('fe.load.subpayment'));
+        $vnp_Locale = 'VN';
+        $vnp_BankCode = 'NCB';
+        $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+        $vnp_TxnRef = $request->input('vnp_txnref');
+        $vnp_Amount = $request->input('vnp_amount');
+        $vnp_OrderInfo = '';
+        $inputData = array(
+            "vnp_Version" => "2.1.0",
+            "vnp_TmnCode" => $this->vnp_TmnCode,
+            "vnp_Amount" => $vnp_Amount * 100,
+            "vnp_Command" => "pay",
+            "vnp_CreateDate" => date('YmdHis'),
+            "vnp_CurrCode" => "VND",
+            "vnp_IpAddr" => $vnp_IpAddr,
+            "vnp_Locale" => $vnp_Locale,
+            "vnp_OrderInfo" => $vnp_OrderInfo,
+            "vnp_OrderType" => 'other',
+            "vnp_ReturnUrl" => $this->vnp_Returnurl,
+            "vnp_TxnRef" => $vnp_TxnRef,
+
+        );
+
+        if (isset($vnp_BankCode) && $vnp_BankCode != "") {
+            $inputData['vnp_BankCode'] = $vnp_BankCode;
+        }
+        if (isset($vnp_Bill_State) && $vnp_Bill_State != "") {
+            $inputData['vnp_Bill_State'] = $vnp_Bill_State;
+        }
+        ksort($inputData);
+        $query = "";
+        $i = 0;
+        $hashdata = "";
+        foreach ($inputData as $key => $value) {
+            if ($i == 1) {
+                $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
+            } else {
+                $hashdata .= urlencode($key) . "=" . urlencode($value);
+                $i = 1;
+            }
+            $query .= urlencode($key) . "=" . urlencode($value) . '&';
+        }
+
+        $vnp_Url = $this->vnp_Url . "?" . $query;
+        if (isset($this->vnp_HashSecret)) {
+            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $this->vnp_HashSecret); //
+            $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
+        }
+        $returnData = array(
+            'code' => '00',
+            'message' => 'success',
+            'data' => $vnp_Url
+        );
+        if (isset($_POST['redirect'])) {
+            header('Location: ' . $vnp_Url);
+            die();
+        } else {
+            echo json_encode($returnData);
+        }
+    }
+
+    public function handleUrlLoadPost(Request $request){
+        if ($request->input('vnp_TransactionStatus') == 00) {
+            $vnp_OrderInfo = $request->input('vnp_OrderInfo');
+            $orderInfoParts = explode('_', $vnp_OrderInfo);
+            $productId = isset($orderInfoParts[0]) ? $orderInfoParts[0] : null;
+            $load_key_post = isset($orderInfoParts[1]) ? $orderInfoParts[1] : null;  
+            if ($productId) {
+                $model = ProductRentHouse::findOrFail($productId);
+                $model->load_btn_post = $load_key_post;
+                $model->time_exipred = null;
+                $model->save();           
             }
             $url = env('APP_URL_FRONTEND') . "/myads" ;
             return redirect($url);

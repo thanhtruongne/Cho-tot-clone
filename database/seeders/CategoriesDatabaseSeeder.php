@@ -23,7 +23,7 @@ class CategoriesDatabaseSeeder extends Seeder
        $categoriesParent = [
             [
                 'parent_id' => null,
-                'name' => 'Bất động sản',
+                'name' => 'Nhà ở',
                 'icon' => 'fas fa-building',
                 'type' => 1 ,
             ],
@@ -45,13 +45,49 @@ class CategoriesDatabaseSeeder extends Seeder
         $child = [
             [
                 'parent_id' => 1,
-                'name' => 'Nhà ở',
+                'name' => 'Giấy tờ pháp lý',
                 // 'icon' => 'fas fa-briefcase',
                 'type' => 1 ,
             ],
             [
                 'parent_id' => 1,
-                'name' => 'Phòng trọ',
+                'name' => 'Tình trạng nội thất',
+                // 'icon' => 'fas fa-briefcase',
+                'type' => 1 ,
+            ],
+            [
+                'parent_id' => 1,
+                'name' => 'Loại hình nhà ở',
+                // 'icon' => 'fas fa-briefcase',
+                'type' => 1 ,
+            ],
+            [
+                'parent_id' => 1,
+                'name' => 'Số phòng ngủ',
+                // 'icon' => 'fas fa-briefcase',
+                'type' => 1 ,
+            ],
+            [
+                'parent_id' => 1,
+                'name' => 'Số phòng vệ sinh',
+                // 'icon' => 'fas fa-briefcase',
+                'type' => 1 ,
+            ],
+            [
+                'parent_id' => 1,
+                'name' => 'Hướng ban công',
+                // 'icon' => 'fas fa-briefcase',
+                'type' => 1 ,
+            ],
+            [
+                'parent_id' => 1,
+                'name' => 'Hướng cửa chính',
+                // 'icon' => 'fas fa-briefcase',
+                'type' => 1 ,
+            ],
+            [
+                'parent_id' => 1,
+                'name' => 'Hướng ban công',
                 // 'icon' => 'fas fa-briefcase',
                 'type' => 1 ,
             ],
@@ -80,49 +116,20 @@ class CategoriesDatabaseSeeder extends Seeder
                 'type' => 2 ,
             ],
         ];
+
+
+
+
+
         foreach($categoriesParent as $item){
+            $item['key'] = \Str::slug($item['name']);
             Categories::create($item);
            
         }
-        $test = [
-            [
-                'parent_id' => 4,
-                'name' => 'sdsdadasasdasdasd',
-                // 'icon' => 'fas fa-briefcase',
-                'type' => 2 ,
-            ],
-            [
-                'parent_id' => 3,
-                'name' => 'Tivi,897979789879879 thanh',
-                // 'icon' => 'fas fa-briefcase',
-                'type' => 2 ,
-            ],
-            [
-                'parent_id' => 3,
-                'name' => 'Okesadad thanh',
-                // 'icon' => 'fas fa-briefcase',
-                'type' => 2 ,
-            ],
-            [
-
-                'parent_id' => 4,
-                'name' => 'Tivi,asdasdasdasdasdasdasdasdasddasdasdasdÂm thanh',
-                // 'icon' => 'fas fa-briefcase',
-                'type' => 2 ,
-            ],
-        ];
         foreach($child as $val){
-            $categoriesAppend = Categories::create($val);
-            // if($categories->type)
-           
-        }  
-        foreach($test as $ss){
-            $categoriesAppend = Categories::create($ss);
-        }
-       
-
-        // $ss = Categories::find(4);
-        // $categoriesParent = Categories::find(1);
-        // $categoriesParent->appendNode($ss);
+            $val['key'] = \Str::slug($val['name']);
+            $categoriesAppend = Categories::create($val);      
+        } 
+    
 }
 }
