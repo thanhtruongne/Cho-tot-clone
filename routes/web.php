@@ -56,14 +56,17 @@ Route::prefix('system')->group(function () {
         Route::get('manage-postings-get-data', [ProductRentHouseController::class, 'getProductData'])->name('manage-postings.data');
         Route::post('manage-postings-delete/{id}', [ProductRentHouseController::class, 'deletePosting'])->name('manage-postings-delete');
 
-
-
         //manage Users
-        Route::get('/manage-users', [LoginController::class, 'manageUsers'])->name('manage-users');
-        Route::get('/manage-users-data', [LoginController::class, 'manageUsersData'])->name('manage-users.data');
-        Route::post('/manage-users-add', [LoginController::class, 'manageUsersAdd'])->name('manage-users-add');
-        Route::post('/manage-users-delete/{id}', [LoginController::class, 'manageUsersDelete'])->name('manage-users-delete');
-        Route::get('/manage-users-edit/{id}', [LoginController::class, 'manageUsersEdit'])->name('manage-users-edit');
-        Route::post('/manage-users-update/{id}', [LoginController::class, 'manageUsersUpdate'])->name('manage-users-update');
+        Route::get('manage-users', [UserController::class, 'index'])->name('manage-users');
+        Route::get('user/getData', [UserController::class, 'getData'])->name('user.getData');
+        Route::post('user/change-status', [UserController::class, 'getData'])->name('manage-users.changeStatus');
+        Route::post('user/remove', [UserController::class, 'remove'])->name('manage-users.remove');
+        Route::get('user/form',[UserController::class, 'form'])->name('user.form');
+    
+        // Route::get('/manage-users-data', [LoginController::class, 'manageUsersData'])->name('manage-users.data');
+        // Route::post('/manage-users-add', [LoginController::class, 'manageUsersAdd'])->name('manage-users-add');
+        // Route::post('/manage-users-delete/{id}', [LoginController::class, 'manageUsersDelete'])->name('manage-users-delete');
+        // Route::get('/manage-users-edit/{id}', [LoginController::class, 'manageUsersEdit'])->name('manage-users-edit');
+        // Route::post('/manage-users-update/{id}', [LoginController::class, 'manageUsersUpdate'])->name('manage-users-update');
     });
 });

@@ -12,7 +12,7 @@ class PaymentController extends Controller
 
     protected $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 
-    protected $vnp_Returnurl ="http://localhost:8000/api/zalopay/handle-return-url";
+    protected $vnp_Returnurl ="http://localhost:8000/api/vnpay/handle-return-url";
 
     protected $vnp_TmnCode = "IT1YF6TR";
 
@@ -29,7 +29,7 @@ class PaymentController extends Controller
         date_default_timezone_set('Asia/Ho_Chi_Minh');
 
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = "http://localhost:8000/api/zalopay/handle-return-url";
+        $vnp_Returnurl = "http://localhost:8000/api/vnpay/handle-return-url";
         $vnp_TmnCode = "IT1YF6TR";
         $vnp_HashSecret = "89M6MIY98WQOMEQS0AW9LGO785JVA83Q";
         $vnp_TxnRef = $request->input('vnp_txnref');
@@ -155,7 +155,7 @@ class PaymentController extends Controller
         $this->vnp_Returnurl = $url;
     }
 
-    public function handleLoadVertifyPost(Request $request ){
+    public function handleLoadVertifyPost(Request $request){
 
         $this->setReturnURL(route('fe.load.subpayment'));
         $vnp_Locale = 'VN';
@@ -163,7 +163,8 @@ class PaymentController extends Controller
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
         $vnp_TxnRef = $request->input('vnp_txnref');
         $vnp_Amount = $request->input('vnp_amount');
-        $vnp_OrderInfo = '';
+        $load_key_post = $request->input('load_key_post', '');
+        $vnp_OrderInfo = $request->id .'_'.$load_key_post;
         $inputData = array(
             "vnp_Version" => "2.1.0",
             "vnp_TmnCode" => $this->vnp_TmnCode,

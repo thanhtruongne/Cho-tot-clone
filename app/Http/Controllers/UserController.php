@@ -35,15 +35,71 @@ class UserController extends Controller
       $query->orderBy($sort,$order);
       $count = $query->count();
       $rows = $query->get();
-      dd(\Cache::get('online-users'));
+    //   dd(\Cache::get('online-users'));
       foreach($rows as $row) {
 
       }
+      return response()->json(['rows' => $rows,'count' => $count]);
     
 
     }
 
-    public function remove(Request $request) {
+    public function remove(Request $request){
+        $this->validateRequest([
+            'ids' => 'required',
+            // 'status' => 'required|in:0,1',
+        ], $request, [
+            'ids' => 'Trường dữ liệu chon không được trống',
+            // 'status' => 'Trạng thái tróng !'
+        ]);
+
+        $ids = $request->input('ids', null);
+        $status = $request->input('status') ?? 0;
+        if(is_array($ids)) {
+            foreach ($ids as $id) {
+                $model = User::find($id);
+                $model->status = $status;
+                $model->remove();
+            }
+        } else {
+            $model = User::find($ids);
+            $model->status = $status;
+            $model->remove();
+        }
+
+
+        return response()->json(['status' => 'success','message' => 'Xóa thành công']);
+    }
+
+    public function changeStatus(Request $request){
+        $this->validateRequest([
+            'ids' => 'required',
+            'status' => 'required|in:0,1',
+        ], $request, [
+            'ids' => 'Trường dữ liệu chon không được trống',
+            'status' => 'Trạng thái tróng !'
+        ]);
+
+        $ids = $request->input('ids', null);
+        $status = $request->input('status') ?? 0;
+        if(is_array($ids)) {
+            foreach ($ids as $id) {
+                $model = User::find($id);
+                $model->status = $status;
+                $model->save();
+            }
+        } else {
+            $model = User::find($ids);
+            $model->status = $status;
+            $model->save();
+        }
+
+
+        return response()->json(['status' => 'success','message' => 'Thay đổi trạng thái thành công']);
+
+    }
+
+    public function form(Request $request) {
 
     }
 }

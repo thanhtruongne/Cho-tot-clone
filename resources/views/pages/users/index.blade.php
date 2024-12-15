@@ -56,7 +56,7 @@
                                     <i class="fa fa-check-circle"></i> &nbsp;Tắt
                                 </button>
                                 <a class="btn"><i class="fa fa-download"></i> Xuất file</a>
-                                <a onclick="create()" class="btn" href="#">
+                                <a href="{{route()}}" class="btn" href="#">
                                     <i class="fa fa-plus"></i> 
                                     Thêm mới
                                 </a>
@@ -111,12 +111,6 @@
             return '<a id="row_'+row.id+'" class="overide" href="#" onClick="getModal('+ row.id +')">'+ row.category_child +'</a>';
         }
 
-
-   
-
-
-
-
          function status_formatter(value, row, index) {
             var status = row.status == 1 ? 'checked' : '';
             var html = `<div class="custom-control custom-switch">
@@ -129,7 +123,7 @@
         var table = new LoadBootstrapTable({
             locale: '{{ \App::getLocale() }}',
             url: '{{ route('user.getData') }}',
-            remove_url: '{{ route('user.remove',['type' => "all"]) }}'
+            remove_url: '{{ route('manage-users.remove') }}'
         });
 
         function deleteRow(id){
@@ -180,7 +174,7 @@
                 return false;
             }
             $.ajax({
-                url: '{{route('categories.change.status')}}',
+                url: '{{route('manage-users.changeStatus')}}',
                 type: 'post',
                 data: {
                     ids: ids,
@@ -204,26 +198,10 @@
             $('.tree_select_demo').html(' ');
             let position = '<option value="1">Thuê căn hộ / phòng trọ</option> <option value="2">Buôn bán điện tử</option> <option value="3">Việc làm</option>';
             $("#type_id").html(position)
-            treeSelect();
             $('#myModal2').modal();
 
         }
 
-            function treeSelect(value){
-                const domElement = document.querySelector('.tree_select_demo')
-                const treeselect = new Treeselect({
-                    parentHtmlContainer: domElement,
-                    value: value ? value : [],
-                    options: @json($categories),
-                    placeholder: '-- Chon danh mục cha --',
-                    isSingleSelect: true,
-                })
-
-                treeselect.srcElement.addEventListener('input', (e) => {
-                console.log('Selected value:', e.detail)
-                    $('#category_parent_id').val(e.detail );
-                })
-            }
 
             function save(){
                 let item = $('.save');
@@ -279,7 +257,6 @@
                 $('#exampleModalLabel').html('Chỉnh sửa');
                 $("input[name=id]").val(data.model.id);
                 $("input[name=name]").val(data.model.name);
-                treeSelect(data.model.parent_id);
 
                 if (data.model.type) {
                     $("#position_modal select").val(data.model.type);

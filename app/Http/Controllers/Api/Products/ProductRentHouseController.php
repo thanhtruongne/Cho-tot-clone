@@ -180,7 +180,7 @@ class ProductRentHouseController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function getDataProductRentByUserId($id)
+    public function getDataProductRentGetUserId($id)
     {
         $rows = ProductRentHouse::where('user_id', $id)->with(['province', 'district', 'ward'])->get();
         if ($rows) {

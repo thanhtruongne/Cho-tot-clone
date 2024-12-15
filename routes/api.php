@@ -39,7 +39,7 @@ Route::get('/', [PaymentController::class, 'index']);
 Route::post('/vnpay/payment', [PaymentController::class, 'createPaymentLink']);
 Route::get('/vnpay/handle-return-url', [PaymentController::class, 'handleReturnUrl']);
 
-Route::post('/vnpay/subPayment/{id}',[PaymentController::class,'handleLoadVertifyPost'])->name('fe.loadBTtnPost');
+Route::post('/vnpay/subPayment',[PaymentController::class,'handleLoadVertifyPost'])->name('fe.loadBTtnPost');
 Route::get('/vnpay/subPayment/handle-url', [PaymentController::class, 'handleUrlLoadPost'])->name('fe.load.subpayment');
 // Route tạo payment
 Route::post('paypal/create-payment', [PayPalController::class, 'createPayment'])
@@ -100,8 +100,7 @@ Route::group([
     Route::post('/add-product-rent', [ProductRentHouseController::class, 'addProductRent']);
     Route::post('/delete-product-rent/{id}', [ProductRentHouseController::class, 'deleteProductRent']);
     Route::post('/update-product-rent/{id}', [ProductRentHouseController::class, 'updateProductRent']);
-
-
+    Route::get('get-product-rent-detail/{id}',[ProductRentHouseController::class,'getDetailProductRentById'])->name('fe.detail-post');
 
     Route::post('/change-status-post', [ProductRentHouseController::class, 'changeStatusPostData']);
     Route::post('/change-load-btn-post', [ProductRentHouseController::class, 'loadDataBtnPost']);
