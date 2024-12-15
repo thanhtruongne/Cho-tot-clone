@@ -46,7 +46,7 @@ class PayPalController extends Controller
         // Lấy các tham số từ request
         $userId = $request->input('user_id','');
         $productId = $request->input('product_id','');
-        $day = $request->input('day','');
+        $day = $request->input('day',null);
         $typePostingId = $request->input('type_posting_id','');
         $price = $request->input('price','');
         $load_key_post = $request->input('load_key_post', '');
