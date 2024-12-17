@@ -115,7 +115,7 @@ class LoginController extends Controller
             $model->save();
         }
         $this->setCacheOnline($id); //  set cache online user
-   
+
         $sessionId = session()->getId();
 
         UserActivities::endUserActivityDuration($id,$sessionId);
@@ -183,7 +183,6 @@ class LoginController extends Controller
         ], [
             'email.unique' => 'Email này đã được sử dụng.',
         ]);
-=======
     //     if($data->isEmpty()) {
     //         return response()->json(['data' => []]);
     //     }
@@ -201,7 +200,6 @@ class LoginController extends Controller
     //     ], [
     //         'email.unique' => 'Email này đã được sử dụng.',
     //     ]);
->>>>>>> e22407e4b21c14bf8a0887d958b37c2a978fa1d0
 
     //     $user = new User();
     //     $user->email = $request->email;
@@ -231,18 +229,16 @@ class LoginController extends Controller
         }
         return view('pages.auth.manageUsersEdit', compact('user')); // Chuyển dữ liệu user vào view
     }
-=======
     // public function manageUsersEdit($id)
     // {
     //     $user = User::find($id);
-        
+
     //     if (!$user) {
     //         return redirect()->route('manage-users')->with('error', 'Không tìm thấy người dùng!');
     //     }
 
     //     return view('pages.auth.manageUsersEdit', compact('user')); // Chuyển dữ liệu user vào view
     // }
->>>>>>> e22407e4b21c14bf8a0887d958b37c2a978fa1d0
 
     // public function manageUsersUpdate(Request $request, $id)
     // {

@@ -26,8 +26,8 @@ interface InterfaceProductRentController {
 }
 
 class ProductRentHouseController extends Controller implements InterfaceProductRentController
-{ 
-    
+{
+
     public function addProductRent(Request $request)
     {
         DB::beginTransaction();
@@ -70,20 +70,17 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
                 'district_code' => 'required|string',
             ]);
 
-<<<<<<< HEAD
             if($request->has('images')){
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
             }
 
-=======
             if($request->has('images')){ //images
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
             }
             if($request->file) { // video
                $video = $this->uploadVideoDailyTraining($request); // trả ra file
             }
-        
->>>>>>> e22407e4b21c14bf8a0887d958b37c2a978fa1d0
+
             $data = new ProductRentHouse();
             $data->fill($validatedData);
             $data->images = isset($images) && !empty($images) ? $images : null;
@@ -191,10 +188,7 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
         return response()->json(['data' => $rows]);
     }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> e22407e4b21c14bf8a0887d958b37c2a978fa1d0
     public function getDetailProductRentById($id){
 
         try{
@@ -207,7 +201,6 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
 
             return response()->json(['data' => $model]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-<<<<<<< HEAD
             return response()->json(['errors' => $e->validator->errors()], 422);
         }
     }
@@ -215,14 +208,12 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
 
 
 
-=======
             return response()->json(['errors' => $e->getMessage()], 422);
-        }      
+        }
     }
 
 
-    
->>>>>>> e22407e4b21c14bf8a0887d958b37c2a978fa1d0
+
     public function changeStatusPostData(Request $request){
         $this->validateRequest([
             'id' => 'required',
@@ -253,7 +244,7 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
         if(cache()->has($key)){
             $val = explode("_",cache()->get($key));
             $time =  \Carbon::createFromTimestamp($val[3])->diffForHumans();
-            return response()->json(['message' => trans('general.time_exists_post').$time, 'status' => 'error']); 
+            return response()->json(['message' => trans('general.time_exists_post').$time, 'status' => 'error']);
         }
         if(!$model->load_btn_post){
             return response()->json(['message' => 'Có lỗi xảy ra', 'status' => 'error']);
