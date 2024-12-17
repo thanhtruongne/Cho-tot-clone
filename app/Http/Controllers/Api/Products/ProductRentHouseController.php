@@ -11,39 +11,23 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Redis;
 
 
+interface InterfaceProductRentController {
+    public function addProductRent(Request $request);
 
-class ProductRentHouseController extends Controller
-{
-    public function test()
-    {
-        return response()->json(['data' => "thêm thất bại"]);
-    }
+    public function getDataProductRentById($id);
 
-    public function managePostings()
-    {
-        return view('pages.products.productHouse.managePostings');
-    }
+    public function updateProductRent(Request $request, $id);
 
-    public function getProductData()
-    {
-        $data = ProductRentHouse::all();
+    public function getDataProductRentGetUserId($id);
 
-        if($data->isEmpty()) {
-            return response()->json(['data' => []]);
-        }
+    public function changeStatusPostData(Request $request);
 
-        return DataTables::of($data)
-            ->make(true);
-    }
+    public function loadDataBtnPost(Request $request);
+}
 
-
-    public function deletemanagePostings($id)
-    {
-        $data = ProductRentHouse::find($id);
-        $data->delete();
-        return redirect()->back()->with('success', '');
-    }
-
+class ProductRentHouseController extends Controller implements InterfaceProductRentController
+{ 
+    
     public function addProductRent(Request $request)
     {
         DB::beginTransaction();
@@ -86,13 +70,17 @@ class ProductRentHouseController extends Controller
                 'district_code' => 'required|string',
             ]);
 
-            if($request->has('images')){
+            if($request->has('images')){ //images
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
+            }
+            if($request->file) { // video
+               $video = $this->uploadVideoDailyTraining($request); // trả ra file
             }
         
             $data = new ProductRentHouse();
             $data->fill($validatedData);
-            $data->images = isset($images) && !is_null($images) ? $images : null;
+            $data->images = isset($images) && !empty($images) ? $images : null;
+            $data->video =  isset($video) && !empty($video) ? $video : null;
             $data->save();
 
             DB::commit();
@@ -166,22 +154,21 @@ class ProductRentHouseController extends Controller
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
             }
 
+            if($request->file) { // video
+                $video = $this->uploadVideoDailyTraining($request); // trả ra file
+             }
+
             $data->fill($validatedData);
-            $data->images = isset($images) && !is_null($images) ? $images : null;
+            $data->images = isset($images) && !empty($images) ? $images : null;
+            $data->video = isset($video) && !empty($video) ? $video : null;
             $data->save();
 
             DB::commit();
-            return response()->json(['message' => 'Product updated successfully', 'data' => $data]);
+            return response()->json(['message' => 'Product updated successfully', 'status' => true]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
-            return response()->json(['errors' => $e->validator->errors()], 422);
+            return response()->json(['errors' => $e->getMessage()], 422);
         }
-    }
-
-    public function getDataProductRent()
-    {
-        $data = ProductRentHouse::all();
-        return response()->json(['data' => $data]);
     }
 
     public function getDataProductRentGetUserId($id)
@@ -191,6 +178,7 @@ class ProductRentHouseController extends Controller
             foreach ($rows as $row) {
                 $row->cost = convert_price((int)$row->cost, true);
                 $row->cost_deposit = convert_price((int)$row->cost_deposit, true);
+                $row->created_at = \Carbon::parse($row->created_at)->diffForHumans();
             }
         }
         return response()->json(['data' => $rows]);
@@ -200,12 +188,15 @@ class ProductRentHouseController extends Controller
        
         try{
             $model = ProductRentHouse::findOrFail($id);
-            $model->loadMissing(['province', 'ward', 'district']);
+            $model->loadMissing(['province', 'ward', 'district','user']);
             $model->cost = convert_price((int)$model->cost, true);
             $model->cost_deposit = convert_price((int)$model->cost_deposit, true);
+            $model->created_at2 = \Carbon::parse($model->created_at)->diffForHumans();
+            $model->linkPlay = $model->getLinkPlay();
+
             return response()->json(['data' => $model]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(['errors' => $e->validator->errors()], 422);
+            return response()->json(['errors' => $e->getMessage()], 422);
         }      
     }
 

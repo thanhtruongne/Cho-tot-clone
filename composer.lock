@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "20a0d829e7aaef55a5c50ef6a10bb1e7",
+    "content-hash": "ee1b3639614b55dd967e5662ad9dd8dc",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4274,29 +4274,29 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "v1.1.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-FFMpeg/PHP-FFMpeg.git",
-                "reference": "eace6f174ff6d206ba648483ebe59760f7f6a0e1"
+                "reference": "5e7b15710a8607e8a3a2d9fbe2c150a99b924fa5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-FFMpeg/PHP-FFMpeg/zipball/eace6f174ff6d206ba648483ebe59760f7f6a0e1",
-                "reference": "eace6f174ff6d206ba648483ebe59760f7f6a0e1",
+                "url": "https://api.github.com/repos/PHP-FFMpeg/PHP-FFMpeg/zipball/5e7b15710a8607e8a3a2d9fbe2c150a99b924fa5",
+                "reference": "5e7b15710a8607e8a3a2d9fbe2c150a99b924fa5",
                 "shasum": ""
             },
             "require": {
                 "evenement/evenement": "^3.0",
-                "php": "^8.0 || ^8.1 || ^8.2",
+                "php": "^8.0 || ^8.1 || ^8.2 || ^8.3 || ^8.4",
                 "psr/log": "^1.0 || ^2.0 || ^3.0",
                 "spatie/temporary-directory": "^2.0",
-                "symfony/cache": "^5.4 || ^6.0",
-                "symfony/process": "^5.4 || ^6.0"
+                "symfony/cache": "^5.4 || ^6.0 || ^7.0",
+                "symfony/process": "^5.4 || ^6.0 || ^7.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.5",
-                "phpunit/phpunit": "^9.5.10"
+                "phpunit/phpunit": "^9.5.10 || ^10.0"
             },
             "suggest": {
                 "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
@@ -4357,9 +4357,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-FFMpeg/PHP-FFMpeg/issues",
-                "source": "https://github.com/PHP-FFMpeg/PHP-FFMpeg/tree/v1.1.0"
+                "source": "https://github.com/PHP-FFMpeg/PHP-FFMpeg/tree/v1.3.0"
             },
-            "time": "2022-12-09T13:57:05+00:00"
+            "time": "2024-11-12T15:39:52+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",
@@ -4540,6 +4540,72 @@
                 }
             ],
             "time": "2024-07-20T21:41:07+00:00"
+        },
+        {
+            "name": "pion/laravel-chunk-upload",
+            "version": "v1.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pionl/laravel-chunk-upload.git",
+                "reference": "cfbc4292ddcace51308a4f2f446d310aa04e6133"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pionl/laravel-chunk-upload/zipball/cfbc4292ddcace51308a4f2f446d310aa04e6133",
+                "reference": "cfbc4292ddcace51308a4f2f446d310aa04e6133",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "5.2 - 5.8 | ^6.0 | ^7.0 | ^8.0 | ^9.0 | ^10.0 | ^11.0",
+                "illuminate/filesystem": "5.2 - 5.8 | ^6.0 | ^7.0 | ^8.0 | ^9.0 | ^10.0 | ^11.0",
+                "illuminate/http": "5.2 - 5.8 | ^6.0 | ^7.0 | ^8.0 | ^9.0 | ^10.0 | ^11.0",
+                "illuminate/support": "5.2 - 5.8 | ^6.0 | ^7.0 | ^8.0 | ^9.0 | ^10.0 | ^11.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.16.0 | ^3.52.0",
+                "mockery/mockery": "^1.1.0 | ^1.3.0 | ^1.6.0",
+                "overtrue/phplint": "^1.1 | ^2.0 | ^9.1",
+                "phpunit/phpunit": "5.7 | 6.0 | 7.0 | 7.5 | 8.4 | ^8.5 | ^9.3 | ^10.0 | ^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Pion\\Laravel\\ChunkUpload\\Providers\\ChunkUploadServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Pion\\Laravel\\ChunkUpload\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Martin Kluska",
+                    "email": "martin@kluska.cz"
+                }
+            ],
+            "description": "Service for chunked upload with several js providers",
+            "support": {
+                "issues": "https://github.com/pionl/laravel-chunk-upload/issues",
+                "source": "https://github.com/pionl/laravel-chunk-upload/tree/v1.5.4"
+            },
+            "funding": [
+                {
+                    "url": "https://revolut.me/martinpv7n",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/pionl",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-03-25T15:50:07+00:00"
         },
         {
             "name": "predis/predis",

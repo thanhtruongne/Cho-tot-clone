@@ -75,7 +75,15 @@ class ProductRentHouse extends Model
         return $code;
     }
 
-
+    public function getLinkPlay() {
+        $storage = \Storage::disk('local');
+        $file = encrypt_array([
+            'path' => $storage->path('/' . $this->video),
+        ]);
+        // dd($storage->url(  $this->video),$storage->path('/'.$this->video),$this->video);
+       
+        return route('fe.video-streaming', [$file]);
+    }
 
 
     public static function getAttributeName(){
@@ -100,15 +108,20 @@ class ProductRentHouse extends Model
         return $this->belongsToMany(PostingDataAction::class,'product_posting_expect','product_id','posting_data_action_id');
     }
 
+    public function user(){
+        return $this->belongsTo(User::class,'user_id','id')
+        ->select(['firstname','lastname','email','phone','address','gender','avatar']);
+    }
+
     public function province(){
-        return $this->belongsTo(Provinces::class,'code','province_code')->select('full_name');
+        return $this->belongsTo(Provinces::class,'province_code','code')->select('full_name');
     }
 
     public function district(){
-        return $this->belongsTo(Districts::class,'code','district_code')->select('full_name');
+        return $this->belongsTo(Districts::class,'district_code','code')->select('full_name');
     }
 
     public function ward(){
-        return $this->belongsTo(Wards::class,'code','ward_code')->select('full_name');
+        return $this->belongsTo(Wards::class,'ward_code','code')->select('full_name');
     }
 }

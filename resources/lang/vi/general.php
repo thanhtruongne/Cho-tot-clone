@@ -20,7 +20,9 @@
 'close' => 'Đóng',
 'notify' => 'Thông báo',
 'document_name'=>'Tên tài liệu',
-'time_exists_post' => 'Sau thời gian thực hiện kể từ lúc đẩy tin sau'
+'time_exists_post' => 'Sau thời gian thực hiện kể từ lúc đẩy tin sau ',
+'time_offline_data' => 'Chưa có hoạt động nào',
+'handler_video_mp4' => 'Lỗi định dạng video'
  ];
  ?>
 

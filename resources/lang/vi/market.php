@@ -10,5 +10,5 @@ return [
     'summary' => 'Thống kê',
     'product_electronics_manager' => 'QLSP điện tử',
     'product_electronics' => 'Sản phẩm điện tử',
-
+    
 ];

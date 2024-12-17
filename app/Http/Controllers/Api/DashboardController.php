@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\VideoStream;
 use App\Http\Controllers\Controller;
 use App\Models\ProductRentHouse;
 use App\Models\User;
@@ -17,13 +18,7 @@ class DashboardController extends Controller
         $price_gte = $request->input('price_gte');//min price
         $bedroom = $request->input('bedroom_id');
         $type_product = $request->input('type_product'); // dạng tin
-        // $address_code = $request->input('address_code'); // --> gửi request code tới {'provinces} => code, ....}
         $location = $request->input('location');
-        // $district_code = $request->input('district_code');
-        // $ward_code = $request->input('ward_code');
-
-
-
 
         $limit = $request->input('limit',12);
 
@@ -49,16 +44,13 @@ class DashboardController extends Controller
                 $subquery->orWhere('email','like',$search."%");
             });
         }
-
-
         if($location) {
             $values = str_replace(['d', 'w'],'-', $location);
             $temp_location = explode('-', $values);
             foreach($temp_location as $key => $location_item){
-                $key_name = $key == 0 ? 'b.province_code' : ($key == 1 ? 'b.district_code' : "b.ward_code");
+                $key_name = $key == 0 ? 'a.province_code' : ($key == 1 ? 'a.district_code' : "a.ward_code");
                 $query->where($key_name,$location_item);
             }
-
         }
         if($price_lte || $price_gte){
             if($price_lte && $price_gte) {
@@ -74,7 +66,7 @@ class DashboardController extends Controller
         }
         //dạng tin đăng
         if($type_product){
-            $query->where('type_product',$type_product);
+            $query->where('a.type_product',$type_product);
         }
 
         $query->where('a.status',1);
@@ -82,12 +74,7 @@ class DashboardController extends Controller
 
         $rows = $query->paginate($limit);
         foreach($rows as $key => $row){
-            if($row->load_btn_post) {
-                $key = 'post_id_'.$row->id_.'_load_btn';
-                if(cache()->has($key)){
-                    $row->load_btn_post = 'Đang khóa 20 phút';
-                }
-            }
+            $row->created_at = \Carbon::parse($row->created_at)->diffForHumans();
             $row->cost = convert_price((int)$row->cost,true);
             $row->cost_deposit = convert_price((int)$row->cost_deposit,true);
 
@@ -137,13 +124,6 @@ class DashboardController extends Controller
         return $instance;
     }
 
-    private function checkUserPostData($type){
-        $slug_name = $this->checkNameInstance($type,'slug');
-        $count_product = User::where(['id' => auth('api')->id(),'status' => 1])->first()->{$slug_name}->count() ?? null;
-        return $count_product;
-    }
-
-
     public function getLocation(Request $request){
         $this->validateRequest([
             'type' => 'required|in:provinces,districts,wards',
@@ -173,6 +153,19 @@ class DashboardController extends Controller
         return response()->json($data);
 
 
+    }
+
+    public function videoStreaming($file){
+        $file = decrypt_array($file);
+        if (!isset($file['path'])) {
+            return abort(404);
+        }
+
+        if (!file_exists($file['path'])) {
+            return abort(404);
+        }
+        $stream = new VideoStream($file['path']);
+        $stream->start();
     }
 
 }

@@ -24,6 +24,10 @@ class Cron extends Model
         'expression',
         'enabled'
     ];
+
+    public function scopeEnable($query) {
+        return $query->where('enabled', '=', 1);
+    }
     
 
     public static function getCommand(){

@@ -32,7 +32,7 @@ class UserController extends Controller
       $query->select(['users.*']);
     //   $query->leftJoin('user_activity_durations as a','a.user_id','=','users.id');
       //set cứng
-      $query->where('users.username','!=',$this->attemp_admin);
+    //   $query->where('users.username','!=',$this->attemp_admin);
       if($search) {
           $query->where(function($subquery) use($search) {
               $subquery->where('users.email','like',$search.'%');
@@ -52,8 +52,13 @@ class UserController extends Controller
         if(isset($users_onlines) && !empty($users_onlines) && in_array($row->id,$users_onlines)) {
             $row->online = 'active';
         } else {
-            $timestamp = Carbon::createFromTimestamp($row?->user_activities->last()->last_acti_time);
-            $row->online = $timestamp->diffForHumans(); 
+            if(!empty($row?->user_activities) && count($row?->user_activities) > 0){
+                $timestamp = Carbon::createFromTimestamp($row?->user_activities->last()?->last_acti_time);
+                $row->online = $timestamp->diffForHumans(); 
+            } else{
+                $row->online = trans('general.time_offline_data'); 
+            }
+          
         }
         if($row->address)
             $row->address_temp = $row->address .' ,'.$row?->province?->name.' ,'.$row?->district?->name.' ,'.$row?->ward?->name;

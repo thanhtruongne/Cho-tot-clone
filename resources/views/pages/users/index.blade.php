@@ -35,10 +35,10 @@
                   {{-- Tìm kiếm --}}
                    <div class="col-md-8 form-inline">
                       <form action="" class="form-inline w-100 form-search mb-3" id="form-search">
-                           <input type="text" name="search" class="form-control w-30 mr-1" placeholder="-- Tên danh mục --">
-                           <div class="" style="width: 28% !important;">
+                           <input type="text" name="search" class="form-control w-30 mr-1" placeholder="-- Tên/Email --">
+                           {{-- <div class="" style="width: 28% !important;">
 
-                           </div>
+                           </div> --}}
                           
                            <input type="hidden" name="category_id" id="category_id">
                            <button type="submit" class="btn"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</button>
