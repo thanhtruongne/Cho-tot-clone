@@ -74,7 +74,7 @@ class DashboardController extends Controller
 
         $rows = $query->paginate($limit);
         foreach($rows as $key => $row){
-            $row->created_at = \Carbon::parse($row->created_at)->diffForHumans();
+            $row->created_at2 = \Carbon::parse($row->created_at)->diffForHumans();
             $row->cost = convert_price((int)$row->cost,true);
             $row->cost_deposit = convert_price((int)$row->cost_deposit,true);
 
