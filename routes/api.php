@@ -70,7 +70,7 @@ Route::group([
 });
 
 Route::group([
-  // 'middleware' => ['api', 'jwt.vertify'],
+  'middleware' => ['api', 'jwt.vertify'],
   'prefix' => 'auth'
 ], function ($router) {
   Route::post('update/{id}', [ApiAuthController::class, 'updateUser'])->name('fe.updateUser');
