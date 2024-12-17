@@ -17,7 +17,14 @@ class DashboardController extends Controller
         $price_gte = $request->input('price_gte');//min price
         $bedroom = $request->input('bedroom_id');
         $type_product = $request->input('type_product'); // dạng tin
-        $address_code = $request->input('address_code'); // --> gửi request code tới {'provinces} => code, ....}
+        // $address_code = $request->input('address_code'); // --> gửi request code tới {'provinces} => code, ....}
+        $location = $request->input('location');
+        // $district_code = $request->input('district_code');
+        // $ward_code = $request->input('ward_code');
+
+
+
+
         $limit = $request->input('limit',12);
 
         $type = $request->type;//dạng tin nhà ở , buôn bán , việc làm;
@@ -43,12 +50,15 @@ class DashboardController extends Controller
             });
         }
 
-        if($address_code){
-            foreach($address_code as $key => $code) {
-                if(isset($key) && !is_null($code)){
-                    $query->where($key,$code);
-                }
+
+        if($location) {
+            $values = str_replace(['d', 'w'],'-', $location);
+            $temp_location = explode('-', $values);
+            foreach($temp_location as $key => $location_item){
+                $key_name = $key == 0 ? 'b.province_code' : ($key == 1 ? 'b.district_code' : "b.ward_code");
+                $query->where($key_name,$location_item);
             }
+
         }
         if($price_lte || $price_gte){
             if($price_lte && $price_gte) {
@@ -87,30 +97,30 @@ class DashboardController extends Controller
 
 
 
-    public function loadDataPostCount(Request $request) {
-        $this->validateRequest([
-            'id' => 'required'
-        ],$request,[
-            'id' => 'Có lỗi xảy ra'
-        ]);
-        $id = $request->input('id');
+    // public function loadDataPostCount(Request $request) {
+    //     $this->validateRequest([
+    //         'id' => 'required'
+    //     ],$request,[
+    //         'id' => 'Có lỗi xảy ra'
+    //     ]);
+    //     $id = $request->input('id');
 
-        $model = ProductRentHouse::find($id);
-        if(is_null($model->load_btn_post) ) {
-          return response()->json(['message' => 'Có lỗi xảy ra','status' => 'error']);
-        }
-        // lưu cache theo thời gian thực thi === > cách 10 phút sau khi load
-        $post_key = 'product_rent_house_'.$id.'_'.$model->user_id;
-        if(cache()->has($post_key)) {
-            return response()->json(['message' => 'Tin đăng giới hạn load tin trong 10 phút','status' => 'warning']);
-        }
-        cache()->put($post_key,true,\Carbon::now()->addMinutes(10));
-        $model->decrement('load_btn_post');
-        $model->updated_at = \Carbon::now();
-        $model->created_at = \Carbon::now();
-        $model->save();
-        return response()->json(['message' => 'Thành công','status' => 'success']);
-    }
+    //     $model = ProductRentHouse::find($id);
+    //     if(is_null($model->load_btn_post) ) {
+    //       return response()->json(['message' => 'Có lỗi xảy ra','status' => 'error']);
+    //     }
+    //     // lưu cache theo thời gian thực thi === > cách 10 phút sau khi load
+    //     $post_key = 'product_rent_house_'.$id.'_'.$model->user_id;
+    //     if(cache()->has($post_key)) {
+    //         return response()->json(['message' => 'Tin đăng giới hạn load tin trong 10 phút','status' => 'warning']);
+    //     }
+    //     cache()->put($post_key,true,\Carbon::now()->addMinutes(10));
+    //     $model->decrement('load_btn_post');
+    //     $model->updated_at = \Carbon::now();
+    //     $model->created_at = \Carbon::now();
+    //     $model->save();
+    //     return response()->json(['message' => 'Thành công','status' => 'success']);
+    // }
 
     private function checkNameInstance(int $integer,string $type = 'model'){
         if($type != 'model'){

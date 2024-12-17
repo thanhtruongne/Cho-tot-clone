@@ -51,7 +51,7 @@ class LoginController extends Controller
         if(request()->session()->get('login_attempts') > 5) {
              if(!cache()->has($user_View)) {
                 cache()->put($user_View,true,Carbon::now()->addMinutes(10));
-                \Artisan::call('modelCache:clear --model=App\Models\User');
+                \Artisan::call('modelCache:clear', ['--model' => User::class]);
 
                 request()->session()->put(['login_attempts' => 0]);
                 request()->session()->save(); //  test ở local
@@ -122,7 +122,7 @@ class LoginController extends Controller
         session()->flush();
         auth('web')->logout();
         $request->session()->invalidate();
-        \Artisan::call("modelCache:clear --model=App\Model\User"); // set tạm 
+        \Artisan::call('modelCache:clear', ['--model' => User::class]);
         return response()->json(['status' => 'success','redirect' => route('login')]);
 
     }

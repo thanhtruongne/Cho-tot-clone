@@ -20,6 +20,7 @@
 'close' => 'Đóng',
 'notify' => 'Thông báo',
 'document_name'=>'Tên tài liệu',
+'time_exists_post' => 'Sau thời gian thực hiện kể từ lúc đẩy tin sau'
  ];
  ?>
 

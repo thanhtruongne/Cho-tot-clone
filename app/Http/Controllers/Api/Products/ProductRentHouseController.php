@@ -8,6 +8,10 @@ use App\Models\ProductRentHouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Redis;
+
+
+
 class ProductRentHouseController extends Controller
 {
     public function test()
@@ -228,14 +232,16 @@ class ProductRentHouseController extends Controller
         $this->validateRequest([
             'id' => 'required'
         ], $request, [
-            'id' => 'Sản phẩm'
+            'id' => 'Dữ liệu bài đăng'
         ]);
-  
+
         $model = ProductRentHouse::find($request->id);
 
         $key = 'post_id_'.$model->id_.'_load_btn';
         if(cache()->has($key)){
-            return response()->json(['message' => 'Sau thời gian thực hiện kể từ lúc đẩy tin cách 5 tiếng', 'status' => 'error']); 
+            $val = explode("_",cache()->get($key));
+            $time =  \Carbon::createFromTimestamp($val[3])->diffForHumans();
+            return response()->json(['message' => trans('general.time_exists_post').$time, 'status' => 'error']); 
         }
         if(!$model->load_btn_post){
             return response()->json(['message' => 'Có lỗi xảy ra', 'status' => 'error']);
@@ -244,10 +250,14 @@ class ProductRentHouseController extends Controller
         $model->decrement('load_btn_post');
         $model->save();
 
+        $time_exp = \Carbon::now()->addMinutes(20);
         $key = 'post_id_' . $model->id_ . '_load_btn';
+        $value= 'id_'.$model->id.'_time_'.$time_exp->timestamp;
         if (!cache()->has($key)) {
-            cache()->put($key, true, \Carbon::now()->addMinutes(20));
+            cache()->put($key, $value, $time_exp);
         }
+        \Artisan::call('modelCache:clear', ['--model' => ProductRentHouse::class]);
+
         return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
     }
 }
