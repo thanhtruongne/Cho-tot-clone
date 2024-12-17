@@ -8,6 +8,8 @@ use App\Http\Controllers\ProductElectronicController;
 use App\Http\Controllers\Api\Products\ProductRentHouseController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
+use App\Http\Controllers\Api\Type\PostingTypeController;
+use App\Models\PostingType;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +57,9 @@ Route::prefix('system')->group(function () {
         Route::get('manage-postings', [ProductRentHouseController::class, 'managePostings'])->name('manage-postings');
         Route::get('manage-postings-get-data', [ProductRentHouseController::class, 'getProductData'])->name('manage-postings.data');
         Route::post('manage-postings-delete/{id}', [ProductRentHouseController::class, 'deletePosting'])->name('manage-postings-delete');
+        Route::get('thong-ke', [ProductRentHouseController::class, 'index'])->name('thongke');
+        Route::get('getStatistics', [ProductRentHouseController::class, 'getStatistics'])->name('getStatistics');
+
 
 
 
@@ -65,5 +70,17 @@ Route::prefix('system')->group(function () {
         Route::post('/manage-users-delete/{id}', [LoginController::class, 'manageUsersDelete'])->name('manage-users-delete');
         Route::get('/manage-users-edit/{id}', [LoginController::class, 'manageUsersEdit'])->name('manage-users-edit');
         Route::post('/manage-users-update/{id}', [LoginController::class, 'manageUsersUpdate'])->name('manage-users-update');
+
+
+        //type_posting
+        Route::get('/type-posting', [PostingTypeController::class, 'index'])->name('type-posting');
+        Route::post('/type-posting-add', [PostingTypeController::class, 'addPostingType'])->name('type-posting-add');
+        Route::get('/type-posting-data', [PostingTypeController::class, 'PostingTypesData'])->name('type-posting.data');
+        Route::get('/type-posting-data-edit/{id}', [PostingTypeController::class, 'PostingTypesEdit'])->name('type-posting.edit');
+        Route::post('/type-posting-data-update/{id}', [PostingTypeController::class, 'updatePostingType'])->name('type-posting-data-update');
+        //thong ke
+
+
+
     });
 });

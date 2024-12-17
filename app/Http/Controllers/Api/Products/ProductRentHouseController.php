@@ -81,14 +81,11 @@ class ProductRentHouseController extends Controller
                 'rule_compensation' => 'nullable|integer|min:0',
                 'district_code' => 'required|string',
             ]);
-<<<<<<< HEAD
-            if ($request->has('images')) {
-=======
+
             if($request->has('images')){
->>>>>>> c7a2e17b450472dad1838f9f75fc170894a47b40
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
             }
-        
+
             $data = new ProductRentHouse();
             $data->fill($validatedData);
             $data->images = isset($images) && !is_null($images) ? $images : null;
@@ -111,7 +108,7 @@ class ProductRentHouseController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
 
             return response()->json(['errors' => $e->validator->errors()], 422);
-        }       
+        }
     }
 
     public function updateProductRent(Request $request, $id)
@@ -195,16 +192,10 @@ class ProductRentHouseController extends Controller
         return response()->json(['data' => $rows]);
     }
 
-<<<<<<< HEAD
-    public function getDetailProductRentById($id)
-    {
 
-        try {
-=======
     public function getDetailProductRentById($id){
-       
+
         try{
->>>>>>> c7a2e17b450472dad1838f9f75fc170894a47b40
             $model = ProductRentHouse::findOrFail($id);
             $model->loadMissing(['province', 'ward', 'district']);
             $model->cost = convert_price((int)$model->cost, true);
@@ -212,17 +203,13 @@ class ProductRentHouseController extends Controller
             return response()->json(['data' => $model]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->validator->errors()], 422);
-        }      
+        }
     }
 
-<<<<<<< HEAD
 
-    public function changeStatusPostData(Request $request)
-    {
-=======
-    
+
+
     public function changeStatusPostData(Request $request){
->>>>>>> c7a2e17b450472dad1838f9f75fc170894a47b40
         $this->validateRequest([
             'id' => 'required',
             'status' => 'required|numeric|in:0,1'
@@ -260,4 +247,55 @@ class ProductRentHouseController extends Controller
         }
         return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
     }
+
+    public function index()
+    {
+        return view('pages.products.productHouse.index');
+    }
+
+    public function getStatistics(Request $request)
+    {
+        // Lấy kiểu thống kê (ngày, tháng, năm) từ request, mặc định là 'day'
+        $type = $request->input('type', 'day');
+
+        // Nếu chọn thống kê theo ngày
+        if ($type === 'day') {
+            $statistics = ProductRentHouse::selectRaw('
+                SUM(cost) as total_cost,
+                DATE(created_at) as date
+            ')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+        }
+        // Nếu chọn thống kê theo tháng
+        elseif ($type === 'month') {
+            $statistics = ProductRentHouse::selectRaw('
+                SUM(cost) as total_cost,
+                MONTH(created_at) as month,
+                YEAR(created_at) as year
+            ')
+            ->groupBy('year', 'month')  // Lưu ý: Group theo năm rồi đến tháng
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
+            ->get();
+        }
+        // Nếu chọn thống kê theo năm
+        else {
+            $statistics = ProductRentHouse::selectRaw('
+                SUM(cost) as total_cost,
+                YEAR(created_at) as year
+            ')
+            ->groupBy('year')
+            ->orderBy('year', 'asc')
+            ->get();
+        }
+
+        // Trả về dữ liệu dưới dạng JSON
+        return response()->json($statistics);
+    }
+
+
+
+
 }

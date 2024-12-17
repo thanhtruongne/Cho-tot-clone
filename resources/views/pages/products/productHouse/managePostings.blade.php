@@ -37,7 +37,6 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Dữ liệu sẽ được tải bằng AJAX -->
         </tbody>
     </table>
 </div>

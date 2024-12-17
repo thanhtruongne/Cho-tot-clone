@@ -24,7 +24,7 @@ class Cron extends Model
         'expression',
         'enabled'
     ];
-    
+
 
     public static function getCommand(){
        //command app
@@ -56,4 +56,7 @@ class Cron extends Model
        }
        return collect($commands_arr);
     }
+    public function enable()
+{
+}
 }

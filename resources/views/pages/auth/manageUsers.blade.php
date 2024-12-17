@@ -37,8 +37,11 @@
         <h2 class="mb-4">Danh sách người dùng</h2>
         <!-- Button thêm mới người dùng -->
         <div class="mb-3">
-            <button class="btn btn-info btn-lg fw-bold shadow-sm" id="addUserButton">Thêm người dùng</button>
+            <button class="btn btn-purple btn-lg fw-bold shadow-lg rounded-5" id="addUserButton">Thêm người dùng</button>
         </div>
+
+
+
         <!-- Form thêm người dùng  -->
         <div id="addUserForm" class="card p-4 mb-4" style="display: none;">
             <h5>Thêm người dùng mới</h5>
@@ -77,8 +80,11 @@
                     <div id="passwordError" class="text-danger mt-1" style="display: none;">Mật khẩu không khớp</div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Lưu</button>
-                <button type="button" class="btn btn-secondary" id="cancelButton">Hủy</button>
+                <button type="submit" class="btn" style="background: linear-gradient(45deg, #FF7E5F, #D83B01); color: white; border-radius: 50px; padding: 12px 24px; font-size: 16px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">Lưu</button>
+<button type="button" class="btn" style="background: linear-gradient(45deg, #00C6FF, #0072FF); color: white; border-radius: 50px; padding: 12px 24px; font-size: 16px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" id="cancelButton">Hủy</button>
+
+
+
             </form>
         </div>
     </div>
@@ -91,7 +97,6 @@
             <thead class="thead-dark">
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
                     <th>Firstname</th>
                     <th>Lastname</th>
                     <th>gender</th>
@@ -115,30 +120,78 @@
     <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
     <script src="{{ asset('js/treeSelect.min.js') }}"></script>
     <script>
-         $(document).ready(function() {
-        var table = $('#productTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: '{{ route('manage-users.data') }}',
-            columns: [
-                { data: 'id', name: 'id' },
-                { data: 'username', name: 'username' },
-                { data: 'firstname', name: 'firstname' },
-                { data: 'lastname', name: 'lastname' },
-                { data: 'gender', name: 'gender' },
-                { data: 'phone', name: 'phone' },
-                { data: 'status', name: 'status' },
-                { data: 'created_at', name: 'created_at' },
-                {
-                    data: 'id',
-                    render: function(data, type, row) {
-                        return `<a href="{{ url('/manage-users-edit/') }}/${data}" class="btn btn-warning btn-sm">Cập nhật</a>`;
+        $(document).ready(function() {
+            var table = $('#productTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('manage-users.data') }}',
+                columns: [{
+                        data: 'id',
+                        name: 'id'
                     },
-                    orderable: false,
-                    searchable: false
-                }
-            ]
+                    {
+                        data: 'firstname',
+                        name: 'firstname'
+                    },
+                    {
+                        data: 'lastname',
+                        name: 'lastname'
+                    },
+                    {
+                        data: 'gender',
+                        name: 'gender'
+                    },
+                    {
+                        data: 'phone',
+                        name: 'phone'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'action', // Đảm bảo cột Action được hiển thị
+                        name: 'action',
+                        orderable: false, // Không cần sắp xếp
+                        searchable: false, // Không cần tìm kiếm
+                        render: function(data, type, row) {
+                            return data; // Trả về HTML của nút Action
+                        }
+                    }
+                ]
+            });
         });
-    });
+
+        
+        const addUserButton = document.getElementById('addUserButton');
+        const addUserForm = document.getElementById('addUserForm');
+        const cancelButton = document.getElementById('cancelButton');
+
+        // Xử lý sự kiện khi bấm nút "Thêm người dùng"
+        addUserButton.addEventListener('click', function() {
+            addUserForm.style.display = 'block'; // Hiển thị form thêm người dùng
+        });
+
+        // Xử lý sự kiện khi bấm nút "Hủy"
+        cancelButton.addEventListener('click', function() {
+            addUserForm.style.display = 'none'; // Ẩn form thêm người dùng
+        });
+
+        // Kiểm tra sự khớp của mật khẩu và xác nhận mật khẩu
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                event.preventDefault(); // Ngừng gửi form nếu mật khẩu không khớp
+                document.getElementById('passwordError').style.display = 'block'; // Hiển thị thông báo lỗi
+            } else {
+                document.getElementById('passwordError').style.display = 'none'; // Ẩn thông báo lỗi
+            }
+        });
     </script>
 @endsection

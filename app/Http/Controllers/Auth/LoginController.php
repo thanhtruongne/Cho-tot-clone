@@ -147,13 +147,18 @@ class LoginController extends Controller
     {
         $data = User::all();
 
-        if($data->isEmpty()) {
+        if ($data->isEmpty()) {
             return response()->json(['data' => []]);
         }
 
         return DataTables::of($data)
+            ->addColumn('action', function ($user) {
+                return '<a href="' . route('manage-users-edit', $user->id) . '" <a href="#" class="btn btn-primary btn-sm rounded-pill shadow-lg hover-shadow-lg text-white px-4 py-2" style="font-size: 16px;">Edit</a>
+';
+            })
             ->make(true);
     }
+
 
     public function manageUsersAdd(Request $request)
     {
@@ -186,11 +191,10 @@ class LoginController extends Controller
     public function manageUsersEdit($id)
     {
         $user = User::find($id);
-        
+
         if (!$user) {
             return redirect()->route('manage-users')->with('error', 'Không tìm thấy người dùng!');
         }
-
         return view('pages.auth.manageUsersEdit', compact('user')); // Chuyển dữ liệu user vào view
     }
 

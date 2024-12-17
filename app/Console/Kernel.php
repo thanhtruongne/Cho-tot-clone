@@ -11,16 +11,16 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      */
-    protected function schedule(Schedule $schedule): void
-    {
-        $crons = Cron::enable()->get();
-        foreach ($crons as $index => $cron) {
-            $schedule->command($cron->command)->cron($cron->expression)->withoutOverlapping()
-                ->onFailure(function () use ($cron){
-                   \Log::info('Cron '.$cron->command.' bị fail '.date('d/m/Y H:i:s'));
-                });
-        }
-    }
+    // protected function schedule(Schedule $schedule): void
+    // {
+    //     $crons = Cron::enable()->get();
+    //     foreach ($crons as $index => $cron) {
+    //         $schedule->command($cron->command)->cron($cron->expression)->withoutOverlapping()
+    //             ->onFailure(function () use ($cron){
+    //                \Log::info('Cron '.$cron->command.' bị fail '.date('d/m/Y H:i:s'));
+    //             });
+    //     }
+    // }
 
     /**
      * Register the commands for the application.

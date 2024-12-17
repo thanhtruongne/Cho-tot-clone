@@ -21,6 +21,7 @@
         "paypal/rest-api-sdk-php": "^1.6",
         "php-ffmpeg/php-ffmpeg": "1.1",
         "phpoffice/phpspreadsheet": "1.29.1",
+        "pion/laravel-chunk-upload": "*",
         "predis/predis": "1.1",
         "protonemedia/laravel-xss-protection": "1.5",
         "ramsey/uuid": "^4.7",
