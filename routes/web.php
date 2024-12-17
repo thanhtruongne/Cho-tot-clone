@@ -1,16 +1,18 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProductElectronicController;
 use App\Http\Controllers\Api\Products\ProductRentHouseController;
 use Illuminate\Support\Facades\Route;
+<<<<<<< HEAD
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Type\PostingTypeController;
 use App\Models\PostingType;
 
+=======
+use App\Http\Controllers\Api\DashboardController;
+>>>>>>> e22407e4b21c14bf8a0887d958b37c2a978fa1d0
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -61,9 +63,8 @@ Route::prefix('system')->group(function () {
         Route::get('getStatistics', [ProductRentHouseController::class, 'getStatistics'])->name('getStatistics');
 
 
-
-
         //manage Users
+<<<<<<< HEAD
         Route::get('/manage-users', [LoginController::class, 'manageUsers'])->name('manage-users');
         Route::get('/manage-users-data', [LoginController::class, 'manageUsersData'])->name('manage-users.data');
         Route::post('/manage-users-add', [LoginController::class, 'manageUsersAdd'])->name('manage-users-add');
@@ -82,5 +83,21 @@ Route::prefix('system')->group(function () {
 
 
 
+=======
+        Route::get('manage-users', [UserController::class, 'index'])->name('manage-users');
+        Route::get('user/getData', [UserController::class, 'getData'])->name('manage-users.getData');
+        Route::post('user/change-status', [UserController::class, 'getData'])->name('manage-users.changeStatus');
+        Route::post('user/remove', [UserController::class, 'remove'])->name('manage-users.remove');
+        Route::get('user/form',[UserController::class, 'form'])->name('manage-users.form');
+        
+    
+        // Route::get('/manage-users-data', [LoginController::class, 'manageUsersData'])->name('manage-users.data');
+        // Route::post('/manage-users-add', [LoginController::class, 'manageUsersAdd'])->name('manage-users-add');
+        // Route::post('/manage-users-delete/{id}', [LoginController::class, 'manageUsersDelete'])->name('manage-users-delete');
+        // Route::get('/manage-users-edit/{id}', [LoginController::class, 'manageUsersEdit'])->name('manage-users-edit');
+        // Route::post('/manage-users-update/{id}', [LoginController::class, 'manageUsersUpdate'])->name('manage-users-update');
+>>>>>>> e22407e4b21c14bf8a0887d958b37c2a978fa1d0
     });
 });
+
+Route::get('storage/video/{file}',[DashboardController::class,'videoStreaming'])->name('fe.video-streaming');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\VideoStream;
 use App\Http\Controllers\Controller;
 use App\Models\ProductRentHouse;
 use App\Models\User;
@@ -17,7 +18,8 @@ class DashboardController extends Controller
         $price_gte = $request->input('price_gte');//min price
         $bedroom = $request->input('bedroom_id');
         $type_product = $request->input('type_product'); // dạng tin
-        $address_code = $request->input('address_code'); // --> gửi request code tới {'provinces} => code, ....}
+        $location = $request->input('location');
+
         $limit = $request->input('limit',12);
 
         $type = $request->type;//dạng tin nhà ở , buôn bán , việc làm;
@@ -42,12 +44,12 @@ class DashboardController extends Controller
                 $subquery->orWhere('email','like',$search."%");
             });
         }
-
-        if($address_code){
-            foreach($address_code as $key => $code) {
-                if(isset($key) && !is_null($code)){
-                    $query->where($key,$code);
-                }
+        if($location) {
+            $values = str_replace(['d', 'w'],'-', $location);
+            $temp_location = explode('-', $values);
+            foreach($temp_location as $key => $location_item){
+                $key_name = $key == 0 ? 'a.province_code' : ($key == 1 ? 'a.district_code' : "a.ward_code");
+                $query->where($key_name,$location_item);
             }
         }
         if($price_lte || $price_gte){
@@ -64,7 +66,7 @@ class DashboardController extends Controller
         }
         //dạng tin đăng
         if($type_product){
-            $query->where('type_product',$type_product);
+            $query->where('a.type_product',$type_product);
         }
 
         $query->where('a.status',1);
@@ -72,12 +74,7 @@ class DashboardController extends Controller
 
         $rows = $query->paginate($limit);
         foreach($rows as $key => $row){
-            if($row->load_btn_post) {
-                $key = 'post_id_'.$row->id_.'_load_btn';
-                if(cache()->has($key)){
-                    $row->load_btn_post = 'Đang khóa 20 phút';
-                }
-            }
+            $row->created_at2 = \Carbon::parse($row->created_at)->diffForHumans();
             $row->cost = convert_price((int)$row->cost,true);
             $row->cost_deposit = convert_price((int)$row->cost_deposit,true);
 
@@ -87,36 +84,30 @@ class DashboardController extends Controller
 
 
 
-    public function loadDataPostCount(Request $request) {
-        $this->validateRequest([
-            'id' => 'required'
-        ],$request,[
-            'id' => 'Có lỗi xảy ra'
-        ]);
-        $id = $request->input('id');
+    // public function loadDataPostCount(Request $request) {
+    //     $this->validateRequest([
+    //         'id' => 'required'
+    //     ],$request,[
+    //         'id' => 'Có lỗi xảy ra'
+    //     ]);
+    //     $id = $request->input('id');
 
-        $model = ProductRentHouse::find($id);
-        if(is_null($model->load_btn_post) ) {
-          return response()->json(['message' => 'Có lỗi xảy ra','status' => 'error']);
-        }
-        // lưu cache theo thời gian thực thi === > cách 10 phút sau khi load
-        $post_key = 'product_rent_house_'.$id.'_'.$model->user_id;
-        if(cache()->has($post_key)) {
-            return response()->json(['message' => 'Tin đăng giới hạn load tin trong 10 phút','status' => 'warning']);
-        }
-        cache()->put($post_key,true,\Carbon::now()->addMinutes(10));
-        $model->decrement('load_btn_post');
-        $model->updated_at = \Carbon::now();
-        $model->created_at = \Carbon::now();
-        $model->save();
-        return response()->json(['message' => 'Thành công','status' => 'success']);
-    }
-
-
-    // get data address của data theo ward, district, province
-    public function getAddress(Request $request) {
-
-    }
+    //     $model = ProductRentHouse::find($id);
+    //     if(is_null($model->load_btn_post) ) {
+    //       return response()->json(['message' => 'Có lỗi xảy ra','status' => 'error']);
+    //     }
+    //     // lưu cache theo thời gian thực thi === > cách 10 phút sau khi load
+    //     $post_key = 'product_rent_house_'.$id.'_'.$model->user_id;
+    //     if(cache()->has($post_key)) {
+    //         return response()->json(['message' => 'Tin đăng giới hạn load tin trong 10 phút','status' => 'warning']);
+    //     }
+    //     cache()->put($post_key,true,\Carbon::now()->addMinutes(10));
+    //     $model->decrement('load_btn_post');
+    //     $model->updated_at = \Carbon::now();
+    //     $model->created_at = \Carbon::now();
+    //     $model->save();
+    //     return response()->json(['message' => 'Thành công','status' => 'success']);
+    // }
 
     private function checkNameInstance(int $integer,string $type = 'model'){
         if($type != 'model'){
@@ -132,13 +123,6 @@ class DashboardController extends Controller
         }
         return $instance;
     }
-
-    private function checkUserPostData($type){
-        $slug_name = $this->checkNameInstance($type,'slug');
-        $count_product = User::where(['id' => auth('api')->id(),'status' => 1])->first()->{$slug_name}->count() ?? null;
-        return $count_product;
-    }
-
 
     public function getLocation(Request $request){
         $this->validateRequest([
@@ -165,12 +149,23 @@ class DashboardController extends Controller
                 $query->where('district_code', $code);
             }
         }
-
         $data = $query->get();
-
         return response()->json($data);
 
 
+    }
+
+    public function videoStreaming($file){
+        $file = decrypt_array($file);
+        if (!isset($file['path'])) {
+            return abort(404);
+        }
+
+        if (!file_exists($file['path'])) {
+            return abort(404);
+        }
+        $stream = new VideoStream($file['path']);
+        $stream->start();
     }
 
 }

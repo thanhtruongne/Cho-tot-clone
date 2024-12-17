@@ -7,7 +7,10 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Validator;
-
+use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
+use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
+use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
+use Illuminate\Http\UploadedFile;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
@@ -25,7 +28,6 @@ class Controller extends BaseController
         }
     }
 
-
     public function UploadImages($images) {
         $storage = \Storage::disk('public');
         $data = [];
@@ -34,18 +36,62 @@ class Controller extends BaseController
             if(!in_array($mime_type, ['image/jpg','image/png','image/jpeg','image/gif'])){
                 return response()->json(['message' => 'Không phù hợp định dạng','status' => 'error']);
             }
-            $filename = $image->getClientOriginalName();
-            $extension = $image->getClientOriginalExtension();
-            $filename = \Str::slug(basename($filename, "." . $extension)) . '.'. $extension;
-
-            if($storage->exists($filename))
-                continue;
-            $image = $storage->putFileAs(date('Y/m/d'), $image, $filename);
-            $data[] = $storage->url($image);
+            $tmp_image =  $this->saveFile($image,'public');
+            $data[] = $storage->url($tmp_image);
            
         }
         return $data;
 
+    }
+
+    public function uploadVideoDailyTraining(Request $request)
+    {
+        $request->header('content-range') ?? $request->headers->set('content-range', '');
+        try {
+
+            if($request->file)
+                $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
+
+            if ($receiver->isUploaded() === false) {
+                throw new UploadMissingFileException();
+            }
+
+            $save = $receiver->receive();
+            if ($save->isFinished()) {
+                $file = $save->getFile();
+                $mimetype = $file->getMimeType();
+                if ($request->file){
+                    if (!in_array($mimetype, [ 'video/mp4','video/x-msvideo','video/x-matroska','video/quick'])) {
+                        return response()->json(['message' => trans('general.handler_video_mp4'),'status' => 'error']);   
+                    }
+                    $save_file = $this->saveFile($save->getFile());
+                                  
+                    if ($save_file) {
+                        return $save_file;
+                    }
+                }
+            }
+            $handler = $save->handler();
+            return response()->json(['done' => $handler->getPercentageDone(), 'status' => 'success']);
+
+        } catch (\Exception $e) {
+            return response()->json(['line' => $e->getLine(),'file' => $e->getFile(),'message' => $e->getMessage(),'status' =>'error']);
+        }
+    }
+
+
+    protected function saveFile(UploadedFile $file , string $type = 'local') {
+        $filename = $this->createFilename($file);
+        $storage = \Storage::disk($type);
+        $new_path = $storage->putFileAs(date('Y/m/d'), $file, $filename);
+        return $new_path;
+    }
+
+    protected function createFilename(UploadedFile $file) {
+        $filename = $file->getClientOriginalName();
+        $extension = $file->getClientOriginalExtension();
+        $new_filename = \Str::slug(basename(substr($filename, 0, 50), "." . $extension)) .'-'. time() .'-'. \Str::random(10) .'.' . $extension;
+        return $new_filename;
     }
 
 }

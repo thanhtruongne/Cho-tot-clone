@@ -32,8 +32,10 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
-            'throw' => false,
+            'root' =>  storage_path('app/public/video'),
+            // 'url' => env('APP_URL').'/video',
+            // 'throw' => false,
+            // 'visibility' => 'public',
         ],
 
         'public' => [

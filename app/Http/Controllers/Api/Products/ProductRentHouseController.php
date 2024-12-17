@@ -8,38 +8,26 @@ use App\Models\ProductRentHouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
-class ProductRentHouseController extends Controller
-{
-    public function test()
-    {
-        return response()->json(['data' => "thêm thất bại"]);
-    }
-
-    public function managePostings()
-    {
-        return view('pages.products.productHouse.managePostings');
-    }
-
-    public function getProductData()
-    {
-        $data = ProductRentHouse::all();
-
-        if($data->isEmpty()) {
-            return response()->json(['data' => []]);
-        }
-
-        return DataTables::of($data)
-            ->make(true);
-    }
+use Illuminate\Support\Facades\Redis;
 
 
-    public function deletemanagePostings($id)
-    {
-        $data = ProductRentHouse::find($id);
-        $data->delete();
-        return redirect()->back()->with('success', '');
-    }
+interface InterfaceProductRentController {
+    public function addProductRent(Request $request);
 
+    public function getDataProductRentById($id);
+
+    public function updateProductRent(Request $request, $id);
+
+    public function getDataProductRentGetUserId($id);
+
+    public function changeStatusPostData(Request $request);
+
+    public function loadDataBtnPost(Request $request);
+}
+
+class ProductRentHouseController extends Controller implements InterfaceProductRentController
+{ 
+    
     public function addProductRent(Request $request)
     {
         DB::beginTransaction();
@@ -82,13 +70,24 @@ class ProductRentHouseController extends Controller
                 'district_code' => 'required|string',
             ]);
 
+<<<<<<< HEAD
             if($request->has('images')){
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
             }
 
+=======
+            if($request->has('images')){ //images
+                $images = $this->UploadImages($request->file('images')); //  trả ra json encode
+            }
+            if($request->file) { // video
+               $video = $this->uploadVideoDailyTraining($request); // trả ra file
+            }
+        
+>>>>>>> e22407e4b21c14bf8a0887d958b37c2a978fa1d0
             $data = new ProductRentHouse();
             $data->fill($validatedData);
-            $data->images = isset($images) && !is_null($images) ? $images : null;
+            $data->images = isset($images) && !empty($images) ? $images : null;
+            $data->video =  isset($video) && !empty($video) ? $video : null;
             $data->save();
 
             DB::commit();
@@ -162,46 +161,53 @@ class ProductRentHouseController extends Controller
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
             }
 
+            if($request->file) { // video
+                $video = $this->uploadVideoDailyTraining($request); // trả ra file
+             }
+
             $data->fill($validatedData);
-            $data->images = isset($images) && !is_null($images) ? $images : null;
+            $data->images = isset($images) && !empty($images) ? $images : null;
+            $data->video = isset($video) && !empty($video) ? $video : null;
             $data->save();
 
             DB::commit();
-            return response()->json(['message' => 'Product updated successfully', 'data' => $data]);
+            return response()->json(['message' => 'Product updated successfully', 'status' => true]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
-            return response()->json(['errors' => $e->validator->errors()], 422);
+            return response()->json(['errors' => $e->getMessage()], 422);
         }
     }
 
-    public function getDataProductRent()
-    {
-        $data = ProductRentHouse::all();
-        return response()->json(['data' => $data]);
-    }
-
-    public function getDataProductRentByUserId($id)
+    public function getDataProductRentGetUserId($id)
     {
         $rows = ProductRentHouse::where('user_id', $id)->with(['province', 'district', 'ward'])->get();
         if ($rows) {
             foreach ($rows as $row) {
                 $row->cost = convert_price((int)$row->cost, true);
                 $row->cost_deposit = convert_price((int)$row->cost_deposit, true);
+                $row->created_at2 = \Carbon::parse($row->created_at)->diffForHumans();
             }
         }
         return response()->json(['data' => $rows]);
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e22407e4b21c14bf8a0887d958b37c2a978fa1d0
     public function getDetailProductRentById($id){
 
         try{
             $model = ProductRentHouse::findOrFail($id);
-            $model->loadMissing(['province', 'ward', 'district']);
+            $model->loadMissing(['province', 'ward', 'district','user']);
             $model->cost = convert_price((int)$model->cost, true);
             $model->cost_deposit = convert_price((int)$model->cost_deposit, true);
+            $model->created_at2 = \Carbon::parse($model->created_at)->diffForHumans();
+            $model->linkPlay = $model->getLinkPlay();
+
             return response()->json(['data' => $model]);
         } catch (\Illuminate\Validation\ValidationException $e) {
+<<<<<<< HEAD
             return response()->json(['errors' => $e->validator->errors()], 422);
         }
     }
@@ -209,6 +215,14 @@ class ProductRentHouseController extends Controller
 
 
 
+=======
+            return response()->json(['errors' => $e->getMessage()], 422);
+        }      
+    }
+
+
+    
+>>>>>>> e22407e4b21c14bf8a0887d958b37c2a978fa1d0
     public function changeStatusPostData(Request $request){
         $this->validateRequest([
             'id' => 'required',
@@ -230,21 +244,32 @@ class ProductRentHouseController extends Controller
         $this->validateRequest([
             'id' => 'required'
         ], $request, [
-            'id' => 'Sản phẩm'
+            'id' => 'Dữ liệu bài đăng'
         ]);
 
         $model = ProductRentHouse::find($request->id);
-        if (!$model->load_btn_post) {
+
+        $key = 'post_id_'.$model->id_.'_load_btn';
+        if(cache()->has($key)){
+            $val = explode("_",cache()->get($key));
+            $time =  \Carbon::createFromTimestamp($val[3])->diffForHumans();
+            return response()->json(['message' => trans('general.time_exists_post').$time, 'status' => 'error']); 
+        }
+        if(!$model->load_btn_post){
             return response()->json(['message' => 'Có lỗi xảy ra', 'status' => 'error']);
         }
         $model->created_at = \Carbon::now();
         $model->decrement('load_btn_post');
         $model->save();
 
+        $time_exp = \Carbon::now()->addMinutes(20);
         $key = 'post_id_' . $model->id_ . '_load_btn';
+        $value= 'id_'.$model->id.'_time_'.$time_exp->timestamp;
         if (!cache()->has($key)) {
-            cache()->put($key, true, \Carbon::now()->addMinutes(20));
+            cache()->put($key, $value, $time_exp);
         }
+        \Artisan::call('modelCache:clear', ['--model' => ProductRentHouse::class]);
+
         return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
     }
 

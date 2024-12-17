@@ -63,7 +63,7 @@ class LeftMenuComposer
                     ],
                     [
                         'name' => trans('Quản lí người dùng'),
-                        'url_name' =>'permissions/role',
+                        'url_name' =>'user',
                          'url' => route('manage-users'),
                         'icon' => '<i class="fas fa-suitcase"></i>',
                         // 'permission' => User::canPermissionCompetencyReport(),

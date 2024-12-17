@@ -14,6 +14,7 @@ class LogVisits
         if(auth(guard: 'web')->check()) {
         $agent = new Agent();
         $id = auth('web')->id();
+        $ids = [];
         $users = \Cache::get('online-users');
             if(empty($users)) {
                 \Cache::put('online-users', [['id' => $id, 'last_activity_at' => now(), 'ip_address' => request()->ip(), 'device' => $agent->device(), 'platform' => $agent->platform(), 'browser' => $agent->browser()]], \Config::get('session.lifetime'));
@@ -32,9 +33,10 @@ class LogVisits
                 }
                 
                 $users[] = ['id' => $id, 'last_activity_at' => now(), 'ip_address' => request()->ip(), 'device' => $agent->device(), 'platform' => $agent->platform(), 'browser' => $agent->browser()];
-
+                $ids[] = $id;
                 
                 \Cache::put('online-users', $users, \Config::get('session.lifetime'));
+                \Cache::put('online-users-id', $ids, \Config::get('session.lifetime'));
             }
         }
         return $next($request);

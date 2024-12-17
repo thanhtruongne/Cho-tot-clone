@@ -19,7 +19,7 @@
         "mews/purifier": "3.4",
         "nwidart/laravel-modules": "5.0",
         "paypal/rest-api-sdk-php": "^1.6",
-        "php-ffmpeg/php-ffmpeg": "1.1",
+        "php-ffmpeg/php-ffmpeg": "*",
         "phpoffice/phpspreadsheet": "1.29.1",
         "pion/laravel-chunk-upload": "*",
         "predis/predis": "1.1",

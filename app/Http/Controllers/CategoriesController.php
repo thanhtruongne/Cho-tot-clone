@@ -54,8 +54,8 @@ class CategoriesController extends Controller
             $query->where('name','like','%'.$search.'%');
         }
         $query->orderBy($sort,$order);
-        $query->offset($offset);
-        $query->limit($limit);
+        // $query->offset($offset);
+        // $query->limit($limit);
         $count = $query->count();
         $rows = $query->get()->toTree();
         foreach($rows as $row){
@@ -170,6 +170,7 @@ class CategoriesController extends Controller
         }
         $model = Categories::firstOrCreate(['id' => $request->id]);
         $model->name = $request->name;
+        $model->key = \Str::slug($model->name);
         $model->type = $request->type;
         $model->status = $request->status;
         $model->save();
