@@ -32,7 +32,7 @@ class UserController extends Controller
       $query->select(['users.*']);
     //   $query->leftJoin('user_activity_durations as a','a.user_id','=','users.id');
       //set cứng
-    //   $query->where('users.username','!=',$this->attemp_admin);
+      $query->where('users.username','!=',$this->attemp_admin);
       if($search) {
           $query->where(function($subquery) use($search) {
               $subquery->where('users.email','like',$search.'%');

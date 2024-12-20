@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 
 class CategoriesController extends Controller
 {
-    public function getData(Request $request) {
+    public function __invoke(Request $request) {
         try {
             $this->validateRequest([
                 'type' => 'required'
@@ -27,7 +27,5 @@ class CategoriesController extends Controller
         } catch (\Throwable $th) {
            return response()->json(['message' => $th->getMessage(),'status' =>'error']);
         }
-       
-
     }
 }

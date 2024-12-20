@@ -114,8 +114,6 @@ class LoginController extends Controller
             $model->updated_at = time();
             $model->save();
         }
-        $this->setCacheOnline($id); //  set cache online user
-
         $sessionId = session()->getId();
 
         UserActivities::endUserActivityDuration($id,$sessionId);
@@ -126,15 +124,6 @@ class LoginController extends Controller
         return response()->json(['status' => 'success','redirect' => route('login')]);
 
     }
-
-    private function setCacheOnline($id){
-        $users_online = \Cache::get('online-users');
-        $users_online = collect($users_online)->filter(function ($online) use($id) {
-            return $online['id'] != $id;
-        });
-        \Cache::put('online-users', $users_online, \Config::get('session.lifetime'));
-    }
-
 
     public function showLoginForm()
     {
@@ -156,33 +145,30 @@ class LoginController extends Controller
     {
         return view('pages.auth.manageUsers');
     }
-    // public function manageUsersData()
-    // {
-    //     $data = User::all();
-
-<<<<<<< HEAD
+    public function manageUsersData()
+    {
+        $data = User::all();
         if ($data->isEmpty()) {
             return response()->json(['data' => []]);
         }
 
         return DataTables::of($data)
             ->addColumn('action', function ($user) {
-                return '<a href="' . route('manage-users-edit', $user->id) . '" <a href="#" class="btn btn-primary btn-sm rounded-pill shadow-lg hover-shadow-lg text-white px-4 py-2" style="font-size: 16px;">Edit</a>
-';
+                return '<a href="' . route('manage-users-edit', $user->id) . '" <a href="#" class="btn btn-primary btn-sm rounded-pill shadow-lg hover-shadow-lg text-white px-4 py-2" style="font-size: 16px;">Edit</a>';
             })
             ->make(true);
     }
 
 
-    public function manageUsersAdd(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|unique:users,email',
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-        ], [
-            'email.unique' => 'Email này đã được sử dụng.',
-        ]);
+    // public function manageUsersAdd(Request $request)
+    // {
+    //     $request->validate([
+    //         'email' => 'required|email|unique:users,email',
+    //         'firstname' => 'required|string|max:255',
+    //         'lastname' => 'required|string|max:255',
+    //     ], [
+    //         'email.unique' => 'Email này đã được sử dụng.',
+    //     ]);
     //     if($data->isEmpty()) {
     //         return response()->json(['data' => []]);
     //     }
@@ -212,14 +198,12 @@ class LoginController extends Controller
     //     return redirect()->route('manage-users')->with('success', 'Người dùng đã được thêm thành công!');
     // }
 
-    // public function manageUsersDelete($id)
-    // {
-    //     $user = User::find($id);
-    //     $user->delete();
-    //     return redirect()->route('manage-users')->with('success', '');
-    // }
-
-<<<<<<< HEAD
+    public function manageUsersDelete($id)
+    {
+        $user = User::find($id);
+        $user->delete();
+        return redirect()->route('manage-users')->with('success', '');
+    }
     public function manageUsersEdit($id)
     {
         $user = User::find($id);

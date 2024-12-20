@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\ProductElectronics;
+use App\Models\ProductRentHouse;
+use App\Models\ProductVehicle;
+use App\Observers\ProductElectronicObserver;
+use App\Observers\ProductVehicleObserver;
+use App\Observers\ProductRentHouseObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -25,7 +31,9 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        ProductRentHouse::observe(ProductRentHouseObserver::class);
+        ProductElectronics::observe(ProductElectronicObserver::class);
+        ProductVehicle::observe(ProductVehicleObserver::class);
     }
 
     /**

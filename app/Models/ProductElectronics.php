@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductElectronics extends Model
@@ -29,19 +28,62 @@ class ProductElectronics extends Model
         'cost',
         'brand_id',
         'color_id',
-        'capacity_id',
-        'warrancy_policy_id',
+        'load_btn_post',
         'origin_from_id',
-        'screen_size_id',
-        'microprocessor_id',
-        'ram_id',
-        'hard_drive_id',
-        'type_hard_drive',
-        'card_screen_id',
+        'ram_id'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            $model->code = self::generateUniqueCode();
+        });
+    }
+
+    protected static function generateUniqueCode()
+    {
+        do {
+            $code = 'RENT_ELECTRIC_'.now().'_'.rand(1000, 9999);
+        } while (self::where('code', $code)->exists());
+        return $code;
+    }
+
+    public function getLinkPlay() {
+        $storage = \Storage::disk('local');
+        $file = encrypt_array([
+            'path' => $storage->path('/' . $this->video),
+        ]);     
+        return route('fe.video-streaming', [$file]);
+    }
+
+
+    public static function getAttributeName(){
+        return [
+            'name' => 'Tên sản phẩm',
+            'title' => 'Tiêu đề sản phẩm',
+            'content' => 'Nội dung',
+            'type_product' => 'Loại sản phẩm', // 1 là nhà ở, 2 là phòng trọ
+            'images' => 'Hình ảnh',
+            'video' => 'Video',
+            'province_code' => 'Thành phố/ Tỉnh',
+            'district_code' => 'Quận/Huyện',
+            'ward_code' => 'Phường/Xã',
+            'category_id' => 'Danh mục sản phẩm',
+            'condition_used' => 'Tình trạng sử dụng',
+            'cost' => 'Giá tiền',
+            'brand_id' => 'Thương hiệu',
+            'color_id' => 'Màu sản phẩm',
+        ];
+    }
 
 
     public function user(){
         return $this->belongsTo(User::class,'user_id','id');
+    }
+
+
+    public function products(){
+        return $this->belongsTo(Products::class,'product_id','id');
     }
 }

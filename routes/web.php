@@ -29,7 +29,7 @@ Route::prefix('system')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->name('post.login');
 
 
-    Route::group(['middleware' => ['auth', 'logvisit:admin']], function () {
+    Route::group(['middleware' => ['auth', 'logvisit:web']], function () {
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 

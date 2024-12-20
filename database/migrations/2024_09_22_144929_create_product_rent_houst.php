@@ -41,13 +41,14 @@ return new class extends Migration
 
             $table->tinyInteger('type_user')->default(1)->comment('1 là cá nhân , 2 là môi giới'); 
             $table->unsignedBigInteger('category_id');
-            $table->string('subdivision_code');
-            $table->integer('floor')->default(0)->comment('số tầng');
+            // $table->string('subdivision_code');
+            // $table->integer('floor')->default(0)->comment('số tầng');
             $table->unsignedBigInteger('bedroom_id')->index()->comment('phòng ngủ');
             $table->unsignedBigInteger('bathroom_id')->index()->comment('phòng tắm');
             $table->unsignedBigInteger('main_door_id')->index()->comment('cửa chính');
-            $table->unsignedBigInteger('legal_id')->index()->comment('Giấy tờ pháp lý');
+            // $table->unsignedBigInteger('legal_id')->index()->comment('Giấy tờ pháp lý');
             $table->unsignedBigInteger('condition_interior')->index()->comment('Tình trạng nội thất-- 1 nội thất cao cấp, 2 đầy dủ , 3 nha trống');     
+          
             $table->tinyInteger('car_alley')->default(0)->comment('Hẻm xe hơi');
             $table->tinyInteger('back_house')->default(0)->comment('Nhà tóp hậu --> mảnh đất đầu nhỏ đuôi to, phía trước rộng, sau hẹp');
             $table->tinyInteger('blooming_house')->default(0)->comment('Nhà tóp hậu --> đất nở hậu là phía trước hẹp, sau rộng');
@@ -63,8 +64,6 @@ return new class extends Migration
             $table->float('length')->nullable()->comment('chiều dài');
             $table->decimal('cost',10)->comment('giá thuê');
             $table->float('cost_deposit')->comment('Số tiền cọc');
-            // nếu khách hàng hủy trong thời gian thuê  --> khách sẽ chịu bồi thường = số tiền thuê * số lần quy định
-            $table->integer('rule_compensation')->default(3)->comment('quy dịnh bồi thường');
 
             $table->integer('status')->default(1);
             $table->integer('sort')->default(0);

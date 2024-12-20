@@ -164,6 +164,7 @@ class ApiAuthController extends Controller
             'refresh_token' => null,
             'signature_key' => null,
         ]);
+        $this->setCacheOnline($id);
         JWTAuth::invalidate(JWTAuth::parseToken());
         auth('api')->logout();
 
@@ -261,7 +262,13 @@ class ApiAuthController extends Controller
     }
 
 
-
+    private function setCacheOnline($id){
+        $users_online = \Cache::get('online-users');
+        $users_online = collect($users_online)->filter(function ($online) use($id) {
+            return $online['id'] != $id;
+        });
+        \Cache::put('online-users', $users_online, \Config::get('session.lifetime'));
+    }
 
 
 }

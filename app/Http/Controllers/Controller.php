@@ -94,4 +94,20 @@ class Controller extends BaseController
         return $new_filename;
     }
 
+
+    public function checkNameInstance(int $integer,string $type = 'model'){
+        if($type != 'model'){
+            return $integer == 1 ? 'product_rent_house' : ($integer == 2 ? 'product_electronics' : 'product_vehicle');
+        }
+        return $integer == 1 ? 'ProductRentHouse' : ($integer == 2 ? 'ProductElectronics' : 'ProductVehicle');
+    }
+
+    public function handleMadeClass(string $app = '',string $model = '') {
+        $nameSpace = "\App\\".$app.'\\'.ucfirst($model);
+        if(class_exists($nameSpace)) {
+           $instance = app($nameSpace);
+        }
+        return $instance;
+    }
+
 }

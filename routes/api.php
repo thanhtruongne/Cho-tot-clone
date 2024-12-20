@@ -67,7 +67,7 @@ Route::group([
 });
 
 Route::group([
-  // 'middleware' => ['api', 'jwt.vertify'],
+  'middleware' => ['api', 'jwt.vertify'],
   'prefix' => 'auth'
 ], function ($router) {
   Route::post('update/{id}', [ApiAuthController::class, 'updateUser'])->name('fe.updateUser');
@@ -88,7 +88,7 @@ Route::group([
   Route::post('/delete-product/{id}', [ProductElectronicController::class, 'deleteProduct'])->name('fe.product-electric.deleteProduct');
   Route::post('/update-product/{id}', [ProductElectronicController::class, 'updateProduct'])->name('fe.product-electric.updateProduct');
   //categories
-  Route::get('/categories/get-data',[CategoriesController::class,'getData'])->name('fe.getData.Categories');
+  Route::get('/categories/get-data',[CategoriesController::class])->name('fe.getData.Categories');
 
   //product_rent_house
   Route::post('/test', [ProductRentHouseController::class, 'test']);
@@ -99,8 +99,13 @@ Route::group([
   Route::post('/update-product-rent/{id}', [ProductRentHouseController::class, 'updateProductRent']);
   Route::get('get-product-rent-detail/{id}',[ProductRentHouseController::class,'getDetailProductRentById'])->name('fe.detail-post');
 
+
+
   Route::post('/change-status-post', [ProductRentHouseController::class, 'changeStatusPostData']);
   Route::post('/change-load-btn-post', [ProductRentHouseController::class, 'loadDataBtnPost']);
+
+
+
 
   Route::get('/get-data-location',[DashboardController::class, 'getLocation']);
   //posting_type

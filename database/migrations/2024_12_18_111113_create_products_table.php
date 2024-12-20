@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //data neu1 chọn theo các khung giờ
-        Schema::create('product_posting_expect', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id')->index()->nullable();
-            $table->unsignedBigInteger('posting_data_action_id')->index()->nullable();
-            $table->integer('cron_completed')->nullable();
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->tinyInteger('type')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_posting_expect');
+        Schema::dropIfExists('products');
     }
 };

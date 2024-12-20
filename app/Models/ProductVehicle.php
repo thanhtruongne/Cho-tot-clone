@@ -2,61 +2,36 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use Illuminate\Database\Eloquent\Model;
 
-class ProductRentHouse extends Model
+class ProductVehicle extends Model
 {
-    use Cachable;
-    protected $table = 'product_rent_house';
-    protected $primaryKey = 'id';
+    use Cachable;   
+    protected $table = 'product_vehicle';
 
     protected $fillable = [
-        'day_package_expirition',
-        'payment',
-        'remaining_days',
         'title',
         'content',
         'user_id',
         'code',
-        'type_product',
         'images',
         'video',
+        'category_id',
         'type_posting_id',
         'approved',
-        'type_rental',
-        'province_code',
-        'ward_code',
-        'category_id',
-        'subdivision_code',
-        'floor',
-        'bedroom_id',
-        'bathroom_id',
-        'main_door_id',
-        'legal_id',
-        'condition_interior',
-        'car_alley',
-        'back_house',
-        'blooming_house',
-        'not_completed_yet',
-        'land_not_changed_yet',
-        'planning_or_road',
-        'diff_situation',
-        'land_area',
-        'usable_area',
+        'address',
         'status',
-        'horizontal',
-        'length',
-        'cost',
-        'cost_deposit',
-        'rule_compensation',
+        'province_code',
         'district_code',
-        'type_user',
-        'load_btn_post'
-    ];
-
-    protected $casts = [
-        'images' => 'json'
+        'ward_code',
+        'condition_used',
+        'cost',
+        'brand_id',
+        'color_id',
+        'load_btn_post',
+        'origin_from_id',
+        'company'
     ];
 
     protected static function boot()
@@ -70,7 +45,7 @@ class ProductRentHouse extends Model
     protected static function generateUniqueCode()
     {
         do {
-            $code = 'RENT_'.now().'_'.rand(1000, 9999);
+            $code = 'VEHICLE_'.now().'_'.rand(1000, 9999);
         } while (self::where('code', $code)->exists());
         return $code;
     }
@@ -90,25 +65,27 @@ class ProductRentHouse extends Model
             'title' => 'Tiêu đề sản phẩm',
             'content' => 'Nội dung',
             'type_product' => 'Loại sản phẩm', // 1 là nhà ở, 2 là phòng trọ
-            'images' => 'Hình ảnh', // Có thể thay đổi thành 'array' nếu là mảng ảnh
+            'images' => 'Hình ảnh',
             'video' => 'Video',
             'province_code' => 'Thành phố/ Tỉnh',
             'district_code' => 'Quận/Huyện',
             'ward_code' => 'Phường/Xã',
             'category_id' => 'Danh mục sản phẩm',
-            'land_area' => 'Diện tích đất',
-            'usable_area' => 'Diện tích đất sử dụng',
-            'cost' => 'Giá tiền'
+            'condition_used' => 'Tình trạng sử dụng',
+            'cost' => 'Giá tiền',
+            'brand_id' => 'Thương hiệu',
+            'color_id' => 'Màu sản phẩm',
         ];
     }
 
-    public function posting_product_expect(){
-        return $this->belongsToMany(PostingDataAction::class,'product_posting_expect','product_id','posting_data_action_id');
-    }
 
     public function user(){
-        return $this->belongsTo(User::class,'user_id','id')
-        ->select(['firstname','lastname','email','phone','address','gender','avatar']);
+        return $this->belongsTo(User::class,'user_id','id');
+    }
+
+
+    public function products(){
+        return $this->belongsTo(Products::class,'product_id','id');
     }
 
     public function province(){
@@ -122,11 +99,4 @@ class ProductRentHouse extends Model
     public function ward(){
         return $this->belongsTo(Wards::class,'ward_code','code')->select('full_name');
     }
-
-    public function products(){
-        return $this->belongsTo(Products::class,'product_id','id');
-    }
-
-
-    
 }

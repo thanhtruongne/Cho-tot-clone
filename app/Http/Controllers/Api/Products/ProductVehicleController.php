@@ -4,48 +4,48 @@ namespace App\Http\Controllers\Api\Products;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\ProductElectronics;
+use App\Models\ProductVehicle;
 use Illuminate\Support\Facades\DB;
 
-class ProductElectronicController extends Controller
+class ProductVehicleController extends Controller
 {
-    public function saveProductElectrics(Request $request)
+    public function saveProductVehicle(Request $request)
     {
         DB::beginTransaction();
-
         try {
             $validatedData = $request->validate([
-                'cost' => 'required|int',
-                'title' => 'required|string|max:255',
+                'cost' => 'nullable|int',
+                'title' => 'nullable|string|max:255',
                 'content' => 'nullable|string',
-                'category_id' => 'required|integer|exists:categories,id',
+                'category_id' => 'nullable|integer|exists:categories,id',
                 'type_posting_id' => 'nullable|integer|in:1,2',
                 'status' => 'nullable|integer|in:0,1',
-                'province_code' => 'required|string|max:255',
-                'district_code' => 'required|string|max:255',
-                'ward_code' => 'required|string|max:255',
-                'condition_used' => 'required',
+                'province_code' => 'nullable|string|max:255',
+                'district_code' => 'nullable|string|max:255',
+                'ward_code' => 'nullable|string|max:255',
+                'condition_used' => 'nullable|integer|in:1,2,3',
                 'brand_id' => 'nullable|integer',
                 'color_id' => 'nullable|integer',
-                'origin_from_id' => 'nullable|integer',
-                'ram_id' => 'required'
+                'company' => 'nullable|integer',
             ]);
 
-            if($request->has('images')){ //images
+            if ($request->has('images')) {
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
             }
+
             if($request->file) { // video
-               $video = $this->uploadVideoDailyTraining($request); // trả ra file
+                $video = $this->uploadVideoDailyTraining($request); // trả ra file
             }
 
-            $data = ProductElectronics::firstOrNew(['id' => $request->id]);
+            $data =  ProductVehicle::firstOrNew(['id' => $request->id]);
             $data->fill($validatedData);
-            $data->user_id = auth('api')->id();
             $data->images = isset($images) && !empty($images) ? $images : null;
-            $data->video =  isset($video) && !empty($video) ? $video : null;
-            if ($data->save()) {
+            $data->video = isset($video) && !empty($video) ? $video : null;
+            $data->save();
+
+            if ($data) {
                 DB::commit();
-                return response()->json(['message' => 'Tạo tin đăng thành công', 'data' => $data]);
+                return response()->json(['message' => 'Product updated successfully', 'data' => $data]);
             } 
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
@@ -59,7 +59,7 @@ class ProductElectronicController extends Controller
     public function getDetailProductElectricById($id){
 
         try{
-            $model = ProductElectronics::findOrFail($id);
+            $model = ProductVehicle::findOrFail($id);
             $model->loadMissing(['province', 'ward', 'district','user']);
             $model->cost = convert_price((int)$model->cost, true);
             $model->cost_deposit = convert_price((int)$model->cost_deposit, true);
@@ -82,16 +82,19 @@ class ProductElectronicController extends Controller
             'id' => 'Đường dẫn dữ liệu',
             'status' => 'Trạng thái'
         ]);
-        $model = ProductElectronics::findOrFail($request->id);
+        $model = ProductVehicle::findOrFail($request->id);
         $model->status = $request->status;
         $model->save();
         return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
     }
 
+
+
     public function deleteProduct($id)
     {
-        $data = ProductElectronics::findOrFail($id);
+        $data = ProductVehicle::findOrFail($id);
         $data->delete();
-        return response()->json(['message' => 'Xóa thành công','status' => true]);
+        return response()->json(['message' => 'Product deleted successfully']);
     }
+
 }

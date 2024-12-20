@@ -8,9 +8,17 @@ use App\Models\ProductRentHouse;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Cache;
 class DashboardController extends Controller
 {
+
+    private $district_query = 'd';
+
+    private $ward_query = 'w';
+
+    public function index(){
+        return view('pages.Dashboard.index');
+    }
 
     public function getData(Request $request){
         $search = $request->input('search');
@@ -45,7 +53,7 @@ class DashboardController extends Controller
             });
         }
         if($location) {
-            $values = str_replace(['d', 'w'],'-', $location);
+            $values = str_replace([$this->district_query, $this->ward_query],'-', $location);
             $temp_location = explode('-', $values);
             foreach($temp_location as $key => $location_item){
                 $key_name = $key == 0 ? 'a.province_code' : ($key == 1 ? 'a.district_code' : "a.ward_code");
@@ -82,48 +90,6 @@ class DashboardController extends Controller
         return response()->json($rows);
     }
 
-
-
-    // public function loadDataPostCount(Request $request) {
-    //     $this->validateRequest([
-    //         'id' => 'required'
-    //     ],$request,[
-    //         'id' => 'Có lỗi xảy ra'
-    //     ]);
-    //     $id = $request->input('id');
-
-    //     $model = ProductRentHouse::find($id);
-    //     if(is_null($model->load_btn_post) ) {
-    //       return response()->json(['message' => 'Có lỗi xảy ra','status' => 'error']);
-    //     }
-    //     // lưu cache theo thời gian thực thi === > cách 10 phút sau khi load
-    //     $post_key = 'product_rent_house_'.$id.'_'.$model->user_id;
-    //     if(cache()->has($post_key)) {
-    //         return response()->json(['message' => 'Tin đăng giới hạn load tin trong 10 phút','status' => 'warning']);
-    //     }
-    //     cache()->put($post_key,true,\Carbon::now()->addMinutes(10));
-    //     $model->decrement('load_btn_post');
-    //     $model->updated_at = \Carbon::now();
-    //     $model->created_at = \Carbon::now();
-    //     $model->save();
-    //     return response()->json(['message' => 'Thành công','status' => 'success']);
-    // }
-
-    private function checkNameInstance(int $integer,string $type = 'model'){
-        if($type != 'model'){
-            return $integer == 1 ? 'product_rent_house' : ($integer == 2 ? 'product_electrinic' : 'product_jobs');
-        }
-        return $integer == 1 ? 'ProductRentHouse' : ($integer == 2 ? 'ProductElectricnic' : 'ProductJobs');
-    }
-
-    private function handleMadeClass(string $app = '',string $model = '') {
-        $nameSpace = "\App\\".$app.'\\'.ucfirst($model);
-        if(class_exists($nameSpace)) {
-           $instance = app($nameSpace);
-        }
-        return $instance;
-    }
-
     public function getLocation(Request $request){
         $this->validateRequest([
             'type' => 'required|in:provinces,districts,wards',
@@ -133,24 +99,30 @@ class DashboardController extends Controller
             'code' => 'Mã location'
         ]);
         $type = $request->input('type'); // dạng nào thì truyền key đó vào
-        $code = $request->input('code'); // code của dạng đó nếu là type là district hay wards
-        $instance = $this->handleMadeClass('Models',$type);
-        if(!$instance)
-            return response()->json(['message' => 'Định dạng locaiton không hợp lệ','status' => 'error']);
-        $query = $instance::select(['id', 'code', 'full_name']);
-        if($request->search){
-            $query->where('full_name', 'like', $request->search . '%');
-            $query->orWhere('code', 'like', $request->search . '%');
-        }
-        if($type && $code) {
-            if($type == 'districts'){
-                $query->where('province_code', $code);
-            } elseif($type== 'wards') {
-                $query->where('district_code', $code);
+        $code = $request->input('code','none'); // code của dạng đó nếu là type là district hay wards
+        $key = 'location_'.$type.'_child_'.$code;
+        $temp = Cache::tag('location')->rememberForever($key,function() use($type,$code,$request){
+            $instance = $this->handleMadeClass('Models',$type);
+            if(!$instance)
+                return response()->json(['message' => 'Định dạng locaiton không hợp lệ','status' => 'error']);
+            $query = $instance::select(['id', 'code', 'full_name']);
+            if($request->search){
+                $query->where('full_name', 'like', $request->search . '%');
+                $query->orWhere('code', 'like', $request->search . '%');
             }
-        }
-        $data = $query->get();
-        return response()->json($data);
+            if($type && $code) {
+                if($type == 'districts'){
+                    $query->where('province_code', $code);
+                } elseif($type== 'wards') {
+                    $query->where('district_code', $code);
+                }
+            }
+            $data = $query->get();
+            return $data;
+        });
+
+        
+        return response()->json($temp);
 
 
     }
@@ -158,14 +130,23 @@ class DashboardController extends Controller
     public function videoStreaming($file){
         $file = decrypt_array($file);
         if (!isset($file['path'])) {
-            return abort(404);
+            return response()->json(['message' => 'Không tìm thấy file truyền','status' => false]);
         }
 
         if (!file_exists($file['path'])) {
-            return abort(404);
+            return response()->json(['message' => 'Không tồn tại file truyền','status' => false]);
         }
         $stream = new VideoStream($file['path']);
-        $stream->start();
+        return $stream->start();
+    }
+
+    public function getProductForUserID(Request $request){
+        
+    }
+
+
+    public function getAllDataProductHome(Request $request){
+
     }
 
 }
