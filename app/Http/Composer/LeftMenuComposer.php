@@ -29,17 +29,6 @@ class LeftMenuComposer
         $item = Cache::rememberForever('menu_composer',function(){
             return [
 
-                'Thống kê' => [
-                    'id' => 32,
-                    'name' => trans('market.summary'),
-                    'url' => route('dashboard'),
-                    'url_name'=> 'dashboard',
-                    'is_open' => 1,
-                    'icon' => '<i class="fas fa-tachometer-alt"></i>',
-                    // 'permission' => User::isRoleManager(),
-                    'url_name' => 'dashboard',
-                    'url_child' => [],
-                ],
                 'manager_products_rents_house' => [
                     'id' => 1,
                     'name' => trans('market.manager_products_rent'),
@@ -72,9 +61,16 @@ class LeftMenuComposer
                         //     // 'permission' => User::canPermissionCompetencyReport(),
                         // ],
                         [
-                            'name' => trans('Quản lí tin'),
+                            'name' => trans('Thống kê đăng tin'),
                             'url_name' =>'permissions/role',
                              'url' => route('thongke'),
+                            'icon' => '<i class="fas fa-suitcase"></i>',
+                            // 'permission' => User::canPermissionCompetencyReport(),
+                        ],
+                        [
+                            'name' => trans('Quản lí gói tin'),
+                            'url_name' =>'permissions/role',
+                             'url' => route('type-posting'),
                             'icon' => '<i class="fas fa-suitcase"></i>',
                             // 'permission' => User::canPermissionCompetencyReport(),
                         ],
@@ -124,8 +120,8 @@ class LeftMenuComposer
                     'icon' => '<i class="fas fa-suitcase"></i>',
                 ],
                 // ],
-    
-    
+
+
             ];
         });
         $this->leftSideMenu = $item;

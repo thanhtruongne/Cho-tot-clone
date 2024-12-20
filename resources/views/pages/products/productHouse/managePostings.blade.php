@@ -50,7 +50,7 @@
         $(document).ready(function() {
             var table = $('#productTable').DataTable({
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('manage-postings.data') }}',
                 columns: [
                     { data: 'id', name: 'id' },

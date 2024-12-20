@@ -270,7 +270,17 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
         return response()->json($statistics);
     }
 
-
+    public function managePostings()
+    {
+        return view('pages.products.productHouse.managePostings');
+    }
+    public function getProductData()
+    {
+        $data = ProductRentHouse::all();
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 
 
 }

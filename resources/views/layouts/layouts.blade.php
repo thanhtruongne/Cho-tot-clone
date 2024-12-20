@@ -30,11 +30,11 @@
               </div><!-- /.container-fluid -->
             </div>
             <!-- /.breadcrumb -->
-        
+
             <!-- Main content -->
             <section class="content">
               <div class="container-fluid">
-                @yield('content') 
+                @yield('content')
                 {{-- theo row --}}
               </div>
             </section>
@@ -44,9 +44,9 @@
         {{-- footer --}}
         @include('layouts.footer')
 
-         
+
     </div>
-    
+
     @include('layouts.components.scirpts')
     <script>
       $(document).ready(function(){
@@ -59,14 +59,14 @@
           backToTop = function() {
 
           };
- 
+
         $('.bootstrap-table').removeClass('table-bordered');
         $(window).on('scroll', function() {
             backToTop();
         });
 
 
-        $('body').click('click','#logout_data',function() {
+        $('body').on('click','#logout_data',function() {
           var btn = $(this),
           btn_text = btn.html();
           btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');

@@ -21,8 +21,6 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-
-
         $rules = [
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
@@ -92,11 +90,11 @@ class LoginController extends Controller
                         return response()->json(['message' =>  trans('auth.success'), 'status' => 'success', 'redirect' => $targetUrl]);
                     }
                     // dd($targetUrl);
-                    return response()->json(['message' =>  trans('auth.success'), 'status' => 'success', 'redirect' => route('dashboard')]);
+                    return response()->json(['message' =>  trans('auth.success'), 'status' => 'success', 'redirect' => route('thongke')]);
                 }
                 else {
                     $this->sendFailedLoginResponse($request);
-                    return response()->json(['message' =>  trans('auth.vertify_fail'), 'status' => 'error']);
+                    return response()->json(data: ['message' =>  trans('auth.vertify_fail'), 'status' => 'error']);
                 }
             }
         }
