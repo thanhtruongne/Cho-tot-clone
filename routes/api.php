@@ -55,7 +55,7 @@ Route::get('paypal/cancel', function () {
 })->name('paypal.cancel');
 
 Route::group([
-  // 'middleware' => 'api',
+  'middleware' => 'api',
   'prefix' => 'auth'
 ], function ($router) {
 
@@ -88,7 +88,7 @@ Route::group([
   Route::post('/delete-product/{id}', [ProductElectronicController::class, 'deleteProduct'])->name('fe.product-electric.deleteProduct');
   Route::post('/update-product/{id}', [ProductElectronicController::class, 'updateProduct'])->name('fe.product-electric.updateProduct');
   //categories
-  Route::get('/categories/get-data',[CategoriesController::class])->name('fe.getData.Categories');
+  Route::get('/categories/get-data',CategoriesController::class)->name('fe.getData.Categories');
 
   //product_rent_house
   Route::post('/test', [ProductRentHouseController::class, 'test']);
@@ -113,6 +113,6 @@ Route::group([
   Route::post('/delete-posting-type/{id}', [PostingTypeController::class, 'deletePostingType']);
   Route::post('/update-posting-type/{id}', [PostingTypeController::class, 'updatePostingType']);
   Route::get('/get-data-posting-type', [PostingTypeController::class, 'getDataPostingType']);
-   
+
   });
 });

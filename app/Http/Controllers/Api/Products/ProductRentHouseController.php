@@ -42,7 +42,7 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
                 'bathroom_id' => 'nullable|integer',
                 'main_door_id' => 'nullable|integer',
                 'legal_id' => 'nullable|integer',
-                'condition_interior' => 'nullable|in:1,2,3',
+                'condition_interior' => 'nullable',
                 'car_alley' => 'nullable|in:0,1',
                 'back_house' => 'nullable|in:0,1',
                 'blooming_house' => 'nullable|in:0,1',
@@ -57,6 +57,7 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
                 'cost' => 'required|numeric|min:0',
                 'cost_deposit' => 'nullable|numeric|min:0',
                 'district_code' => 'required|string',
+
             ]);
 
             if($request->has('images')){ //images
@@ -98,7 +99,7 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
                 'bathroom_id' => 'nullable|integer',
                 'main_door_id' => 'nullable|integer',
                 'legal_id' => 'nullable|integer',
-                'condition_interior' => 'nullable|in:1,2,3',
+                'condition_interior' => 'nullable',
                 'car_alley' => 'nullable|in:0,1',
                 'back_house' => 'nullable|in:0,1',
                 'blooming_house' => 'nullable|in:0,1',

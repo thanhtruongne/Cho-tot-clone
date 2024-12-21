@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+
 class DashboardController extends Controller
 {
 
@@ -30,18 +31,12 @@ class DashboardController extends Controller
 
         $limit = $request->input('limit',12);
 
-        $type = $request->type;//dạng tin nhà ở , buôn bán , việc làm;
-        if(!$type){
-            return response()->json(['status' => 'error','message' => 'Có lỗi xảy ra']);
-        }
-        // $date = \Carbon::now();
-        $name_model = $this->checkNameInstance($type);
-        $instance = $this->handleMadeClass('Models',$name_model);
-        //làm tạm
-        $query = $instance::query();
+
+
+        $query = ProductRentHouse::query();
 
         $query->select(['a.*','b.email','b.username','b.phone','b.address',\DB::raw("CONCAT(b.firstname,' ',b.lastname) as user_name")]);
-        $query->from( $this->checkNameInstance($type,'slug').' as a');
+        $query->from( 'product_rent_house as a');
         $query->leftJoin('users as b','b.id','=','a.user_id');
         $query->leftJoin('posting_type as c','c.id','=','a.type_posting_id');
         if($search){
@@ -78,6 +73,7 @@ class DashboardController extends Controller
         }
 
         $query->where('a.status',1);
+        $query->where('a.payment',2);
         $query->orderByRaw('a.type_posting_id DESC, a.updated_at DESC');
 
         $rows = $query->paginate($limit);
@@ -101,7 +97,7 @@ class DashboardController extends Controller
         $type = $request->input('type'); // dạng nào thì truyền key đó vào
         $code = $request->input('code','none'); // code của dạng đó nếu là type là district hay wards
         $key = 'location_'.$type.'_child_'.$code;
-        $temp = Cache::tag('location')->rememberForever($key,function() use($type,$code,$request){
+        $temp = Cache::tags('location')->rememberForever($key,function() use($type,$code,$request){
             $instance = $this->handleMadeClass('Models',$type);
             if(!$instance)
                 return response()->json(['message' => 'Định dạng locaiton không hợp lệ','status' => 'error']);
@@ -121,7 +117,7 @@ class DashboardController extends Controller
             return $data;
         });
 
-        
+
         return response()->json($temp);
 
 
@@ -141,7 +137,7 @@ class DashboardController extends Controller
     }
 
     public function getProductForUserID(Request $request){
-        
+
     }
 
 

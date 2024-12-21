@@ -20,8 +20,8 @@ class PaymentController extends Controller
 
     private $product_type_post = 1;
 
-    
-    
+
+
     public function setProductType($type) {
         return $this->product_type_post = $type;
     }
@@ -43,7 +43,7 @@ class PaymentController extends Controller
         $vnp_Locale = 'VN';
         $vnp_BankCode = 'NCB';
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
-      
+
         $inputData = array(
             "vnp_Version" => "2.1.0",
             "vnp_TmnCode" => $this->vnp_TmnCode,
@@ -112,7 +112,7 @@ class PaymentController extends Controller
             $type = isset($orderInfoParts[5]) ? $orderInfoParts[5] : null;
             $this->setProductType($type);
             $modelClass = $this->checkNameInstance($this->product_type_post);
-            $instance = $this->handleMadeClass($modelClass);
+            $instance = $this->handleMadeClass('Models',$modelClass);
             if ($productId) {
                 $model = $instance::findOrFail($productId);
                 $model->approved = 1;
@@ -205,16 +205,16 @@ class PaymentController extends Controller
             $vnp_OrderInfo = $request->input('vnp_OrderInfo');
             $orderInfoParts = explode('_', $vnp_OrderInfo);
             $productId = isset($orderInfoParts[0]) ? $orderInfoParts[0] : null;
-            $load_key_post = isset($orderInfoParts[1]) ? $orderInfoParts[1] : null; 
+            $load_key_post = isset($orderInfoParts[1]) ? $orderInfoParts[1] : null;
             $type = isset($orderInfoParts[2]) ? $orderInfoParts[2] : null;
             $this->setProductType($type);
             $modelClass = $this->checkNameInstance($this->product_type_post);
-            $instance = $this->handleMadeClass($modelClass); 
+            $instance = $this->handleMadeClass($modelClass);
             if ($productId) {
                 $model = $instance::findOrFail($productId);
                 $model->load_btn_post = $load_key_post;
                 $model->time_exipred = null;
-                $model->save();           
+                $model->save();
             }
             $url = env('APP_URL_FRONTEND') . "/myads" ;
             return redirect($url);
