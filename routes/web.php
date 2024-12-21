@@ -56,7 +56,7 @@ Route::prefix('system')->group(function () {
         Route::get('manage-postings', [ProductRentHouseController::class, 'managePostings'])->name('manage-postings');
         Route::get('manage-postings-get-data', [ProductRentHouseController::class, 'getProductData'])->name('manage-postings.data');
         Route::post('manage-postings-delete/{id}', [ProductRentHouseController::class, 'deletePosting'])->name('manage-postings-delete');
-        Route::get('thong-ke', [ProductRentHouseController::class, 'index'])->name('thongke');
+        Route::get('thongke', [ProductRentHouseController::class, 'index'])->name('thongke');
         Route::get('getStatistics', [ProductRentHouseController::class, 'getStatistics'])->name('getStatistics');
 
 

@@ -46,7 +46,7 @@ class ProductElectronicController extends Controller
             if ($data->save()) {
                 DB::commit();
                 return response()->json(['message' => 'Tạo tin đăng thành công', 'data' => $data]);
-            } 
+            }
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
@@ -94,4 +94,5 @@ class ProductElectronicController extends Controller
         $data->delete();
         return response()->json(['message' => 'Xóa thành công','status' => true]);
     }
+    
 }
