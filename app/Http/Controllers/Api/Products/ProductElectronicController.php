@@ -4,140 +4,95 @@ namespace App\Http\Controllers\Api\Products;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductElectronicRequest;
 use App\Models\ProductElectronics;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 
 class ProductElectronicController extends Controller
 {
-    public function getData(Request $request)
+    public function saveProductElectrics(Request $request)
     {
-        return response()->json(['data' => 123]);
-    }
+        DB::beginTransaction();
 
-
-    public function save(Request $request) {}
-
-    public function addProduct(Request $request)
-    {
-        DB::beginTransaction(); 
-    
         try {
             $validatedData = $request->validate([
-                'video' => 'required|string|max:255',
                 'cost' => 'required|int',
-                'images' => 'nullable|string',
                 'title' => 'required|string|max:255',
                 'content' => 'nullable|string',
-                'user_id' => 'required|integer|exists:users,id',
-                'code' => 'required|string|max:150',
                 'category_id' => 'required|integer|exists:categories,id',
                 'type_posting_id' => 'nullable|integer|in:1,2',
-                'approved' => 'nullable|integer|in:0,1,2',
                 'status' => 'nullable|integer|in:0,1',
                 'province_code' => 'required|string|max:255',
                 'district_code' => 'required|string|max:255',
                 'ward_code' => 'required|string|max:255',
-                'condition_used' => 'required|integer|in:1,2,3',
+                'condition_used' => 'required',
                 'brand_id' => 'nullable|integer',
                 'color_id' => 'nullable|integer',
-                'capacity_id' => 'nullable|integer',
-                'warrancy_policy_id' => 'nullable|integer',
                 'origin_from_id' => 'nullable|integer',
-                'screen_size_id' => 'nullable|integer',
-                'microprocessor_id' => 'nullable|integer',
-                'ram_id' => 'nullable|integer',
-                'hard_drive_id' => 'nullable|integer',
-                'type_hard_drive' => 'nullable|integer|in:1,2',
-                'card_screen_id' => 'nullable|integer|exists:card_screens,id',
+                'ram_id' => 'required'
             ]);
-    
-            $data = ProductElectronics::create($validatedData);
-    
-            if ($data) {
+
+            if($request->has('images')){ //images
+                $images = $this->UploadImages($request->file('images')); //  trả ra json encode
+            }
+            if($request->file) { // video
+               $video = $this->uploadVideoDailyTraining($request); // trả ra file
+            }
+
+            $data = ProductElectronics::firstOrNew(['id' => $request->id]);
+            $data->fill($validatedData);
+            $data->user_id = auth('api')->id();
+            $data->images = isset($images) && !empty($images) ? $images : null;
+            $data->video =  isset($video) && !empty($video) ? $video : null;
+            if ($data->save()) {
                 DB::commit();
-                return response()->json(['message' => 'Product added successfully', 'data' => $data]);
-            } else {
-                DB::rollBack(); 
-                return response()->json(['message' => 'Failed to add product'], 500);
+                return response()->json(['message' => 'Tạo tin đăng thành công', 'data' => $data]);
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollBack(); 
+            DB::rollBack();
             return response()->json(['errors' => $e->validator->errors()], 422);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'An error occurred'], 500);
         }
     }
-    
+
+    public function getDetailProductElectricById($id){
+
+        try{
+            $model = ProductElectronics::findOrFail($id);
+            $model->loadMissing(['province', 'ward', 'district','user']);
+            $model->cost = convert_price((int)$model->cost, true);
+            $model->cost_deposit = convert_price((int)$model->cost_deposit, true);
+            $model->created_at2 = \Carbon::parse($model->created_at)->diffForHumans();
+            $model->linkPlay = $model->getLinkPlay();
+
+            return response()->json(['data' => $model]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->getMessage()], 422);
+        }
+    }
+
+
+
+    public function changeStatusPostData(Request $request){
+        $this->validateRequest([
+            'id' => 'required',
+            'status' => 'required|numeric|in:0,1'
+        ], $request, [
+            'id' => 'Đường dẫn dữ liệu',
+            'status' => 'Trạng thái'
+        ]);
+        $model = ProductElectronics::findOrFail($request->id);
+        $model->status = $request->status;
+        $model->save();
+        return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
+    }
 
     public function deleteProduct($id)
     {
-        $data = ProductElectronics::find($id);
-        if (!$data) {
-            return response()->json(['error' => 'Product not found'], 404);
-        }
+        $data = ProductElectronics::findOrFail($id);
         $data->delete();
-        return response()->json(['message' => 'Product deleted successfully']);
-    }
-
-    public function updateProduct(Request $request, $id)
-    {
-        DB::beginTransaction();
-        try {
-            $validatedData = $request->validate([
-                'video' => 'nullable|string|max:255',
-                'cost' => 'nullable|int',
-                'images' => 'nullable|string',
-                'title' => 'nullable|string|max:255',
-                'content' => 'nullable|string',
-                'user_id' => 'nullable|integer|exists:users,id',
-                'code' => 'nullable|string|max:150',
-                'category_id' => 'nullable|integer|exists:categories,id',
-                'type_posting_id' => 'nullable|integer|in:1,2',
-                'approved' => 'nullable|integer|in:0,1,2',
-                'status' => 'nullable|integer|in:0,1',
-                'province_code' => 'nullable|string|max:255',
-                'district_code' => 'nullable|string|max:255',
-                'ward_code' => 'nullable|string|max:255',
-                'condition_used' => 'nullable|integer|in:1,2,3',
-                'brand_id' => 'nullable|integer',
-                'color_id' => 'nullable|integer',
-                'capacity_id' => 'nullable|integer',
-                'warrancy_policy_id' => 'nullable|integer',
-                'origin_from_id' => 'nullable|integer',
-                'screen_size_id' => 'nullable|integer',
-                'microprocessor_id' => 'nullable|integer',
-                'ram_id' => 'nullable|integer',
-                'hard_drive_id' => 'nullable|integer',
-                'type_hard_drive' => 'nullable|integer|in:1,2',
-                'card_screen_id' => 'nullable|integer|exists:card_screens,id',
-            ]);
-    
-            $data = ProductElectronics::find($id);
-    
-            if (!$data) {
-                DB::rollBack(); 
-                return response()->json(['error' => 'Product not found'], 404);
-            }
-    
-            $data->fill($validatedData);
-    
-            if ($data->save()) {
-                DB::commit();
-                return response()->json(['message' => 'Product updated successfully', 'data' => $data]);
-            } else {
-                DB::rollBack(); 
-                return response()->json(['message' => 'Failed to update product'], 500);
-            }
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollBack(); 
-            return response()->json(['errors' => $e->validator->errors()], 422);
-        } catch (\Exception $e) {
-            DB::rollBack(); 
-            return response()->json(['error' => 'An error occurred'], 500);
-        }
+        return response()->json(['message' => 'Xóa thành công','status' => true]);
     }
     
 }

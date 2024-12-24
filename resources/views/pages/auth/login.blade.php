@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="{{asset('plugins//fontawesome-free/css/all.min.css')}}">
     <!-- icheck bootstrap -->
-    {{-- <link rel="stylesheet" href="{{asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}"> --}}
+    <link rel="stylesheet" href="{{asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{asset('css/adminlte.css')}}">
     {{-- <link rel="stylesheet" href="{{asset()}}"> --}}
@@ -22,7 +22,7 @@
         </div>
         <div class="card-body">
           <p class="login-box-msg">Đăng nhập vào hệ thống quản lý</p>
-    
+
           <form action="../../index3.html" method="post">
             <div class="input-group mb-3">
               <input type="text" class="form-control" name="username" placeholder="-- Tài khoản --">
@@ -47,14 +47,14 @@
               </div>
               <!-- /.col -->
             </div>
-          </form>  
+          </form>
         </div>
         <!-- /.card-body -->
       </div>
       <!-- /.card -->
     </div>
     <!-- /.login-box -->
-    
+
  </body>
   <!-- jQuery -->
   <script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
@@ -106,7 +106,7 @@
             return false;
         });
       })
-    
+
   })
 
 </script>

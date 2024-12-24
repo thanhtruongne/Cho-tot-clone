@@ -28,7 +28,7 @@ class ApiAuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['auth:api','jwt.vertify'], ['except' => ['login', 'refresh','register']]);
+        $this->middleware(['api','jwt.vertify'], ['except' => ['login', 'refresh','register']]);
     }
 
     /**
@@ -38,7 +38,7 @@ class ApiAuthController extends Controller
      */
     public function login(Request $request)
     {
-        $rules = [ 
+        $rules = [
             'email' => 'required|email',
             'password' => 'required'
         ];
@@ -55,7 +55,7 @@ class ApiAuthController extends Controller
 
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt($credentials)) {
+        if (!$token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $user = \Auth::guard('api')->user();
@@ -67,15 +67,15 @@ class ApiAuthController extends Controller
         $vertify = explode('.',$token);
         $user->signature_key = end($vertify); // lưu chữ ký của token
         $user->save();
-       
-        return $this->respondWithToken($token);
+
+        return $this->respondWithToken($token,$user);
     }
 
 
 
      // đăng ký   tự đăng  nhập set token
     public function register(Request $request){
-        $rules = [ 
+        $rules = [
             'email' => 'required|email',
             'password' => 'required',
             'firstname' => 'required',
@@ -109,7 +109,7 @@ class ApiAuthController extends Controller
             'lastname' => $lastname,
             'password' => password_hash($password,PASSWORD_DEFAULT)
         ]);
-    
+
         if (! $token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $password ])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -121,7 +121,7 @@ class ApiAuthController extends Controller
         $user->signature_key = end($vertify); // lưu chữ ký của token
         $user->save();
 
-        return $this->respondWithToken($token);
+        return $this->respondWithToken($token,null);
 
 
     }
@@ -136,7 +136,7 @@ class ApiAuthController extends Controller
            ];
            $refreshToken = JWTAuth::getJWTProvider()->encode($payload);
         return $refreshToken;
-   
+
     }
 
     /**
@@ -155,7 +155,7 @@ class ApiAuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout()
-    {   
+    {
         $id = auth('api')->id();
         \DB::table('users')->where(function($subquery) use($id){
             $subquery->whereId($id);
@@ -164,9 +164,9 @@ class ApiAuthController extends Controller
             'refresh_token' => null,
             'signature_key' => null,
         ]);
-    
-        auth('api')->logout();
+        $this->setCacheOnline($id);
         JWTAuth::invalidate(JWTAuth::parseToken());
+        auth('api')->logout();
 
         return response()->json(['message' => 'Logout thành công' , 'status' => true] , 200);
     }
@@ -177,7 +177,7 @@ class ApiAuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function refresh()
-    { 
+    {
             $token = request()->bearerToken();
             $tokenDecoded = JWTAuth::getJWTProvider()->decode($token);
             $dataVertify = explode('.',$token);
@@ -202,14 +202,73 @@ class ApiAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token,$user)
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => \Carbon::now()->addDays(1),
             'status' => true,
-            'message' => 'Thành công'
+            'message' => 'Thành công',
+            // 'data'=> $user['id']
         ]);
     }
+
+    public function updateUser(Request $request, $id)
+    {
+        // Tìm user theo id
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        // dd($request->all());
+        $data = $request->all();
+        if ($request->hasFile('avatar')) {
+            // Lấy file ảnh (avatar)
+            $img = $request->file('avatar');
+
+                $avatarName = $img->getClientOriginalName();
+
+            // Lưu ảnh vào thư mục public/img
+            $img->move(public_path('img'), $avatarName);
+
+            // Thêm đường dẫn ảnh (avatar) vào mảng dữ liệu
+            $data['avatar'] = 'img/' . $avatarName; // Lưu đường dẫn ảnh vào DB
+        } else {
+            // Trường hợp không có avatar, giữ nguyên avatar cũ
+            $data['avatar'] = $user->avatar;
+        }
+
+
+        $user->fill($data);
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user' => [
+                'id' => $user->id,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'username' => $user->username,
+                'avatar' => isset($data['avatar']) ? url($data['avatar']) : null,
+                'address' => $user->address,
+                'identity_card' => $user->identity_card,
+                'date_range' => $user->date_range,
+                'gender' => $user->gender,
+            ],
+        ]);
+    }
+
+
+    private function setCacheOnline($id){
+        $users_online = \Cache::get('online-users');
+        $users_online = collect($users_online)->filter(function ($online) use($id) {
+            return $online['id'] != $id;
+        });
+        \Cache::put('online-users', $users_online, \Config::get('session.lifetime'));
+    }
+
+
 }

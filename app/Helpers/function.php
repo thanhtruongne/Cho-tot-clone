@@ -1,6 +1,9 @@
 <?php
+
+use Illuminate\Support\Facades\Crypt;
+
 function profile(){
-    
+
    return session()->get('profile');
 }
 
@@ -13,7 +16,9 @@ function check_password($password){
   }
 
 }
-
+function convert_price(string $price = '' , bool $title = true) {
+    return ($title == false) ? str_replace('.','',$price) : number_format($price,0,',','.');
+ }
 // demo khó
 function check_password_v2($password){
    if($password){
@@ -58,4 +63,22 @@ function check_password_v2($password){
       return true;
    }
   }
+}
+
+
+
+function decrypt_array($string)
+{
+    $crypt = urldecode($string);
+    $crypt = base64_decode($crypt);
+    $crypt = Crypt::decryptString($crypt);
+    $crypt = json_decode($crypt, true);
+    return $crypt;
+}
+
+function encrypt_array($data = [])
+{
+    $crypt = Crypt::encryptString(json_encode($data));
+    $crypt = base64_encode($crypt);
+    return urlencode($crypt);
 }

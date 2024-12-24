@@ -10,13 +10,22 @@ class PostingType extends Model
     use HasFactory;
     protected $table = 'posting_type';
 
+
     protected $fillable = [
         'code',
-        'name',
-        'content',
-        'status',
+        'benefits',
         'cost',
-        'number_day',
-        'rule_make_by_order'
+        'rule_day',
+        'type',
+        'name',
     ];
+
+    protected $casts = [
+        'rule_day' => 'json'
+    ];
+
+
+    public function posting_data_type(){
+        return $this->hasMany(PostingDataAction::class,'post_id','id');
+    }
 }

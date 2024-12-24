@@ -32,8 +32,10 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
-            'throw' => false,
+            'root' =>  storage_path('app/public/video'),
+            // 'url' => env('APP_URL').'/video',
+            // 'throw' => false,
+            // 'visibility' => 'public',
         ],
 
         'public' => [
@@ -41,9 +43,14 @@ return [
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
-            'throw' => false,
+            // 'throw' => false,
         ],
-
+        'upload' => [
+            'driver' => 'local',
+            'root' => config('app.datafile.path') . '/uploads',
+            'url' => config('app.datafile.public_url', '/uploads'),
+            'visibility' => 'public',
+        ],
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

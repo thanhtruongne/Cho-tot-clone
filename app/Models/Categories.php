@@ -21,7 +21,8 @@ class Categories extends Model
         'icon',
         'name',
         'status',
-        'type'
+        'type',
+        'key'
     ];
     public function getLftName()
     {

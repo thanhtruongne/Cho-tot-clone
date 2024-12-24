@@ -10,5 +10,6 @@ return [
     'summary' => 'Thống kê',
     'product_electronics_manager' => 'QLSP điện tử',
     'product_electronics' => 'Sản phẩm điện tử',
-     'product_electronics_category' => 'Danh mục SP điện tử'
+    'trung' => 'trung',
+
 ];

@@ -10,10 +10,10 @@ class Authenticate
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!\Auth::check()) {
+        if (!auth('web')->check()) {
             if ($request->ajax()){
                 if(!session()->has('target_url')){
-                    $refererUrl = $request->header('Referer');
+                    $refererUrl = $request->header('Referer');  
                     session()->put('target_url', $refererUrl);
                 }
 
@@ -25,12 +25,10 @@ class Authenticate
             return  redirect(route('login'));
         }
 
-        if (\Auth::check()){
-            $userId = \auth()->id();
+        if (auth('web')->check()){
+            $userId = \auth('web')->id();
             if (!session()->get('profile')) {
                 $profile = User::whereId($userId)->disableCache()->first();
-                $group_permission = \Auth::user()->roles()->first()->code;
-                session(['group_permission' => $group_permission]);
                 session(['profile' => $profile]);
                 session()->save();
             }

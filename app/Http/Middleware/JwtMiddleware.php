@@ -21,12 +21,12 @@ class JwtMiddleware extends BaseMiddleware
         
         try {
             $user = JWTAuth::parseToken()->authenticate();
-            if($user){
-                $dataKeyVertify = explode('.',request()->bearerToken());
-                if(!in_array($user->signature_key,$dataKeyVertify)){
-                    return response()->json(['status' => 'Token không đúng'],403);
-                }
-            }
+            // if($user){
+            //     $dataKeyVertify = explode('.',request()->bearerToken());
+            //     if(!in_array($user->signature_key,$dataKeyVertify)){
+            //         return response()->json(['status' => 'Token không đúng'],403);
+            //     }
+            // }
         } catch (Exception $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
                 return response()->json(['status' => 'Token không đúng'],403);

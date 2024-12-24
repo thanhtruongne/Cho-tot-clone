@@ -7,6 +7,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -69,7 +70,7 @@ class User extends Authenticatable implements JWTSubject
 
 
     public function login($username,$password,$remember = false){
-        $auth = \Auth::attempt([
+        $auth = auth()->attempt([
             'username' => $this->username,
             'password' => $password
         ], $remember);
@@ -98,4 +99,37 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function product_rent_house(){
+        return $this->hasMany(ProductRentHouse::class,'user_id','id');
+    }
+
+    public function isAdmin() {
+        $cacheKey = 'admin_access_for_' . auth('web')->id();
+        return Cache::rememberForever($cacheKey, function () {
+            if (in_array(auth('web')->user()->username, ['admin', 'superadmin'])) {
+                return true;
+            }
+            return false;
+        });
+    }
+
+    public function province(){
+        return $this->belongsTo(Provinces::class,'province_code','code')->select(['full_name','name','code']);
+    }
+
+    public function district(){
+        return $this->belongsTo(Districts::class,'district_code','code')->select(['full_name','name','code']);
+    }
+
+    public function ward(){
+        return $this->belongsTo(Wards::class,'ward_code','code')->select(['full_name','name','code']);
+    }
+
+    public function user_activities(){
+        return $this->hasMany(UserActivities::class,'user_id','id')->select(['user_id','session_id','last_acti_time']);
+    }
+
+
+
 }
