@@ -126,7 +126,7 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         if (\auth('web')->check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route('thongke');
         }
         return view('pages.auth.login');
     }
