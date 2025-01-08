@@ -63,7 +63,7 @@ Route::group([
   Route::post('logout', [ApiAuthController::class, 'logout'])->name('fe.logout');
   Route::post('refresh', [ApiAuthController::class, 'refresh'])->name('fe.refresh');
   Route::post('register', [ApiAuthController::class, 'register'])->name('fe.register');
-
+  Route::post('/google/callback',[ApiAuthController::class,'callBackGoogle'])->name('login_callback');
 });
 
 Route::group([
@@ -113,6 +113,6 @@ Route::group([
   Route::post('/delete-posting-type/{id}', [PostingTypeController::class, 'deletePostingType']);
   Route::post('/update-posting-type/{id}', [PostingTypeController::class, 'updatePostingType']);
   Route::get('/get-data-posting-type', [PostingTypeController::class, 'getDataPostingType']);
-   
+
   });
 });

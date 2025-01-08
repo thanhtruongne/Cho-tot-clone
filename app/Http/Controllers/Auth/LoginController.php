@@ -18,7 +18,7 @@ use Carbon\Carbon;
 
 class LoginController extends Controller
 {
-
+    private $password_example = 123;
     public function login(Request $request)
     {
         $rules = [
@@ -158,43 +158,6 @@ class LoginController extends Controller
     }
 
 
-    // public function manageUsersAdd(Request $request)
-    // {
-    //     $request->validate([
-    //         'email' => 'required|email|unique:users,email',
-    //         'firstname' => 'required|string|max:255',
-    //         'lastname' => 'required|string|max:255',
-    //     ], [
-    //         'email.unique' => 'Email này đã được sử dụng.',
-    //     ]);
-    //     if($data->isEmpty()) {
-    //         return response()->json(['data' => []]);
-    //     }
-
-    //     return DataTables::of($data)
-    //         ->make(true);
-    // }
-
-    // public function manageUsersAdd(Request $request)
-    // {
-    //     $request->validate([
-    //         'email' => 'required|email|unique:users,email',
-    //         'firstname' => 'required|string|max:255',
-    //         'lastname' => 'required|string|max:255',
-    //     ], [
-    //         'email.unique' => 'Email này đã được sử dụng.',
-    //     ]);
-
-    //     $user = new User();
-    //     $user->email = $request->email;
-    //     $user->firstname = $request->firstname;
-    //     $user->lastname = $request->lastname;
-    //     $user->password = bcrypt($request->password);
-    //     $user->save();
-
-    //     // Trả về thông báo thành công
-    //     return redirect()->route('manage-users')->with('success', 'Người dùng đã được thêm thành công!');
-    // }
 
     public function manageUsersDelete($id)
     {
@@ -211,43 +174,5 @@ class LoginController extends Controller
         }
         return view('pages.auth.manageUsersEdit', compact('user')); // Chuyển dữ liệu user vào view
     }
-    // public function manageUsersEdit($id)
-    // {
-    //     $user = User::find($id);
 
-    //     if (!$user) {
-    //         return redirect()->route('manage-users')->with('error', 'Không tìm thấy người dùng!');
-    //     }
-
-    //     return view('pages.auth.manageUsersEdit', compact('user')); // Chuyển dữ liệu user vào view
-    // }
-
-    // public function manageUsersUpdate(Request $request, $id)
-    // {
-    //     $request->validate([
-    //         'email' => 'required|email|unique:users,email,' . $id,
-    //         'firstname' => 'required|string|max:255',
-    //         'lastname' => 'required|string|max:255',
-    //     ], [
-    //         'email.unique' => 'Email này đã được sử dụng.',
-    //     ]);
-
-    //     $user = User::find($id);
-
-    //     if (!$user) {
-    //         return redirect()->route('manage-users')->with('error', 'Không tìm thấy người dùng!');
-    //     }
-
-    //     $user->email = $request->email;
-    //     $user->firstname = $request->firstname;
-    //     $user->lastname = $request->lastname;
-
-    //     if ($request->password) {
-    //         $user->password = bcrypt($request->password);
-    //     }
-
-    //     $user->save();
-
-    //     return redirect()->route('manage-users')->with('success', 'Người dùng đã được cập nhật thành công!');
-    // }
 }
