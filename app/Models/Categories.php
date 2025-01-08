@@ -28,17 +28,17 @@ class Categories extends Model
     {
         return '_lft';
     }
-    
+
     public function getRgtName()
     {
         return '_rgt';
     }
-    
+
     public function getParentIdName()
     {
         return 'parent_id';
     }
-    
+
     // Specify parent id attribute mutator
     public function setParentAttribute($value)
     {

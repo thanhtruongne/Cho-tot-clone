@@ -17,11 +17,11 @@ return new class extends Migration
             // $table->integer('role')->default(2)->comment('set tạm role, 1 là admin , 2 là user');
             $table->text('avatar')->nullable();
             $table->string('firstname',150)->nullable();
-            $table->string('lastname',150)->nullable(); 
+            $table->string('lastname',150)->nullable();
             $table->dateTime('last_login')->nullable();
             $table->string('email')->unique();
             $table->boolean('re_login')->default(0);
-            
+            $table->string('google_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

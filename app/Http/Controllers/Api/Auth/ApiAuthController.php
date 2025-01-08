@@ -28,7 +28,7 @@ class ApiAuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['api','jwt.vertify'], ['except' => ['login', 'refresh','register']]);
+        $this->middleware(['api','jwt.vertify'], ['except' => ['login', 'refresh','register','callBackGoogle']]);
     }
 
     /**
@@ -268,6 +268,51 @@ class ApiAuthController extends Controller
             return $online['id'] != $id;
         });
         \Cache::put('online-users', $users_online, \Config::get('session.lifetime'));
+    }
+
+
+    public function callBackGoogle(Request $request) {
+        $this->validateRequest([
+           'email' => 'required',
+        //    'name' => 'required',
+           'sub' => 'required',
+        ],$request,[
+            'email' => 'Email',
+            // 'name' => 'Tên',
+            'sub' => '_id không phù hợp'
+        ]);
+        $email = $request->input('email');
+        $google_id = $request->input('sub');
+
+        $user = User::where('email',$email)->first();
+
+        if(!$user) {
+            $model = new User();
+            $model->email = $email;
+            $model->password = \Hash::make($this->password_example);
+            $model->google_id = $google_id;
+            $model->firstname = $request->given_name;
+            $model->lastname = $request->family_name;
+            $model->avatar = $request->picture;
+            $model->save();
+        }
+
+        if (!$token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $user->password])) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        // $user = \Auth::guard('api')->user();
+        if(!$user->refresh_token){
+            $refreshToken = $this->checkRefreshTokenAndSignatureKey($user);
+            $user->refresh_token = $refreshToken; // lưu refreshtoken
+        }
+        // dd(end(explode('.',$token)));
+        $vertify = explode('.',$token);
+        $user->signature_key = end($vertify); // lưu chữ ký của token
+        $user->save();
+
+        return $this->respondWithToken($token,$user);
+
+
     }
 
 
