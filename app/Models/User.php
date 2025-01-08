@@ -31,6 +31,7 @@ class User extends Authenticatable implements JWTSubject
         'dob',
         'address',
         'district_code',
+        'google_id',
         'province_code',
         'ward_code',
         'identity_card',
