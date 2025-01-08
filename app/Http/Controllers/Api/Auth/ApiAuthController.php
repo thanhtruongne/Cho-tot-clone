@@ -20,6 +20,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ApiAuthController extends Controller
 {
+    private $password_example = 123;
 
   /**
      * Create a new AuthController instance.
@@ -287,27 +288,25 @@ class ApiAuthController extends Controller
         $user = User::where('email',$email)->first();
 
         if(!$user) {
-            $model = new User();
-            $model->email = $email;
-            $model->password = \Hash::make($this->password_example);
-            $model->google_id = $google_id;
-            $model->firstname = $request->given_name;
-            $model->lastname = $request->family_name;
-            $model->avatar = $request->picture;
-            $model->save();
+            $user = new User();
+            $user->email = $email;
+            $user->password = \Hash::make($this->password_example);
+            $user->google_id = $google_id;
+            $user->firstname = $request->given_name;
+            $user->lastname = $request->family_name;
+            $user->avatar = $request->picture;
+            $user->save();
         }
-
-        if (!$token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->attempt(['email' => $email , 'password' => $user->password])) {
+        if (!$token = auth('api')->claims(['exp' => \Carbon::now()->addDays(1)])->login($user)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        // $user = \Auth::guard('api')->user();
+
         if(!$user->refresh_token){
             $refreshToken = $this->checkRefreshTokenAndSignatureKey($user);
-            $user->refresh_token = $refreshToken; // lưu refreshtoken
+            $user->refresh_token = $refreshToken;
         }
-        // dd(end(explode('.',$token)));
         $vertify = explode('.',$token);
-        $user->signature_key = end($vertify); // lưu chữ ký của token
+        $user->signature_key = end($vertify);
         $user->save();
 
         return $this->respondWithToken($token,$user);
