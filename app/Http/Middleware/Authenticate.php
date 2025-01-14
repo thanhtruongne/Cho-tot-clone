@@ -6,26 +6,27 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Closure;
 use Illuminate\Support\Facades\Cache;
+
 class Authenticate
 {
     public function handle(Request $request, Closure $next)
     {
         if (!auth('web')->check()) {
-            if ($request->ajax()){
-                if(!session()->has('target_url')){
-                    $refererUrl = $request->header('Referer');  
+            if ($request->ajax()) {
+                if (!session()->has('target_url')) {
+                    $refererUrl = $request->header('Referer');
                     session()->put('target_url', $refererUrl);
                 }
 
-                return response()->json(["message", "Authentication Required!"],401);
+                return response()->json(["message", "Authentication Required!"], 401);
             }
-            if(!session()->has('target_url')){
+            if (!session()->has('target_url')) {
                 session()->put('target_url', $request->fullUrl());
             }
             return  redirect(route('login'));
         }
 
-        if (auth('web')->check()){
+        if (auth('web')->check() && auth('web')->user()->isAdmin()) {
             $userId = \auth('web')->id();
             if (!session()->get('profile')) {
                 $profile = User::whereId($userId)->disableCache()->first();
@@ -33,11 +34,12 @@ class Authenticate
                 session()->save();
             }
 
-            if(!cache('avatar_'.profile()->user_id)){
+            if (!cache('avatar_' . profile()->user_id)) {
                 $avatar = User::whereId(\profile()->user_id)->value('avatar');
-                Cache::forever('avatar_'. \profile()->user_id, $avatar ?? '');
+                Cache::forever('avatar_' . \profile()->user_id, $avatar ?? '');
             }
+            return $next($request);
         }
-        return $next($request);
+        abort(404);
     }
 }

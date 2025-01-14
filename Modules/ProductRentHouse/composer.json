@@ -1,0 +1,25 @@
+{
+    "name": "nwidart/productrenthouse",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\ProductRentHouse\\Providers\\ProductRentHouseServiceProvider"
+            ],
+            "aliases": {
+                
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\ProductRentHouse\\": ""
+        }
+    }
+}
