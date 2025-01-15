@@ -99,13 +99,8 @@ Route::group([
   Route::post('/update-product-rent/{id}', [ProductRentHouseController::class, 'updateProductRent']);
   Route::get('get-product-rent-detail/{id}',[ProductRentHouseController::class,'getDetailProductRentById'])->name('fe.detail-post');
 
-
-
   Route::post('/change-status-post', [ProductRentHouseController::class, 'changeStatusPostData']);
   Route::post('/change-load-btn-post', [ProductRentHouseController::class, 'loadDataBtnPost']);
-
-
-
 
   Route::get('/get-data-location',[DashboardController::class, 'getLocation']);
   //posting_type
