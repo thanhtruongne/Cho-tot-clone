@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_rent_house', function (Blueprint $table) {        
+        Schema::create('product_rent_house', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
             $table->text('content');
             $table->unsignedBigInteger('user_id')->index();
             $table->string('code', 150)->unique();
             $table->tinyInteger('type_product')->nullable()->comment('1 là mua bán, 2  là cho thuê');
-            $table->longText('images');
-            $table->string('video');
+            $table->longText('images')->nullable();
+            $table->string('video')->nullable();
 
             //mặc định là thángphp
             $table->integer('type_posting_id')->index()->default(1)->comment('loại tin đăng');
@@ -39,16 +39,16 @@ return new class extends Migration
             $table->string('district_code');
             $table->string('ward_code');
 
-            $table->tinyInteger('type_user')->default(1)->comment('1 là cá nhân , 2 là môi giới'); 
-            $table->unsignedBigInteger('category_id');
-            // $table->string('subdivision_code');
-            // $table->integer('floor')->default(0)->comment('số tầng');
+            $table->tinyInteger('type_user')->default(1)->comment('1 là cá nhân , 2 là môi giới');
+            // $table->unsignedBigInteger('category_id');
+
+
             $table->unsignedBigInteger('bedroom_id')->index()->comment('phòng ngủ');
             $table->unsignedBigInteger('bathroom_id')->index()->comment('phòng tắm');
             $table->unsignedBigInteger('main_door_id')->index()->comment('cửa chính');
             // $table->unsignedBigInteger('legal_id')->index()->comment('Giấy tờ pháp lý');
-            $table->unsignedBigInteger('condition_interior')->index()->comment('Tình trạng nội thất-- 1 nội thất cao cấp, 2 đầy dủ , 3 nha trống');     
-          
+            $table->unsignedBigInteger('condition_interior')->index()->comment('Tình trạng nội thất-- 1 nội thất cao cấp, 2 đầy dủ , 3 nha trống');
+
             $table->tinyInteger('car_alley')->default(0)->comment('Hẻm xe hơi');
             $table->tinyInteger('back_house')->default(0)->comment('Nhà tóp hậu --> mảnh đất đầu nhỏ đuôi to, phía trước rộng, sau hẹp');
             $table->tinyInteger('blooming_house')->default(0)->comment('Nhà tóp hậu --> đất nở hậu là phía trước hẹp, sau rộng');
@@ -56,14 +56,14 @@ return new class extends Migration
             $table->tinyInteger('land_not_changed_yet')->default(0)->comment('Đất chưa chuyển thổ');
             $table->tinyInteger('planning_or_road')->default(0)->comment('Nhà dính quy hoạch / lộ giới');
             $table->tinyInteger('diff_situation')->default(0)->comment('Hiện trạng khác');
-           
+
             //Diện tích & giá
             $table->float('land_area')->comment('diện tích đất');
-            $table->float( 'usable_area')->nullable()->comment('diện tích sử dụng');
+            $table->float('usable_area')->nullable()->comment('diện tích sử dụng');
             $table->float('horizontal')->nullable()->comment('chiều ngang');
             $table->float('length')->nullable()->comment('chiều dài');
-            $table->decimal('cost',10)->comment('giá thuê');
-            $table->float('cost_deposit')->comment('Số tiền cọc');
+            $table->decimal('cost', 10)->comment('giá tiền');
+            $table->float('cost_deposit')->comment('Số tiền cọc')->nullable();
 
             $table->integer('status')->default(1);
             $table->integer('sort')->default(0);

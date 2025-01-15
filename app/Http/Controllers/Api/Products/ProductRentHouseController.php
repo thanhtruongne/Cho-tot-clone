@@ -11,7 +11,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Redis;
 
 
-interface InterfaceProductRentController {
+interface InterfaceProductRentController
+{
     public function addProductRent(Request $request);
 
     public function updateProductRent(Request $request, $id);
@@ -32,11 +33,11 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
         try {
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
+                'type_product' => 'required|integer',
                 'content' => 'required|string',
                 'type_posting_id' => 'nullable|integer',
                 'province_code' => 'required|string',
                 'ward_code' => 'required|string',
-                'category_id' => 'required|integer',
                 'floor' => 'nullable|integer|min:0',
                 'bedroom_id' => 'nullable|integer',
                 'bathroom_id' => 'nullable|integer',
@@ -60,17 +61,16 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
 
             ]);
 
-            if($request->has('images')){ //images
+            if ($request->has('images')) { //images
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
             }
-            if($request->file) { // video
-               $video = $this->uploadVideoDailyTraining($request); // trả ra file
+            if ($request->file) { // video
+                $video = $this->uploadVideoDailyTraining($request); // trả ra file
             }
 
             $data = new ProductRentHouse();
             $data->fill($validatedData);
             $data->user_id = auth('api')->id();
-            $data->type_product = 1;
             $data->images = isset($images) && !empty($images) ? $images : null;
             $data->video =  isset($video) && !empty($video) ? $video : null;
             $data->save();
@@ -90,10 +90,10 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
                 'content' => 'required|string',
+                'type_product' => 'required|integer',
                 'type_posting_id' => 'nullable|integer',
                 'province_code' => 'required|string',
                 'ward_code' => 'required|string',
-                'category_id' => 'required|integer',
                 'floor' => 'nullable|integer|min:0',
                 'bedroom_id' => 'nullable|integer',
                 'bathroom_id' => 'nullable|integer',
@@ -125,7 +125,7 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
                 $images = $this->UploadImages($request->file('images')); //  trả ra json encode
             }
 
-            if($request->file) { // video
+            if ($request->file) { // video
                 $video = $this->uploadVideoDailyTraining($request); // trả ra file
             }
 
@@ -156,11 +156,12 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
     }
 
 
-    public function getDetailProductRentById($id){
+    public function getDetailProductRentById($id)
+    {
 
-        try{
+        try {
             $model = ProductRentHouse::findOrFail($id);
-            $model->loadMissing(['province', 'ward', 'district','user']);
+            $model->loadMissing(['province', 'ward', 'district', 'user']);
             $model->cost = convert_price((int)$model->cost, true);
             $model->cost_deposit = convert_price((int)$model->cost_deposit, true);
             $model->created_at2 = \Carbon::parse($model->created_at)->diffForHumans();
@@ -174,7 +175,8 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
 
 
 
-    public function changeStatusPostData(Request $request){
+    public function changeStatusPostData(Request $request)
+    {
         $this->validateRequest([
             'id' => 'required',
             'status' => 'required|numeric|in:0,1'
@@ -200,13 +202,13 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
 
         $model = ProductRentHouse::find($request->id);
 
-        $key = 'post_id_'.$model->id_.'_load_btn';
-        if(cache()->has($key)){
-            $val = explode("_",cache()->get($key));
+        $key = 'post_id_' . $model->id_ . '_load_btn';
+        if (cache()->has($key)) {
+            $val = explode("_", cache()->get($key));
             $time =  \Carbon::createFromTimestamp($val[3])->diffForHumans();
-            return response()->json(['message' => trans('general.time_exists_post').$time, 'status' => 'error']);
+            return response()->json(['message' => trans('general.time_exists_post') . $time, 'status' => 'error']);
         }
-        if(!$model->load_btn_post){
+        if (!$model->load_btn_post) {
             return response()->json(['message' => 'Có lỗi xảy ra', 'status' => 'error']);
         }
         $model->created_at = \Carbon::now();
@@ -215,7 +217,7 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
 
         $time_exp = \Carbon::now()->addMinutes(20);
         $key = 'post_id_' . $model->id_ . '_load_btn';
-        $value= 'id_'.$model->id.'_time_'.$time_exp->timestamp;
+        $value = 'id_' . $model->id . '_time_' . $time_exp->timestamp;
         if (!cache()->has($key)) {
             cache()->put($key, $value, $time_exp);
         }
@@ -223,65 +225,4 @@ class ProductRentHouseController extends Controller implements InterfaceProductR
 
         return response()->json(['message' => 'Cập nhật thành công', 'status' => 'success']);
     }
-
-    public function index()
-    {
-        return view('pages.products.productHouse.index');
-    }
-
-    public function getStatistics(Request $request)
-    {
-        // Lấy kiểu thống kê (ngày, tháng, năm) từ request, mặc định là 'day'
-        $type = $request->input('type', 'day');
-
-        // Nếu chọn thống kê theo ngày
-        if ($type === 'day') {
-            $statistics = ProductRentHouse::selectRaw('
-                SUM(cost) as total_cost,
-                DATE(created_at) as date
-            ')
-            ->groupBy('date')
-            ->orderBy('date', 'asc')
-            ->get();
-        }
-        // Nếu chọn thống kê theo tháng
-        elseif ($type === 'month') {
-            $statistics = ProductRentHouse::selectRaw('
-                SUM(cost) as total_cost,
-                MONTH(created_at) as month,
-                YEAR(created_at) as year
-            ')
-            ->groupBy('year', 'month')  // Lưu ý: Group theo năm rồi đến tháng
-            ->orderBy('year', 'asc')
-            ->orderBy('month', 'asc')
-            ->get();
-        }
-        // Nếu chọn thống kê theo năm
-        else {
-            $statistics = ProductRentHouse::selectRaw('
-                SUM(cost) as total_cost,
-                YEAR(created_at) as year
-            ')
-            ->groupBy('year')
-            ->orderBy('year', 'asc')
-            ->get();
-        }
-
-        // Trả về dữ liệu dưới dạng JSON
-        return response()->json($statistics);
-    }
-
-    public function managePostings()
-    {
-        return view('pages.products.productHouse.managePostings');
-    }
-    public function getProductData()
-    {
-        $data = ProductRentHouse::all();
-        return response()->json([
-            'data' => $data
-        ]);
-    }
-
-
 }
